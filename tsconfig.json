@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig/base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noEmit": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["scripts/**/*.ts", "src/**/*.ts", "test/**/*.ts"]
+}

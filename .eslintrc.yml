@@ -1,0 +1,21 @@
+root: true
+ignorePatterns:
+  - "!.*"
+  - /.nyc_output/
+  - /coverage/
+  - /dist/
+  - /node_modules/
+  - /test/lib/type-util.ts
+  - /test/__snapshot__.js
+  - /test/tuple-schema.ts
+
+extends:
+  - plugin:@mysticatea/es2020
+rules:
+  "@mysticatea/node/no-missing-import": "off"
+  "@mysticatea/prettier": "off"
+  "@mysticatea/ts/explicit-member-accessibility": "off"
+
+overrides:
+  - files: "test/**"
+    extends: plugin:@mysticatea/+node

@@ -1,0 +1,4 @@
+spec:
+  - test/**/*.ts
+require:
+  - ./test/lib/snapshot.ts
