@@ -1,6 +1,6 @@
 {
   "name": "validia",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "engines": {
     "node": ">=10.13.0"
@@ -71,5 +71,7 @@
     "url": "https://github.com/mysticatea/validia/issues"
   },
   "homepage": "https://github.com/mysticatea/validia#readme",
-  "funding": "https://github.com/sponsors/mysticatea"
+  "funding": {
+    "url": "https://github.com/sponsors/mysticatea"
+  }
 }
