@@ -58,8 +58,8 @@ import { schemas as s, validate } from "validia";
 
 // 1. Define your schema.
 const myOptionSchema = s.partialObject({
-  include: s.array(s.anyString),
-  exclude: s.array(s.anyString),
+  include: s.array(s.string()),
+  exclude: s.array(s.string()),
 });
 
 // 2. Validate a value.
@@ -77,8 +77,8 @@ import { createValidation, schemas as s, Validate } from "validia";
 
 // 1. Define your schema.
 const myOptionSchema = s.partialObject({
-  include: s.array(s.anyString),
-  exclude: s.array(s.anyString),
+  include: s.array(s.string()),
+  exclude: s.array(s.string()),
 });
 
 // 2. Compile validation.
@@ -137,9 +137,9 @@ This is equivalent to `createValidation(schema, options)(name, value)`.
 
 The schema factories.
 
-- `schemas.any` ... The schema representing `any`.
-- `schemas.array(schema, options?)` ... The schema representing specific arrays.
-  - `schema` is the schema of array elements.
+- `schemas.any()` ... The schema representing `any`.
+- `schemas.array(schema?, options?)` ... The schema representing specific arrays.
+  - `schema` is the schema of array elements. Default is `schemas.any()`.
   - `options.maxLength` is the maximum length.
   - `options.minLength` is the minimum length.
   - `options.unique` is the flag to disallow duplicated values.
@@ -154,22 +154,20 @@ The schema factories.
   - `check` is the function of this chck; `<T>(value: unknown) => value is T`. Return `true` if the `value` passed validation.
 - `schemas.enum(...values)` ... The schema representing any of specific values.
   - `values` is the list of allowed values.
-- `schemas.const(value)` ... The schema representing a specific value.
-  - `value` is the allowed value.
 - `schemas.function()` ... The schema representing any functions.
 - `schemas.number(options?)` ... The schema representing specific numbers.
   - `options.allowNaN` is the flag to allow `NaN` (Not a Number).
-  - `options.finiteOnly` is the flag to allow only finite values (disallowing Infinity).
-  - `options.intOnly` is the flag to allow only integers (disallowing nonintegers).
+  - `options.finiteOnly` is the flag to disallow non-finite numbers (`Infinity` and `-Infinity`).
+  - `options.intOnly` is the flag to disallow non-integers.
   - `options.maxValue` is the maximum value.
   - `options.minValue` is the minimum value.
-- `schemas.object(properties)` ... The schema representing specific objects.
-  - `properties` is the definition of properties; `Record<string, Schema>`. All properties are required.
+- `schemas.object(properties?)` ... The schema representing specific objects. If you give no arguments, the returned schema matches any objects.
+  - `properties` is the definition of properties; `Record<string, Schema>`. The validation doesn't pass objects if any properties are missing.
 - `schemas.partialObject(properties, required?)` ... The schema representing specific objects.
-  - `properties` is the definition of properties; `Record<string, Schema>`. All properties are optional.
+  - `properties` is the definition of properties; `Record<string, Schema>`.
   - `required` is the array of the name of required properties.
-- `schemas.record(schema)` ... The schema representing specific objects.
-  - `schema` is the schema of properties.
+- `schemas.record(schema?)` ... The schema representing specific objects.
+  - `schema` is the schema of properties. Default is `schemas.any()`.
 - `schemas.string(options?)` ... The schema representing specific strings.
   - `options.maxLength` is the maximum number of characters.
   - `options.minLength` is the minimum number of characters.
@@ -179,25 +177,15 @@ The schema factories.
   - `elements` is the schemas of elements.
 - `schemas.anyOf(...schemas)` ... The schema representing specific union types.
   - `schemas` is the schema of allowed types.
-- `schemas.anyArray` ... Equivalent to `schemas.array(schemas.any)`.
-- `schemas.anyBigInt` ... Equivalent to `schemas.bigInt()`.
 - `schemas.bigInt64` ... Equivalent to `schemas.bigInt({ maxValue: 9223372036854775807n, minValue: -9223372036854775808n })`.
 - `schemas.bigUint64` ... Equivalent to `schemas.bigInt({ maxValue: 18446744073709551615n, minValue: 0 })`.
-- `schemas.anyBoolean` ... Equivalent to `schemas.boolean()`.
-- `schemas.null` ... Equivalent to `schemas.const(null)`.
-- `schemas.anyFunction` ... Equivalent to `schemas.function()`.
-- `schemas.anyNumber` ... Equivalent to `schemas.number()`.
-- `schemas.anyFiniteNumber` ... Equivalent to `schemas.number({ finiteOnly: true })`.
-- `schemas.anyInteger` ... Equivalent to `schemas.number({ intOnly: true })`.
+- `schemas.null` ... Equivalent to `schemas.enum(null)`.
 - `schemas.int8` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 127, minValue: -128 })`.
 - `schemas.int16` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 32767, minValue: -32768 })`.
 - `schemas.int32` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 2147483647, minValue: -2147483648 })`.
 - `schemas.uint8` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 255, minValue: 0 })`.
 - `schemas.uint16` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 65535, minValue: 0 })`.
 - `schemas.uint32` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 4294967295, minValue: 0 })`.
-- `schemas.anyObject` ... Equivalent to `schemas.record(schemas.any)`.
-- `schemas.anyString` ... Equivalent to `schemas.string()`.
-- `schemas.anySymbol` ... Equivalent to `schemas.symbol()`.
 
 ### ➡️ class `ValidationError`
 

@@ -8,6 +8,7 @@ ignorePatterns:
   - /test/lib/type-util.ts
   - /test/__snapshot__.js
   - /test/tuple-schema.ts
+  - /test.ts
 
 extends:
   - plugin:@mysticatea/es2020

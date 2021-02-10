@@ -10,7 +10,7 @@ export class ValidationError extends Error {
     ) {
         super(toMessage(message, name, errors))
         this.errors = errors
-        Error.captureStackTrace?.(this, ValidationError)
+        ;(Error as any).captureStackTrace?.(this, ValidationError)
     }
 }
 export namespace ValidationError {
