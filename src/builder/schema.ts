@@ -1,20 +1,21 @@
 import { Schema } from "../schema-types"
 import { ValidationError } from "../validation-error"
-import { addValidationCodeOfArraySchema } from "./array-schema"
-import { addValidationCodeOfBigIntSchema } from "./bigint-schema"
-import { addValidationCodeOfBooleanSchema } from "./boolean-schema"
-import { addValidationCodeOfClassSchema } from "./class-schema"
+import { addValidationOfAnySchema } from "./any-schema"
+import { addValidationOfArraySchema } from "./array-schema"
+import { addValidationOfBigIntSchema } from "./bigint-schema"
+import { addValidationOfBooleanSchema } from "./boolean-schema"
+import { addValidationOfClassSchema } from "./class-schema"
 import { BuildContext } from "./context"
-import { addValidationCodeOfCustomSchema } from "./custom-schema"
-import { addValidationCodeOfEnumSchema } from "./enum-schema"
-import { addValidationCodeOfFunctionSchema } from "./function-schema"
-import { addValidationCodeOfNumberSchema } from "./number-schema"
-import { addValidationCodeOfObjectSchema } from "./object-schema"
-import { addValidationCodeOfRecordSchema } from "./record-schema"
-import { addValidationCodeOfStringSchema } from "./string-schema"
-import { addValidationCodeOfSymbolSchema } from "./symbol-schema"
-import { addValidationCodeOfTupleSchema } from "./tuple-schema"
-import { addValidationCodeOfUnionSchema } from "./union-schema"
+import { addValidationOfCustomSchema } from "./custom-schema"
+import { addValidationOfEnumSchema } from "./enum-schema"
+import { addValidationOfFunctionSchema } from "./function-schema"
+import { addValidationOfNumberSchema } from "./number-schema"
+import { addValidationOfObjectSchema } from "./object-schema"
+import { addValidationOfRecordSchema } from "./record-schema"
+import { addValidationOfStringSchema } from "./string-schema"
+import { addValidationOfSymbolSchema } from "./symbol-schema"
+import { addValidationOfTupleSchema } from "./tuple-schema"
+import { addValidationOfUnionSchema } from "./union-schema"
 
 const cache = new WeakMap<
     Schema,
@@ -26,73 +27,53 @@ export function createValidationOfSchema(
 ): (name: string, value: any) => ValidationError.ErrorInfo[] {
     let validation = cache.get(schema)
     if (!validation) {
-        validation = addValidationCodeOfSchema(
-            new BuildContext(),
-            schema,
-            BuildContext.NameVar,
-            BuildContext.ValueVar,
-        ).createFunction()
+        const ctx = new BuildContext()
+        addValidation(ctx, "$schema", schema)
+        validation = ctx.build(schema)
         cache.set(schema, validation)
     }
     return validation
 }
 
-export function addValidationCodeOfSchema(
+export function addValidation(
     ctx: BuildContext,
+    key: string,
     schema: Schema,
-    nameVar: string,
-    valueVar: string,
-): BuildContext {
+): string {
     switch (schema.type) {
         case "any":
-            break
+            return addValidationOfAnySchema(ctx, key, schema)
         case "array":
-            addValidationCodeOfArraySchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfArraySchema(ctx, key, schema)
         case "bigint":
-            addValidationCodeOfBigIntSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfBigIntSchema(ctx, key, schema)
         case "boolean":
-            addValidationCodeOfBooleanSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfBooleanSchema(ctx, key, schema)
         case "class":
-            addValidationCodeOfClassSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfClassSchema(ctx, key, schema)
         case "custom":
-            addValidationCodeOfCustomSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfCustomSchema(ctx, key, schema)
         case "enum":
-            addValidationCodeOfEnumSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfEnumSchema(ctx, key, schema)
         case "function":
-            addValidationCodeOfFunctionSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfFunctionSchema(ctx, key, schema)
         case "number":
-            addValidationCodeOfNumberSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfNumberSchema(ctx, key, schema)
         case "object":
-            addValidationCodeOfObjectSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfObjectSchema(ctx, key, schema)
         case "record":
-            addValidationCodeOfRecordSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfRecordSchema(ctx, key, schema)
         case "string":
-            addValidationCodeOfStringSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfStringSchema(ctx, key, schema)
         case "symbol":
-            addValidationCodeOfSymbolSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfSymbolSchema(ctx, key, schema)
         case "tuple":
-            addValidationCodeOfTupleSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfTupleSchema(ctx, key, schema)
         case "union":
-            addValidationCodeOfUnionSchema(ctx, schema, nameVar, valueVar)
-            break
+            return addValidationOfUnionSchema(ctx, key, schema)
 
         //istanbul ignore next
         default:
             throw new Error(`Unknown Schema: ${schema}`)
     }
-
-    return ctx
 }

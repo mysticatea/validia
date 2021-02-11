@@ -1,15 +1,15 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 
-export function addValidationCodeOfFunctionSchema(
+export function addValidationOfFunctionSchema(
     ctx: BuildContext,
+    _key: string,
     _schema: Schema.FunctionSchema,
-    nameVar: string,
-    valueVar: string,
-): void {
-    ctx.addCodeFragment(`
-        if (typeof ${valueVar} !== "function") {
-            errors.push({ code: "function", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+): string {
+    return ctx.addValidation(`
+        if (typeof value !== "function") {
+            errors.push({ code: "function", args: { name: name }, depth: depth });
         }
+        return errors;
     `)
 }

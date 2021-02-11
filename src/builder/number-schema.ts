@@ -1,8 +1,9 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 
-export function addValidationCodeOfNumberSchema(
+export function addValidationOfNumberSchema(
     ctx: BuildContext,
+    _key: string,
     {
         allowNaN = false,
         finiteOnly = false,
@@ -10,56 +11,63 @@ export function addValidationCodeOfNumberSchema(
         maxValue,
         minValue,
     }: Schema.NumberSchema,
-    nameVar: string,
-    valueVar: string,
-): void {
+): string {
+    const code: string[] = []
+
     if (intOnly) {
         if (finiteOnly) {
             throw new Error(
                 '"finiteOnly" and "intOnly" cannot be true at the same time.',
             )
         }
-        const nanCheck = allowNaN ? ` && !Number.isNaN(${valueVar})` : ""
-        ctx.addCodeFragment(`
-            if (!Number.isInteger(${valueVar})${nanCheck}) {
-                errors.push({ code: "numberIntOnly", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+        const nanCheck = allowNaN ? " && !Number.isNaN(value)" : ""
+        code.push(`
+            if (!Number.isInteger(value)${nanCheck}) {
+                errors.push({ code: "numberIntOnly", args: { name: name }, depth: depth });
         `)
     } else if (finiteOnly) {
-        const nanCheck = allowNaN ? ` && !Number.isNaN(${valueVar})` : ""
-        ctx.addCodeFragment(`
-            if (!Number.isFinite(${valueVar})${nanCheck}) {
-                errors.push({ code: "numberFiniteOnly", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+        const nanCheck = allowNaN ? " && !Number.isNaN(value)" : ""
+        code.push(`
+            if (!Number.isFinite(value)${nanCheck}) {
+                errors.push({ code: "numberFiniteOnly", args: { name: name }, depth: depth });
         `)
     } else {
-        const nanCheck = allowNaN ? "" : ` || Number.isNaN(${valueVar})`
-        ctx.addCodeFragment(`
-            if (typeof ${valueVar} !== "number"${nanCheck}) {
-                errors.push({ code: "number", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+        const nanCheck = allowNaN ? "" : " || Number.isNaN(value)"
+        code.push(`
+            if (typeof value !== "number"${nanCheck}) {
+                errors.push({ code: "number", args: { name: name }, depth: depth });
         `)
     }
+
     if (maxValue === undefined && minValue === undefined) {
-        ctx.addCodeFragment("}")
-        return
-    }
-    ctx.addCodeFragment("} else {")
+        code.push("}")
+    } else {
+        code.push(`
+                return errors;
+            }
+        `)
 
-    if (maxValue !== undefined) {
-        if (minValue != null && minValue > maxValue) {
-            throw new Error('"maxValue" must be "minValue" or greater than it.')
+        if (maxValue !== undefined) {
+            if (minValue !== undefined && minValue > maxValue) {
+                throw new Error(
+                    '"maxValue" must be "minValue" or greater than it.',
+                )
+            }
+            code.push(`
+                if (value > ${maxValue}) {
+                    errors.push({ code: "numberMaxValue", args: { name: name, maxValue: ${maxValue} }, depth: depth });
+                }
+            `)
         }
-        ctx.addCodeFragment(`
-            if (${valueVar} > ${maxValue}) {
-                errors.push({ code: "numberMaxValue", args: { name: ${nameVar}, maxValue: ${maxValue} }, depth: ${ctx.depth} });
-            }
-        `)
-    }
-    if (minValue !== undefined) {
-        ctx.addCodeFragment(`
-            if (${valueVar} < ${minValue}) {
-                errors.push({ code: "numberMinValue", args: { name: ${nameVar}, minValue: ${minValue} }, depth: ${ctx.depth} });
-            }
-        `)
+        if (minValue !== undefined) {
+            code.push(`
+                if (value < ${minValue}) {
+                    errors.push({ code: "numberMinValue", args: { name: name, minValue: ${minValue} }, depth: depth });
+                }
+            `)
+        }
     }
 
-    ctx.addCodeFragment("}")
+    code.push("return errors;")
+    return ctx.addValidation(code.join("\n"))
 }

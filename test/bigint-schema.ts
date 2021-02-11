@@ -7,10 +7,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.bigInt()", () => {
     const schema = schemas.bigInt()
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.bigInt())
-    })
-
     it("should pass 0n", () => {
         validate(schema, "x", BigInt("0"))
     })

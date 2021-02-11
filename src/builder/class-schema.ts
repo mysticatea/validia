@@ -1,16 +1,16 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 
-export function addValidationCodeOfClassSchema(
+export function addValidationOfClassSchema(
     ctx: BuildContext,
+    key: string,
     { constructor: ctor }: Schema.ClassSchema<any>,
-    nameVar: string,
-    valueVar: string,
-): void {
-    const ctorVar = ctx.addArgument(ctor)
-    ctx.addCodeFragment(`
-        if (!(${valueVar} instanceof ${ctorVar})) {
-            errors.push({ code: "class", args: { name: ${nameVar}, constructor: ${ctorVar} }, depth: ${ctx.depth} });
+): string {
+    const ctorVar = ctx.addLocal(`${key}.constructor`, ctor)
+    return ctx.addValidation(`
+        if (!(value instanceof ${ctorVar})) {
+            errors.push({ code: "class", args: { name: name, constructor: ${ctorVar} }, depth: depth });
         }
+        return errors;
     `)
 }

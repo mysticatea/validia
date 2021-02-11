@@ -1,90 +1,92 @@
 import { Schema } from "../schema-types"
-import { ValidationError } from "../validation-error"
 import { BuildContext } from "./context"
-import { addValidationCodeOfSchema, createValidationOfSchema } from "./schema"
+import { addValidation } from "./schema"
 
-export function addValidationCodeOfUnionSchema(
+export function addValidationOfUnionSchema(
     ctx: BuildContext,
-    { schemas: givenSchemas }: Schema.UnionSchema<Schema>,
-    nameVar: string,
-    valueVar: string,
-): void {
-    const schemas = flat(givenSchemas)
-    if (schemas.length === 0) {
+    key: string,
+    { schemas }: Schema.UnionSchema<Schema>,
+): string {
+    const flattened = flatten(`${key}.schemas`, schemas)
+    if (flattened.length === 0) {
         throw new Error("UnionSchema must have 1 or more schemas.")
     }
-    if (schemas.length === 1) {
-        addValidationCodeOfSchema(ctx, schemas[0], nameVar, valueVar)
-        return
+    if (flattened.length === 1) {
+        return addValidation(ctx, flattened[0].schemaKey, flattened[0].schema)
     }
-    const validateUnionVar = ctx.addArgument(validateUnion)
-    const validationsVar = ctx.addArgument(
-        schemas.map(createValidationOfSchema),
-    )
-    const schemasVar = ctx.addArgument(schemas)
-    const errorsVar = ctx.addLocal("r")
-    const iVar = ctx.addLocal("i")
 
-    ctx.addCodeFragment(`
-        ${errorsVar} = ${validateUnionVar}(${validationsVar}, ${nameVar}, ${valueVar})
-        if (${errorsVar}.length >= 2) {
-            errors.push({ code: "union", args: { name: ${nameVar}, schemas: ${schemasVar} }, depth: ${ctx.depth} });
+    const validationIds: string[] = []
+    const schemaIds: string[] = []
+    for (const { schemaKey, schema } of flattened) {
+        const validationId = addValidation(ctx, schemaKey, schema)
+        if (validationIds.includes(validationId)) {
+            continue
         }
-        if (${errorsVar}.length === 1) {
-            for (${iVar} = 0; ${iVar} < ${errorsVar}[0].length; ++${iVar}) {
-                errors.push(${errorsVar}[0][${iVar}])
+        const schemaId = ctx.mapSchema(validationId, schemaKey)
+
+        validationIds.push(validationId)
+        schemaIds.push(schemaId)
+    }
+
+    const reduceMinDepthVar = ctx.addFunction(
+        ["minDepth", "error"],
+        "return minDepth <= error.depth ? minDepth : error.depth;",
+    )
+    const validationsStr = validationIds.join(", ")
+    const schemasStr = schemaIds.join(", ")
+    return ctx.addValidation(`
+        var varidations = [${validationsStr}], errorsOfMaxDepth = [], e = null, maxDepth = -1, d = 0, i = 0;
+        for (i = 0; i < varidations.length; ++i) {
+            e = varidations[i](name, value, depth, []);
+            if (e.length === 0) {
+                return errors;
+            }
+            d = e.reduce(${reduceMinDepthVar}, Number.MAX_SAFE_INTEGER)
+            if (d > maxDepth) {
+                errorsOfMaxDepth = [e]
+                maxDepth = d;
+            } else if (d === maxDepth) {
+                errorsOfMaxDepth.push(e);
             }
         }
+        if (errorsOfMaxDepth.length === 1) {
+            errorsOfMaxDepth = errorsOfMaxDepth[0]
+            for (d = 0; d < errorsOfMaxDepth.length; ++d) {
+                errors.push(errorsOfMaxDepth[d])
+            }
+        } else if (errorsOfMaxDepth.length >= 2) {
+            errors.push({ code: "union", args: { name: name, schemas: [${schemasStr}] }, depth: depth });
+        }
+        return errors;
     `)
 }
 
-const Any = Object.freeze([Object.freeze({ type: "any" as const })])
-
-function flat(
+function flatten(
+    key: string,
     schemas: readonly Schema[],
-    retv: Exclude<Schema, Schema.UnionSchema<any>>[] = [],
-): readonly Exclude<Schema, Schema.UnionSchema<any>>[] {
-    for (const schema of schemas) {
+    flattened: {
+        schemaKey: string
+        schema: Exclude<Schema, Schema.UnionSchema<any>>
+    }[] = [],
+): { schemaKey: string; schema: Exclude<Schema, Schema.UnionSchema<any>> }[] {
+    for (let i = 0; i < schemas.length; ++i) {
+        const schema = schemas[i]
+        const schemaKey = `${key}[${i}]`
         if (schema.type === "any") {
-            return Any
+            return [{ schemaKey, schema }]
         }
         if (schema.type === "union") {
-            if (flat(schema.schemas, retv) === Any) {
-                return Any
+            const retv = flatten(
+                `${schemaKey}.schemas`,
+                schema.schemas,
+                flattened,
+            )
+            if (retv !== flattened) {
+                return retv
             }
         } else {
-            retv.push(schema)
+            flattened.push({ schemaKey, schema })
         }
     }
-    return retv
-}
-
-function validateUnion(
-    validations: readonly ((
-        name: string,
-        value: any,
-    ) => ValidationError.ErrorInfo[])[],
-    name: string,
-    value: any,
-): ValidationError.ErrorInfo[][] {
-    const retv: ValidationError.ErrorInfo[][] = []
-    let maxDepth = -1
-    for (const validate of validations) {
-        const errors = validate(name, value)
-        if (errors.length === 0) {
-            return []
-        }
-        const depth = errors.reduce(
-            (d, e) => Math.min(d, e.depth),
-            Number.MAX_SAFE_INTEGER,
-        )
-        if (depth > maxDepth) {
-            retv.length = 1
-            retv[0] = errors
-            maxDepth = depth
-        } else if (depth === maxDepth) {
-            retv.push(errors)
-        }
-    }
-    return retv
+    return flattened
 }

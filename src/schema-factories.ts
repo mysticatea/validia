@@ -1,139 +1,20 @@
-import { Cache } from "./cache"
 import {
     MaxArrayLength,
     MaxInt16,
     MaxInt32,
+    MaxInt64,
     MaxInt8,
     MaxStringLength,
     MaxUint16,
     MaxUint32,
+    MaxUint64,
     MaxUint8,
     MinInt16,
     MinInt32,
+    MinInt64,
     MinInt8,
 } from "./constants"
 import { Schema } from "./schema-types"
-
-const any: Schema.AnySchema = { type: "any" }
-const anyBigInt: Schema.BigIntSchema = {
-    type: "bigint",
-    minValue: undefined,
-    maxValue: undefined,
-}
-const bigInt64: Schema.BigIntSchema = {
-    type: "bigint",
-    minValue: BigInt("-9223372036854775808"),
-    maxValue: BigInt("9223372036854775807"),
-}
-const bigUint64: Schema.BigIntSchema = {
-    type: "bigint",
-    minValue: BigInt("0"),
-    maxValue: BigInt("18446744073709551615"),
-}
-const anyBoolean: Schema.BooleanSchema = { type: "boolean" }
-const constantNull: Schema.EnumSchema<null> = { type: "enum", values: [null] }
-const anyFunction: Schema.FunctionSchema = { type: "function" }
-const anyNumber: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: false,
-    maxValue: undefined,
-    minValue: undefined,
-}
-const anyFiniteNumber: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: true,
-    intOnly: false,
-    maxValue: undefined,
-    minValue: undefined,
-}
-const anyInteger: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: undefined,
-    minValue: undefined,
-}
-const int8: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxInt8,
-    minValue: MinInt8,
-}
-const int16: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxInt16,
-    minValue: MinInt16,
-}
-const int32: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxInt32,
-    minValue: MinInt32,
-}
-const uint8: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxUint8,
-    minValue: 0,
-}
-const uint16: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxUint16,
-    minValue: 0,
-}
-const uint32: Schema.NumberSchema = {
-    type: "number",
-    allowNaN: false,
-    finiteOnly: false,
-    intOnly: true,
-    maxValue: MaxUint32,
-    minValue: 0,
-}
-const anyObject: Schema.RecordSchema<Schema.AnySchema> = {
-    type: "record",
-    properties: any,
-}
-const anyString: Schema.StringSchema = {
-    type: "string",
-    maxLength: MaxStringLength,
-    minLength: 0,
-    pattern: undefined,
-}
-const anySymbol: Schema.SymbolSchema = { type: "symbol" }
-const anyArrayCache = new Cache(
-    (elements: Schema): Schema.ArraySchema<Schema> => ({
-        type: "array",
-        elements,
-        maxLength: MaxArrayLength,
-        minLength: 0,
-        unique: false,
-    }),
-)
-const classCache = new Cache(
-    (
-        // eslint-disable-next-line no-shadow
-        constructor: Schema.ClassSchema<any>["constructor"],
-    ): Schema.ClassSchema<any> => ({
-        type: "class",
-        constructor,
-    }),
-)
 
 /* eslint-disable class-methods-use-this */
 class SchemaFactories {
@@ -141,7 +22,7 @@ class SchemaFactories {
      * The schema for any values.
      */
     any(): Schema.AnySchema {
-        return any
+        return { type: "any" }
     }
 
     /**
@@ -163,16 +44,13 @@ class SchemaFactories {
 
     // Implementation
     array(
-        elements: Schema = any,
+        elements: Schema = { type: "any" },
         {
             maxLength = MaxArrayLength,
             minLength = 0,
             unique = false,
         }: Omit<Schema.ArraySchema<any>, "type" | "elements"> = {},
     ): Schema.ArraySchema<Schema> {
-        if (maxLength >= MaxArrayLength && minLength <= 0 && !unique) {
-            return anyArrayCache.get(elements)
-        }
         return { type: "array", elements, maxLength, minLength, unique }
     }
 
@@ -184,27 +62,32 @@ class SchemaFactories {
         maxValue,
         minValue,
     }: Omit<Schema.BigIntSchema, "type"> = {}): Schema.BigIntSchema {
-        if (maxValue === undefined && minValue === undefined) {
-            return anyBigInt
-        }
         return { type: "bigint", maxValue, minValue }
     }
 
     /**
      * The schema for 64 bits signed integers.
      */
-    bigInt64 = bigInt64
+    bigInt64: Schema.BigIntSchema = {
+        type: "bigint",
+        minValue: MinInt64,
+        maxValue: MaxInt64,
+    }
 
     /**
      * The schema for 64 bits unsigned integers.
      */
-    bigUint64 = bigUint64
+    bigUint64: Schema.BigIntSchema = {
+        type: "bigint",
+        minValue: BigInt("0"),
+        maxValue: MaxUint64,
+    }
 
     /**
      * The schema for true or false.
      */
     boolean(): Schema.BooleanSchema {
-        return anyBoolean
+        return { type: "boolean" }
     }
 
     /**
@@ -215,7 +98,7 @@ class SchemaFactories {
         // eslint-disable-next-line no-shadow
         constructor: Schema.ClassSchema<T>["constructor"],
     ): Schema.ClassSchema<T> {
-        return classCache.get(constructor)
+        return { type: "class", constructor }
     }
 
     /**
@@ -239,23 +122,20 @@ class SchemaFactories {
 
     // Implementation
     enum<T extends readonly any[]>(...values: T): Schema.EnumSchema<T[number]> {
-        if (values.length === 1 && values[0] === null) {
-            return constantNull as Schema.EnumSchema<any>
-        }
         return { type: "enum", values }
     }
 
     /**
      * The schema for null.
-     * Equivalent to `schemas.const(null)` and `schemas.enum(null)`.
+     * Equivalent to `schemas.enum(null)`.
      */
-    null = constantNull
+    null: Schema.EnumSchema<null> = { type: "enum", values: [null] }
 
     /**
      * The schema for any functions.
      */
     function(): Schema.FunctionSchema {
-        return anyFunction
+        return { type: "function" }
     }
 
     /**
@@ -269,17 +149,6 @@ class SchemaFactories {
         maxValue,
         minValue,
     }: Omit<Schema.NumberSchema, "type"> = {}): Schema.NumberSchema {
-        if (!allowNaN && maxValue === undefined && minValue === undefined) {
-            if (intOnly) {
-                if (!finiteOnly) {
-                    return anyInteger
-                }
-            } else if (finiteOnly) {
-                return anyFiniteNumber
-            } else {
-                return anyNumber
-            }
-        }
         return {
             type: "number",
             allowNaN,
@@ -293,32 +162,74 @@ class SchemaFactories {
     /**
      * The schema for 8 bits signed integers.
      */
-    int8 = int8
+    int8: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxInt8,
+        minValue: MinInt8,
+    }
 
     /**
      * The schema for 16 bits signed integers.
      */
-    int16 = int16
+    int16: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxInt16,
+        minValue: MinInt16,
+    }
 
     /**
      * The schema for 32 bits signed integers.
      */
-    int32 = int32
+    int32: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxInt32,
+        minValue: MinInt32,
+    }
 
     /**
      * The schema for 8 bits unsigned integers.
      */
-    uint8 = uint8
+    uint8: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxUint8,
+        minValue: 0,
+    }
 
     /**
      * The schema for 16 bits unsigned integers.
      */
-    uint16 = uint16
+    uint16: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxUint16,
+        minValue: 0,
+    }
 
     /**
      * The schema for 32 bits unsigned integers.
      */
-    uint32 = uint32
+    uint32: Schema.NumberSchema = {
+        type: "number",
+        allowNaN: false,
+        finiteOnly: false,
+        intOnly: true,
+        maxValue: MaxUint32,
+        minValue: 0,
+    }
 
     /**
      * The schema for any objects.
@@ -340,7 +251,7 @@ class SchemaFactories {
         | Schema.RecordSchema<Schema.AnySchema>
         | Schema.ObjectSchema<Record<any, Schema>, any> {
         if (properties === undefined) {
-            return anyObject
+            return { type: "record", properties: { type: "any" } }
         }
         return { type: "object", properties, required: Object.keys(properties) }
     }
@@ -392,10 +303,7 @@ class SchemaFactories {
     record<T extends Schema>(properties: T): Schema.RecordSchema<T>
 
     // Implementation
-    record(properties: Schema = any): Schema.RecordSchema<Schema> {
-        if (properties.type === "any") {
-            return anyObject
-        }
+    record(properties: Schema = { type: "any" }): Schema.RecordSchema<Schema> {
         return { type: "record", properties }
     }
 
@@ -408,9 +316,6 @@ class SchemaFactories {
         minLength = 0,
         pattern,
     }: Omit<Schema.StringSchema, "type"> = {}): Schema.StringSchema {
-        if (maxLength >= MaxStringLength && minLength <= 0 && pattern == null) {
-            return anyString
-        }
         return { type: "string", maxLength, minLength, pattern }
     }
 
@@ -418,7 +323,7 @@ class SchemaFactories {
      * The schema for any symbols.
      */
     symbol(): Schema.SymbolSchema {
-        return anySymbol
+        return { type: "symbol" }
     }
 
     /**

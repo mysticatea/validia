@@ -1,20 +1,21 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
-import { addValidationCodeOfSchema } from "./schema"
+import { addValidation } from "./schema"
 
-export function addValidationCodeOfTupleSchema(
+export function addValidationOfTupleSchema(
     ctx: BuildContext,
+    key: string,
     { elements }: Schema.TupleSchema<readonly Schema[]>,
-    nameVar: string,
-    valueVar: string,
-): void {
-    ctx.addCodeFragment(`
-        if (!Array.isArray(${valueVar})) {
-            errors.push({ code: "tuple", args: { name: ${nameVar} }, depth: ${ctx.depth} });
-        } else {
-            if (${valueVar}.length !== ${elements.length}) {
-                errors.push({ code: "tupleLength", args: { name: ${nameVar}, length: ${elements.length} }, depth: ${ctx.depth} });
-            }
+): string {
+    const code: string[] = []
+    code.push(`
+        if (!Array.isArray(value)) {
+            errors.push({ code: "tuple", args: { name: name }, depth: depth });
+            return errors;
+        }
+        if (value.length !== ${elements.length}) {
+            errors.push({ code: "tupleLength", args: { name: name, length: ${elements.length} }, depth: depth });
+        }
     `)
 
     for (let i = 0; i < elements.length; ++i) {
@@ -23,21 +24,16 @@ export function addValidationCodeOfTupleSchema(
             continue
         }
 
-        ctx.stackLocalScope()
-        const elementNameVar = ctx.addLocal("s")
-        const elementValueVar = ctx.addLocal("r")
-        ctx.addCodeFragment(`
-            ${elementNameVar} = ${nameVar} + "[${i}]";
-            ${elementValueVar} = ${valueVar}[${i}];
-        `)
-        addValidationCodeOfSchema(
+        const validateVar = addValidation(
             ctx,
+            `${key}.elements[${i}]`,
             elementSchema,
-            elementNameVar,
-            elementValueVar,
         )
-        ctx.popLocalScope()
+        code.push(`
+            ${validateVar}(name + "[${i}]", value[${i}], depth + 1, errors);
+        `)
     }
 
-    ctx.addCodeFragment("}")
+    code.push("return errors;")
+    return ctx.addValidation(code.join("\n"))
 }

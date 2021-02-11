@@ -1,39 +1,46 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 
-export function addValidationCodeOfBigIntSchema(
+export function addValidationOfBigIntSchema(
     ctx: BuildContext,
+    _key: string,
     { maxValue, minValue }: Schema.BigIntSchema,
-    nameVar: string,
-    valueVar: string,
-): void {
-    ctx.addCodeFragment(`
-        if (typeof ${valueVar} !== "bigint") {
-            errors.push({ code: "bigint", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+): string {
+    const code: string[] = []
+    code.push(`
+        if (typeof value !== "bigint") {
+            errors.push({ code: "bigint", args: { name: name }, depth: depth });
     `)
-    if (maxValue == null && minValue == null) {
-        ctx.addCodeFragment("}")
-        return
-    }
-    ctx.addCodeFragment("} else {")
 
-    if (maxValue != null) {
-        if (minValue != null && minValue > maxValue) {
-            throw new Error('"maxValue" must be "minValue" or greater than it.')
+    if (maxValue === undefined && minValue === undefined) {
+        code.push("}")
+    } else {
+        code.push(`
+                return errors;
+            }
+        `)
+
+        if (maxValue !== undefined) {
+            if (minValue !== undefined && minValue > maxValue) {
+                throw new Error(
+                    '"maxValue" must be "minValue" or greater than it.',
+                )
+            }
+            code.push(`
+                if (value > ${maxValue}n) {
+                    errors.push({ code: "bigintMaxValue", args: { name: name, maxValue: ${maxValue}n }, depth: depth });
+                }
+            `)
         }
-        ctx.addCodeFragment(`
-            if (${valueVar} > ${maxValue}n) {
-                errors.push({ code: "bigintMaxValue", args: { name: ${nameVar}, maxValue: ${maxValue}n }, depth: ${ctx.depth} });
-            }
-        `)
-    }
-    if (minValue != null) {
-        ctx.addCodeFragment(`
-            if (${valueVar} < ${minValue}n) {
-                errors.push({ code: "bigintMinValue", args: { name: ${nameVar}, minValue: ${minValue}n }, depth: ${ctx.depth} });
-            }
-        `)
+        if (minValue !== undefined) {
+            code.push(`
+                if (value < ${minValue}n) {
+                    errors.push({ code: "bigintMinValue", args: { name: name, minValue: ${minValue}n }, depth: depth });
+                }
+            `)
+        }
     }
 
-    ctx.addCodeFragment("}")
+    code.push("return errors;")
+    return ctx.addValidation(code.join("\n"))
 }

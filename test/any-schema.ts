@@ -1,4 +1,3 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
@@ -7,10 +6,6 @@ import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.any()", () => {
     const schema = schemas.any()
-
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.any())
-    })
 
     it("should pass true", () => {
         validate(schema, "x", true)

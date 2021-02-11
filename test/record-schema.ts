@@ -8,10 +8,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.record()", () => {
     const schema = schemas.record()
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.record())
-    })
-
     it("should pass empty object", () => {
         validate(schema, "x", {})
     })

@@ -8,10 +8,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.object()", () => {
     const schema = schemas.object()
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.object())
-    })
-
     it("should pass empty object", () => {
         validate(schema, "x", {})
     })
@@ -371,10 +367,7 @@ describe("schemas.partialObject({ one: schemas.string(), two: schemas.string() }
 
 describe('schemas.partialObject({ one: schemas.string(), two: schemas.string() }, ["one"])', () => {
     const schema = schemas.partialObject(
-        {
-            one: schemas.string(),
-            two: schemas.string(),
-        },
+        { one: schemas.string(), two: schemas.string() },
         ["one"],
     )
 
@@ -449,5 +442,20 @@ describe('schemas.partialObject({ one: schemas.string(), two: schemas.string() }
 
     it("should be able to run on ES5", async () => {
         await assertES5(createValidationOfSchema(schema).toString())
+    })
+})
+
+describe('schemas.partialObject({ one: schemas.string() }, ["two"])', () => {
+    const schema = schemas.partialObject({ one: schemas.string() }, [
+        "two" as any,
+    ])
+
+    it("should throw a fatal error on compile", () => {
+        assert.throws(
+            () => createValidationOfSchema(schema),
+            new Error(
+                '"two" was in "$schema.required", so it must exist in "$schema.properties".',
+            ),
+        )
     })
 })

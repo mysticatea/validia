@@ -8,10 +8,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.number()", () => {
     const schema = schemas.number()
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.number())
-    })
-
     it("should pass 0", () => {
         validate(schema, "x", 0)
     })
@@ -103,10 +99,6 @@ describe("schemas.number({ allowNaN: true })", () => {
 describe("schemas.number({ finiteOnly: true })", () => {
     const schema = schemas.number({ finiteOnly: true })
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.number({ finiteOnly: true }))
-    })
-
     it("should pass 0", () => {
         validate(schema, "x", 0)
     })
@@ -172,10 +164,6 @@ describe("schemas.number({ allowNaN: true, finiteOnly: true })", () => {
 
 describe("schemas.number({ intOnly: true })", () => {
     const schema = schemas.number({ intOnly: true })
-
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.number({ intOnly: true }))
-    })
 
     it("should pass 0", () => {
         validate(schema, "x", 0)

@@ -1,22 +1,23 @@
 import { MaxArrayLength } from "../constants"
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
-import { addValidationCodeOfSchema } from "./schema"
+import { addValidation } from "./schema"
 
-export function addValidationCodeOfArraySchema(
+export function addValidationOfArraySchema(
     ctx: BuildContext,
+    key: string,
     {
         elements,
         maxLength = MaxArrayLength,
         minLength = 0,
         unique = false,
     }: Schema.ArraySchema<Schema>,
-    nameVar: string,
-    valueVar: string,
-): void {
-    ctx.addCodeFragment(`
-        if (!Array.isArray(${valueVar})) {
-            errors.push({ code: "array", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+): string {
+    const locals: string[] = []
+    const code: string[] = []
+    code.push(`
+        if (!Array.isArray(value)) {
+            errors.push({ code: "array", args: { name: name }, depth: depth });
     `)
 
     if (
@@ -25,67 +26,65 @@ export function addValidationCodeOfArraySchema(
         minLength <= 0 &&
         !unique
     ) {
-        ctx.addCodeFragment("}")
-        return
-    }
-    ctx.addCodeFragment("} else {")
-
-    const lengthVar = ctx.addLocal("i")
-    ctx.addCodeFragment(`${lengthVar} = ${valueVar}.length;`)
-
-    if (maxLength < MaxArrayLength) {
-        ctx.addCodeFragment(`
-            if (${lengthVar} > ${maxLength}) {
-                errors.push({ code: "arrayMaxLength", args: { name: ${nameVar}, maxLength: ${maxLength} }, depth: ${ctx.depth} });
+        code.push("}")
+    } else {
+        locals.push("length = 0")
+        code.push(`
+                return errors;
             }
+            length = value.length;
         `)
-    }
-    if (minLength > 0) {
-        ctx.addCodeFragment(`
-            if (${lengthVar} < ${minLength}) {
-                errors.push({ code: "arrayMinLength", args: { name: ${nameVar}, minLength: ${minLength} }, depth: ${ctx.depth} });
-            }
-        `)
-    }
-    if (unique) {
-        const isUniqueVar = ctx.addArgument(isUnique)
-        ctx.addCodeFragment(`
-            if (!${isUniqueVar}(${valueVar}, ${lengthVar})) {
-                errors.push({ code: "arrayUnique", args: { name: ${nameVar} }, depth: ${ctx.depth} });
-            }
-        `)
-    }
-    if (elements.type !== "any") {
-        const iVar = ctx.addLocal("i")
-        ctx.stackLocalScope()
-        const elementNameVar = ctx.addLocal("s")
-        const elementValueVar = ctx.addLocal("r")
-        ctx.addCodeFragment(`
-            for (${iVar} = 0; ${iVar} < ${lengthVar}; ++${iVar}) {
-                ${elementNameVar} = ${nameVar} + "[" + ${iVar} + "]";
-                ${elementValueVar} = ${valueVar}[${iVar}];
-        `)
-        addValidationCodeOfSchema(
-            ctx,
-            elements,
-            elementNameVar,
-            elementValueVar,
-        )
-        ctx.popLocalScope()
-        ctx.addCodeFragment("}")
-    }
 
-    ctx.addCodeFragment("}")
-}
-
-function isUnique(xs: any[], length: number): boolean {
-    for (let i = 1; i < length; ++i) {
-        const x = xs[i]
-        for (let j = 0; j < i; ++j) {
-            if (x === xs[j]) {
-                return false
-            }
+        if (maxLength < MaxArrayLength) {
+            code.push(`
+                if (length > ${maxLength}) {
+                    errors.push({ code: "arrayMaxLength", args: { name: name, maxLength: ${maxLength} }, depth: depth });
+                }
+            `)
+        }
+        if (minLength > 0) {
+            code.push(`
+                if (length < ${minLength}) {
+                    errors.push({ code: "arrayMinLength", args: { name: name, minLength: ${minLength} }, depth: depth });
+                }
+            `)
+        }
+        if (unique) {
+            const isUniqueVar = ctx.addFunction(
+                ["xs", "length"],
+                `
+                    var i = 0, j = 0, x = null;
+                    for (i = 1; i < length; ++i) {
+                        x = xs[i];
+                        for (j = 0; j < i; ++j) {
+                            if (x === xs[j]) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                `,
+            )
+            code.push(`
+                if (!${isUniqueVar}(value, length)) {
+                    errors.push({ code: "arrayUnique", args: { name: name }, depth: depth });
+                }
+            `)
+        }
+        if (elements.type !== "any") {
+            const validateId = addValidation(ctx, `${key}.elements`, elements)
+            locals.push("i = 0")
+            code.push(`
+                for (i = 0; i < length; ++i) {
+                    ${validateId}(name + "[" + i + "]", value[i], depth + 1, errors);
+                }
+            `)
         }
     }
-    return true
+
+    code.push("return errors;")
+    if (locals.length > 0) {
+        code.unshift(`var ${locals.join(", ")};`)
+    }
+    return ctx.addValidation(code.join("\n"))
 }

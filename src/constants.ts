@@ -9,6 +9,6 @@ export const MaxUint64 = BigInt("18446744073709551615")
 export const MinInt8 = -128
 export const MinInt16 = -32768
 export const MinInt32 = -2147483648
-export const MinInt64 = BigInt("9223372036854775807")
+export const MinInt64 = BigInt("-9223372036854775808")
 export const MaxArrayLength = MaxUint32
 export const MaxStringLength = 9007199254740991

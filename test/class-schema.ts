@@ -8,10 +8,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.instanceOf(RegExp)", () => {
     const schema = schemas.instanceOf(RegExp)
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.instanceOf(RegExp))
-    })
-
     it("should pass /foo/u", () => {
         validate(schema, "x", /foo/u)
     })

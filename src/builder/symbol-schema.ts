@@ -1,15 +1,15 @@
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 
-export function addValidationCodeOfSymbolSchema(
+export function addValidationOfSymbolSchema(
     ctx: BuildContext,
+    _key: string,
     _schema: Schema.SymbolSchema,
-    nameVar: string,
-    valueVar: string,
-): void {
-    ctx.addCodeFragment(`
-        if (typeof ${valueVar} !== "symbol") {
-            errors.push({ code: "symbol", args: { name: ${nameVar} }, depth: ${ctx.depth} });
+): string {
+    return ctx.addValidation(`
+        if (typeof value !== "symbol") {
+            errors.push({ code: "symbol", args: { name: name }, depth: depth });
         }
+        return errors;
     `)
 }

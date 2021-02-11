@@ -329,6 +329,6 @@ describe("schemas.enum(myObj, Number.NaN)", () => {
 
 describe("schemas.null", () => {
     it("should equal to schemas.enum(null)", () => {
-        assert.strictEqual(schemas.null, schemas.enum(null))
+        assert.deepStrictEqual(schemas.null, schemas.enum(null))
     })
 })

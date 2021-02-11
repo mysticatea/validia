@@ -8,10 +8,6 @@ import { assertType, Equals } from "./lib/type-util"
 describe("schemas.array()", () => {
     const schema = schemas.array()
 
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.array())
-    })
-
     it("should pass empty array", () => {
         validate(schema, "x", [])
     })
@@ -51,10 +47,6 @@ describe("schemas.array()", () => {
 
 describe("schemas.array(schemas.string())", () => {
     const schema = schemas.array(schemas.string())
-
-    it("should return the same instance always", () => {
-        assert.strictEqual(schema, schemas.array(schemas.string()))
-    })
 
     it("should pass empty array", () => {
         validate(schema, "x", [])
