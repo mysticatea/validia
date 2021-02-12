@@ -94,6 +94,22 @@ validate("my value", value);
 
 Unfortunately, you have to declare the type of the `validate` function explicitly because of [microsoft/TypeScript#33580](https://github.com/microsoft/TypeScript/issues/33580). In short, the type of [Assertion Functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions) must be decided before the type inference phase.
 
+### ➡️ For Legacy Platform
+
+This package requires ES2018 or later.
+
+If you want to use this package on a legacy platform, use the `validia/es5` entry point along with `core-js`, `@babel/runtime`, and `regenerator-runtime`.
+For example:
+
+```js
+const { schemas, createValidate } = require("validia/es5");
+// ...
+```
+
+Or you can merely configure your bundler to transpile this package as well.
+
+The generated code of `createValidation(schema)` function is ES5 then it works well on IE11. (probably!)
+
 ## 📚 References
 
 ```ts
