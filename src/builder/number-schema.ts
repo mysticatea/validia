@@ -5,38 +5,32 @@ export function addValidationOfNumberSchema(
     ctx: BuildContext,
     _schemaKey: string,
     {
+        allowInfinity = false,
         allowNaN = false,
-        finiteOnly = false,
         intOnly = false,
         maxValue,
         minValue,
     }: Schema.NumberSchema,
 ): string {
     return ctx.addValidation(function* (_locals, name, value, depth, errors) {
-        if (intOnly) {
-            if (finiteOnly) {
-                throw new Error(
-                    '"finiteOnly" and "intOnly" cannot be true at the same time.',
-                )
-            }
-            const nanCheck = allowNaN ? ` && !Number.isNaN(${value})` : ""
-            yield `
-                if (!Number.isInteger(${value})${nanCheck}) {
-                    ${errors}.push({ code: "numberIntOnly", args: { name: ${name} }, depth: ${depth} });
-            `
-        } else if (finiteOnly) {
-            const nanCheck = allowNaN ? ` && !Number.isNaN(${value})` : ""
-            yield `
-                if (!Number.isFinite(${value})${nanCheck}) {
-                    ${errors}.push({ code: "numberFiniteOnly", args: { name: ${name} }, depth: ${depth} });
-            `
-        } else {
-            const nanCheck = allowNaN ? "" : ` || Number.isNaN(${value})`
-            yield `
-                if (typeof ${value} !== "number"${nanCheck}) {
-                    ${errors}.push({ code: "number", args: { name: ${name} }, depth: ${depth} });
-            `
+        const checker = intOnly ? "isInteger" : "isFinite"
+        const code = intOnly ? "numberIntOnly" : "number"
+        yield `
+            if (!Number.${checker}(${value})) {
+                if (${value} === Number.POSITIVE_INFINITY || ${value} === Number.NEGATIVE_INFINITY) {
+        `
+        if (!allowInfinity) {
+            yield `${errors}.push({ code: "numberDisallowInfinity", args: { name: ${name} }, depth: ${depth} });`
         }
+        yield `} else if (Number.isNaN(${value})) {`
+        if (!allowNaN) {
+            yield `${errors}.push({ code: "numberDisallowNaN", args: { name: ${name} }, depth: ${depth} });`
+        }
+        yield `
+            } else {
+                ${errors}.push({ code: "${code}", args: { name: ${name} }, depth: ${depth} });
+            }
+        `
 
         if (maxValue === undefined && minValue === undefined) {
             yield "}"

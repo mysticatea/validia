@@ -27,7 +27,8 @@ export const DefaultMessage: Message = {
               )}.`,
     function: ({ name }) => `"${name}" must be a function.`,
     number: ({ name }) => `"${name}" must be a number.`,
-    numberFiniteOnly: ({ name }) => `"${name}" must be a finite number.`,
+    numberDisallowInfinity: ({ name }) => `"${name}" must not be Infinity.`,
+    numberDisallowNaN: ({ name }) => `"${name}" must not be NaN.`,
     numberIntOnly: ({ name }) => `"${name}" must be an integer.`,
     numberMaxValue: ({ name, maxValue }) =>
         `"${name}" must be ${maxValue} or less than it.`,

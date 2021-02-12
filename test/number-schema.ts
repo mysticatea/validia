@@ -12,16 +12,12 @@ describe("schemas.number()", () => {
         validate(schema, "x", 0)
     })
 
-    it("should pass Infinity", () => {
-        validate(schema, "x", Number.POSITIVE_INFINITY)
-    })
-
-    it("should pass -Infinity", () => {
-        validate(schema, "x", Number.NEGATIVE_INFINITY)
-    })
-
     it("should pass 1.79E+308", () => {
         validate(schema, "x", Number.MAX_VALUE)
+    })
+
+    it("should pass -1.79E+308", () => {
+        validate(schema, "x", -Number.MAX_VALUE)
     })
 
     it("should fail on null", () => {
@@ -31,10 +27,24 @@ describe("schemas.number()", () => {
         )
     })
 
+    it("should fail on Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.POSITIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
+    it("should fail on -Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.NEGATIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
     it("should fail on NaN", () => {
         assert.throws(
             () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be a number.'),
+            new Error('"x" must not be NaN.'),
         )
     })
 
@@ -67,11 +77,102 @@ describe("schemas.number()", () => {
     })
 })
 
+describe("schemas.number({ allowInfinity: true })", () => {
+    const schema = schemas.number({ allowInfinity: true })
+
+    it("should pass 0", () => {
+        validate(schema, "x", 0)
+    })
+
+    it("should pass Infinity", () => {
+        validate(schema, "x", Number.POSITIVE_INFINITY)
+    })
+
+    it("should pass -Infinity", () => {
+        validate(schema, "x", Number.NEGATIVE_INFINITY)
+    })
+
+    it("should fail on NaN", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.NaN),
+            new Error('"x" must not be NaN.'),
+        )
+    })
+
+    it('should fail on "0"', () => {
+        assert.throws(
+            () => validate(schema, "x", "0"),
+            new Error('"x" must be a number.'),
+        )
+    })
+
+    it("should have validation allowing Infinity", () => {
+        assertSnapshot(createValidationOfSchema(schema).toString())
+    })
+
+    it("should the value gets 'number' type", () => {
+        const value: unknown = 0
+        validate(schema, "x", value)
+        assertType<Equals<typeof value, number>>()
+    })
+})
+
 describe("schemas.number({ allowNaN: true })", () => {
     const schema = schemas.number({ allowNaN: true })
 
     it("should pass 0", () => {
         validate(schema, "x", 0)
+    })
+
+    it("should pass NaN", () => {
+        validate(schema, "x", Number.NaN)
+    })
+
+    it("should fail on Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.POSITIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
+    it("should fail on -Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.NEGATIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
+    it('should fail on "0"', () => {
+        assert.throws(
+            () => validate(schema, "x", "0"),
+            new Error('"x" must be a number.'),
+        )
+    })
+
+    it("should have validation allowing NaN", () => {
+        assertSnapshot(createValidationOfSchema(schema).toString())
+    })
+
+    it("should the value gets 'number' type", () => {
+        const value: unknown = 0
+        validate(schema, "x", value)
+        assertType<Equals<typeof value, number>>()
+    })
+})
+
+describe("schemas.number({ allowInfinity: true, allowNaN: true })", () => {
+    const schema = schemas.number({ allowInfinity: true, allowNaN: true })
+
+    it("should pass 0", () => {
+        validate(schema, "x", 0)
+    })
+
+    it("should pass Infinity", () => {
+        validate(schema, "x", Number.POSITIVE_INFINITY)
+    })
+
+    it("should pass -Infinity", () => {
+        validate(schema, "x", Number.NEGATIVE_INFINITY)
     })
 
     it("should pass NaN", () => {
@@ -85,79 +186,7 @@ describe("schemas.number({ allowNaN: true })", () => {
         )
     })
 
-    it("should have not validation for NaN", () => {
-        assertSnapshot(createValidationOfSchema(schema).toString())
-    })
-
-    it("should the value gets 'number' type", () => {
-        const value: unknown = 0
-        validate(schema, "x", value)
-        assertType<Equals<typeof value, number>>()
-    })
-})
-
-describe("schemas.number({ finiteOnly: true })", () => {
-    const schema = schemas.number({ finiteOnly: true })
-
-    it("should pass 0", () => {
-        validate(schema, "x", 0)
-    })
-
-    it("should pass 1.79E+308", () => {
-        validate(schema, "x", Number.MAX_VALUE)
-    })
-
-    it("should fail on Infinity", () => {
-        assert.throws(
-            () => validate(schema, "x", Number.POSITIVE_INFINITY),
-            new Error('"x" must be a finite number.'),
-        )
-    })
-
-    it("should fail on -Infinity", () => {
-        assert.throws(
-            () => validate(schema, "x", Number.NEGATIVE_INFINITY),
-            new Error('"x" must be a finite number.'),
-        )
-    })
-
-    it("should fail on NaN", () => {
-        assert.throws(
-            () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be a finite number.'),
-        )
-    })
-
-    it("should fail on bigint", () => {
-        assert.throws(
-            () => validate(schema, "x", BigInt("0")),
-            new Error('"x" must be a finite number.'),
-        )
-    })
-
-    it("should have validation, but not have for min/max", () => {
-        assertSnapshot(createValidationOfSchema(schema).toString())
-    })
-
-    it("should the value gets 'number' type", () => {
-        const value: unknown = 0
-        validate(schema, "x", value)
-        assertType<Equals<typeof value, number>>()
-    })
-
-    it("should be able to run on ES5", async () => {
-        await assertES5(createValidationOfSchema(schema).toString())
-    })
-})
-
-describe("schemas.number({ allowNaN: true, finiteOnly: true })", () => {
-    const schema = schemas.number({ allowNaN: true, finiteOnly: true })
-
-    it("should pass NaN", () => {
-        validate(schema, "x", Number.NaN)
-    })
-
-    it("should allow NaN", () => {
+    it("should have validation allowing Infinity and NaN", () => {
         assertSnapshot(createValidationOfSchema(schema).toString())
     })
 })
@@ -183,21 +212,21 @@ describe("schemas.number({ intOnly: true })", () => {
     it("should fail on Infinity", () => {
         assert.throws(
             () => validate(schema, "x", Number.POSITIVE_INFINITY),
-            new Error('"x" must be an integer.'),
+            new Error('"x" must not be Infinity.'),
         )
     })
 
     it("should fail on -Infinity", () => {
         assert.throws(
             () => validate(schema, "x", Number.NEGATIVE_INFINITY),
-            new Error('"x" must be an integer.'),
+            new Error('"x" must not be Infinity.'),
         )
     })
 
     it("should fail on NaN", () => {
         assert.throws(
             () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be an integer.'),
+            new Error('"x" must not be NaN.'),
         )
     })
 
@@ -223,14 +252,141 @@ describe("schemas.number({ intOnly: true })", () => {
     })
 })
 
+describe("schemas.number({ allowInfinity: true, intOnly: true })", () => {
+    const schema = schemas.number({ allowInfinity: true, intOnly: true })
+
+    it("should pass 0", () => {
+        validate(schema, "x", 0)
+    })
+
+    it("should pass Infinity", () => {
+        validate(schema, "x", Number.POSITIVE_INFINITY)
+    })
+
+    it("should pass -Infinity", () => {
+        validate(schema, "x", Number.NEGATIVE_INFINITY)
+    })
+
+    it("should fail on 0.5", () => {
+        assert.throws(
+            () => validate(schema, "x", 0.5),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it("should fail on NaN", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.NaN),
+            new Error('"x" must not be NaN.'),
+        )
+    })
+
+    it('should fail on "0"', () => {
+        assert.throws(
+            () => validate(schema, "x", "0"),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it("should have validation allowing Infinity", () => {
+        assertSnapshot(createValidationOfSchema(schema).toString())
+    })
+
+    it("should the value gets 'number' type", () => {
+        const value: unknown = 0
+        validate(schema, "x", value)
+        assertType<Equals<typeof value, number>>()
+    })
+})
+
 describe("schemas.number({ allowNaN: true, intOnly: true })", () => {
     const schema = schemas.number({ allowNaN: true, intOnly: true })
+
+    it("should pass 0", () => {
+        validate(schema, "x", 0)
+    })
 
     it("should pass NaN", () => {
         validate(schema, "x", Number.NaN)
     })
 
-    it("should allow NaN", () => {
+    it("should fail on 0.5", () => {
+        assert.throws(
+            () => validate(schema, "x", 0.5),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it("should fail on Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.POSITIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
+    it("should fail on -Infinity", () => {
+        assert.throws(
+            () => validate(schema, "x", Number.NEGATIVE_INFINITY),
+            new Error('"x" must not be Infinity.'),
+        )
+    })
+
+    it('should fail on "0"', () => {
+        assert.throws(
+            () => validate(schema, "x", "0"),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it("should have validation allowing NaN", () => {
+        assertSnapshot(createValidationOfSchema(schema).toString())
+    })
+
+    it("should the value gets 'number' type", () => {
+        const value: unknown = 0
+        validate(schema, "x", value)
+        assertType<Equals<typeof value, number>>()
+    })
+})
+
+describe("schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true })", () => {
+    const schema = schemas.number({
+        allowInfinity: true,
+        allowNaN: true,
+        intOnly: true,
+    })
+
+    it("should pass 0", () => {
+        validate(schema, "x", 0)
+    })
+
+    it("should pass Infinity", () => {
+        validate(schema, "x", Number.POSITIVE_INFINITY)
+    })
+
+    it("should pass -Infinity", () => {
+        validate(schema, "x", Number.NEGATIVE_INFINITY)
+    })
+
+    it("should pass NaN", () => {
+        validate(schema, "x", Number.NaN)
+    })
+
+    it("should fail on 0.5", () => {
+        assert.throws(
+            () => validate(schema, "x", 0.5),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it('should fail on "0"', () => {
+        assert.throws(
+            () => validate(schema, "x", "0"),
+            new Error('"x" must be an integer.'),
+        )
+    })
+
+    it("should have validation allowing Infinity and NaN", () => {
         assertSnapshot(createValidationOfSchema(schema).toString())
     })
 })
@@ -256,7 +412,7 @@ describe("schemas.number({ maxValue: 1 })", () => {
     it("should fail on NaN", () => {
         assert.throws(
             () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be a number.'),
+            new Error('"x" must not be NaN.'),
         )
     })
 
@@ -292,7 +448,7 @@ describe("schemas.number({ minValue: 1 })", () => {
     it("should fail on NaN", () => {
         assert.throws(
             () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be a number.'),
+            new Error('"x" must not be NaN.'),
         )
     })
 
@@ -338,25 +494,12 @@ describe("schemas.number({ maxValue: 1, minValue: 0 })", () => {
     it("should fail on NaN", () => {
         assert.throws(
             () => validate(schema, "x", Number.NaN),
-            new Error('"x" must be a number.'),
+            new Error('"x" must not be NaN.'),
         )
     })
 
     it("should have validation for min/max", () => {
         assertSnapshot(createValidationOfSchema(schema).toString())
-    })
-})
-
-describe("schemas.number({ finiteOnly: true, intOnly: true })", () => {
-    const schema = schemas.number({ finiteOnly: true, intOnly: true })
-
-    it("should throw a fatal error on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error(
-                '"finiteOnly" and "intOnly" cannot be true at the same time.',
-            ),
-        )
     })
 })
 

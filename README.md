@@ -172,8 +172,8 @@ The schema factories.
   - `values` is the list of allowed values.
 - `schemas.function()` ... The schema representing any functions.
 - `schemas.number(options?)` ... The schema representing specific numbers.
-  - `options.allowNaN` is the flag to allow `NaN` (Not a Number).
-  - `options.finiteOnly` is the flag to disallow non-finite numbers (`Infinity` and `-Infinity`).
+  - `options.allowInfinity` is the flag to allow `Infinity` and `-Infinity`.
+  - `options.allowNaN` is the flag to allow `NaN`.
   - `options.intOnly` is the flag to disallow non-integers.
   - `options.maxValue` is the maximum value.
   - `options.minValue` is the minimum value.

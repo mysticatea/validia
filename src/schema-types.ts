@@ -113,16 +113,16 @@ export namespace Schema {
     export interface NumberSchema {
         /** The schema type. */
         readonly type: "number"
+        /** The flag to allow `Infinity` and `-Infinity`. Infinities are disallowed by default. */
+        readonly allowInfinity?: boolean
+        /** The flag to allow `NaN`. `NaN` is disallowed by default. */
+        readonly allowNaN?: boolean
+        /** The flag to disallow non-integer values. */
+        readonly intOnly?: boolean
         /** The maximum value. */
         readonly maxValue?: number
         /** The minimum value. */
         readonly minValue?: number
-        /** The flag to disallow non-integer values. */
-        readonly intOnly?: boolean
-        /** The flag to disallow non-finite numbers. */
-        readonly finiteOnly?: boolean
-        /** The flag to allow NaN. NaN is disallowed by default. */
-        readonly allowNaN?: boolean
     }
 
     /**

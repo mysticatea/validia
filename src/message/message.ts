@@ -18,7 +18,8 @@ export interface Message {
     enum(vars: { name: string; values: readonly any[] }): string
     function(vars: { name: string }): string
     number(vars: { name: string }): string
-    numberFiniteOnly(vars: { name: string }): string
+    numberDisallowInfinity(vars: { name: string }): string
+    numberDisallowNaN(vars: { name: string }): string
     numberIntOnly(vars: { name: string }): string
     numberMaxValue(vars: { name: string; maxValue: number }): string
     numberMinValue(vars: { name: string; minValue: number }): string

@@ -143,16 +143,16 @@ class SchemaFactories {
      * @param options The options.
      */
     number({
+        allowInfinity = false,
         allowNaN = false,
-        finiteOnly = false,
         intOnly = false,
         maxValue,
         minValue,
     }: Omit<Schema.NumberSchema, "type"> = {}): Schema.NumberSchema {
         return {
             type: "number",
+            allowInfinity,
             allowNaN,
-            finiteOnly,
             intOnly,
             maxValue,
             minValue,
@@ -164,8 +164,8 @@ class SchemaFactories {
      */
     int8: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxInt8,
         minValue: MinInt8,
@@ -176,8 +176,8 @@ class SchemaFactories {
      */
     int16: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxInt16,
         minValue: MinInt16,
@@ -188,8 +188,8 @@ class SchemaFactories {
      */
     int32: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxInt32,
         minValue: MinInt32,
@@ -200,8 +200,8 @@ class SchemaFactories {
      */
     uint8: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxUint8,
         minValue: 0,
@@ -212,8 +212,8 @@ class SchemaFactories {
      */
     uint16: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxUint16,
         minValue: 0,
@@ -224,8 +224,8 @@ class SchemaFactories {
      */
     uint32: Schema.NumberSchema = {
         type: "number",
+        allowInfinity: false,
         allowNaN: false,
-        finiteOnly: false,
         intOnly: true,
         maxValue: MaxUint32,
         minValue: 0,

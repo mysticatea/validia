@@ -76,15 +76,6 @@ export class BuildContext {
         return this.addConstant(schemaKey, ref)
     }
 
-    addFlyweightConstant(valueExpr: string): string {
-        let ref = this.flyweightMap.get(valueExpr)
-        if (!ref) {
-            ref = {}
-            this.flyweightMap.set(valueExpr, ref)
-        }
-        return this.addConstant(valueExpr, ref)
-    }
-
     addConstant(valueExpr: string, valueRef: unknown): string {
         const i = this.constants.indexOf(valueRef)
         if (i !== -1) {

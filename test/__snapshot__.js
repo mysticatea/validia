@@ -207,8 +207,14 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
     return _b(a, b, c, d, [_n, _s], [_3, _r]);
   }
   function _u(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -532,8 +538,14 @@ exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) shoul
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -585,8 +597,14 @@ exports["schemas.anyOf(schemas.number(), schemas.string()) should have validatio
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -638,8 +656,14 @@ exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ valu
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -1100,8 +1124,14 @@ exports["schemas.number() should have no validation for min/max #[0]"] = String.
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -1110,54 +1140,110 @@ exports["schemas.number() should have no validation for min/max #[0]"] = String.
   };
 })({});"
 `.slice(1, -1)
-exports["schemas.number({ allowNaN: true }) should have not validation for NaN #[0]"] = String.raw`
-"var validate = (function($schema) {
-  \"use strict\";
-  function _0(a, b, c, d) {
-    if (typeof b !== \"number\") {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
-    }
-    return d;
-  }
-  return function validate(name, value) {
-    return _0(name, value, 0, []);
-  };
-})({});"
-`.slice(1, -1)
-exports["schemas.number({ allowNaN: true, finiteOnly: true }) should allow NaN #[0]"] = String.raw`
-"var validate = (function($schema) {
-  \"use strict\";
-  function _0(a, b, c, d) {
-    if (!Number.isFinite(b) && !Number.isNaN(b)) {
-      d.push({ code: \"numberFiniteOnly\", args: { name: a }, depth: c });
-    }
-    return d;
-  }
-  return function validate(name, value) {
-    return _0(name, value, 0, []);
-  };
-})({});"
-`.slice(1, -1)
-exports["schemas.number({ allowNaN: true, intOnly: true }) should allow NaN #[0]"] = String.raw`
-"var validate = (function($schema) {
-  \"use strict\";
-  function _0(a, b, c, d) {
-    if (!Number.isInteger(b) && !Number.isNaN(b)) {
-      d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
-    }
-    return d;
-  }
-  return function validate(name, value) {
-    return _0(name, value, 0, []);
-  };
-})({});"
-`.slice(1, -1)
-exports["schemas.number({ finiteOnly: true }) should have validation, but not have for min/max #[0]"] = String.raw`
+exports["schemas.number({ allowInfinity: true }) should have validation allowing Infinity #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
     if (!Number.isFinite(b)) {
-      d.push({ code: \"numberFiniteOnly\", args: { name: a }, depth: c });
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  return function validate(name, value) {
+    return _0(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, allowNaN: true }) should have validation allowing Infinity and NaN #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+      } else if (Number.isNaN(b)) {
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  return function validate(name, value) {
+    return _0(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) should have validation allowing Infinity and NaN #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Number.isInteger(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+      } else if (Number.isNaN(b)) {
+      } else {
+        d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  return function validate(name, value) {
+    return _0(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, intOnly: true }) should have validation allowing Infinity #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Number.isInteger(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  return function validate(name, value) {
+    return _0(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true }) should have validation allowing NaN #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  return function validate(name, value) {
+    return _0(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true, intOnly: true }) should have validation allowing NaN #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Number.isInteger(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+      } else {
+        d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -1171,7 +1257,13 @@ exports["schemas.number({ intOnly: true }) should have validation, but not have 
   \"use strict\";
   function _0(a, b, c, d) {
     if (!Number.isInteger(b)) {
-      d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
+      }
     }
     return d;
   }
@@ -1184,8 +1276,14 @@ exports["schemas.number({ maxValue: 1 }) should have validation for maxValue #[0
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
       return d;
     }
     if (b > 1) {
@@ -1202,8 +1300,14 @@ exports["schemas.number({ maxValue: 1, minValue: 0 }) should have validation for
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
       return d;
     }
     if (b > 1) {
@@ -1223,8 +1327,14 @@ exports["schemas.number({ minValue: 1 }) should have validation for minValue #[0
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (typeof b !== \"number\" || Number.isNaN(b)) {
-      d.push({ code: \"number\", args: { name: a }, depth: c });
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
       return d;
     }
     if (b < 1) {
