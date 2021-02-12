@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/validia.svg)](https://www.npmjs.com/package/validia)
 [![Downloads/month](https://img.shields.io/npm/dm/validia.svg)](http://www.npmtrends.com/validia)
 [![Build Status](https://github.com/mysticatea/validia/workflows/CI/badge.svg)](https://github.com/mysticatea/validia/actions)
-[![codecov](https://codecov.io/gh/mysticatea/validia/branch/master/graph/badge.svg)](https://codecov.io/gh/mysticatea/validia)
+[![codecov](https://codecov.io/gh/mysticatea/validia/branch/main/graph/badge.svg)](https://codecov.io/gh/mysticatea/validia)
 [![Dependency Status](https://david-dm.org/mysticatea/validia.svg)](https://david-dm.org/mysticatea/validia)
 
 A TypeScript-friendly validator.
