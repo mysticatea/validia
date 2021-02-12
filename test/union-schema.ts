@@ -101,7 +101,7 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
     const schema = schemas.anyOf(
         schemas.number(),
         schemas.string(),
-        schemas.object({ value: schemas.number() }),
+        schemas.object({ value: schemas.number() }, { required: true }),
     )
 
     it("should pass 1", () => {
@@ -183,7 +183,7 @@ describe("schemas.anyOf(/* all kinds of schema except any */)", () => {
         ),
         schemas.function(),
         schemas.number(),
-        schemas.object({ value: schemas.string() }),
+        schemas.object({ value: schemas.string() }, { required: true }),
         schemas.anyOf(schemas.string(), schemas.symbol(), schemas.tuple()),
     )
 
@@ -218,7 +218,7 @@ describe("schemas.anyOf(/* all kinds of schema */)", () => {
         ),
         schemas.function(),
         schemas.number(),
-        schemas.object({ value: schemas.string() }),
+        schemas.object({ value: schemas.string() }, { required: true }),
         schemas.string(),
         schemas.symbol(),
         schemas.tuple(),

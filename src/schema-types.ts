@@ -11,7 +11,7 @@ export type Schema =
     | Schema.EnumSchema<any>
     | Schema.FunctionSchema
     | Schema.NumberSchema
-    | Schema.ObjectSchema<Record<string, Schema>, any>
+    | Schema.ObjectSchema<Record<string, Schema>, any, boolean>
     | Schema.RecordSchema<Schema>
     | Schema.StringSchema
     | Schema.SymbolSchema
@@ -129,11 +129,14 @@ export namespace Schema {
      * The schema for plain objects.
      */
     export interface ObjectSchema<
-        TProperties extends Record<string, Schema>,
-        TRequired extends keyof TProperties
+        TProperties extends Record<string | number, Schema>,
+        TRequired extends keyof TProperties,
+        TAllowUnknown extends boolean
     > {
         /** The schema type. */
         readonly type: "object"
+        /** The flag to allow unknown properties. */
+        readonly allowUnknown?: TAllowUnknown
         /** The schema of known properties. */
         readonly properties: TProperties
         /** The name of required properties. */

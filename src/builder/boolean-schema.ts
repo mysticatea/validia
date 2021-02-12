@@ -3,13 +3,15 @@ import { BuildContext } from "./context"
 
 export function addValidationOfBooleanSchema(
     ctx: BuildContext,
-    _key: string,
+    _schemaKey: string,
     _schema: Schema.BooleanSchema,
 ): string {
-    return ctx.addValidation(`
-        if (typeof value !== "boolean") {
-            errors.push({ code: "boolean", args: { name: name }, depth: depth });
-        }
-        return errors;
-    `)
+    return ctx.addValidation(
+        (_locals, name, value, depth, errors) => `
+            if (typeof ${value} !== "boolean") {
+                ${errors}.push({ code: "boolean", args: { name: ${name} }, depth: ${depth} });
+            }
+            return ${errors};
+        `,
+    )
 }

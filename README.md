@@ -57,7 +57,7 @@ Schema is simple objects. But I'd like to recommend using factory functions to u
 import { schemas as s, validate } from "validia";
 
 // 1. Define your schema.
-const myOptionSchema = s.partialObject({
+const myOptionSchema = s.object({
   include: s.array(s.string()),
   exclude: s.array(s.string()),
 });
@@ -76,7 +76,7 @@ The `schemas` is the namespace of factory functions.
 import { createValidation, schemas as s, Validate } from "validia";
 
 // 1. Define your schema.
-const myOptionSchema = s.partialObject({
+const myOptionSchema = s.object({
   include: s.array(s.string()),
   exclude: s.array(s.string()),
 });
@@ -161,11 +161,10 @@ The schema factories.
   - `options.intOnly` is the flag to disallow non-integers.
   - `options.maxValue` is the maximum value.
   - `options.minValue` is the minimum value.
-- `schemas.object(properties?)` ... The schema representing specific objects. If you give no arguments, the returned schema matches any objects.
-  - `properties` is the definition of properties; `Record<string, Schema>`. The validation doesn't pass objects if any properties are missing.
-- `schemas.partialObject(properties, required?)` ... The schema representing specific objects.
-  - `properties` is the definition of properties; `Record<string, Schema>`.
-  - `required` is the array of the name of required properties.
+- `schemas.object(properties?, options?)` ... The schema representing specific objects. If you give no arguments, the returned schema matches any objects.
+  - `properties` is the definition of known properties; `Record<string, Schema>`.
+  - `options.allowUnknown` is the flag to allow unknown properties.
+  - `options.required` is `true` or the array of known property names to be required. If `true`, all known properties are required.
 - `schemas.record(schema?)` ... The schema representing specific objects.
   - `schema` is the schema of properties. Default is `schemas.any()`.
 - `schemas.string(options?)` ... The schema representing specific strings.

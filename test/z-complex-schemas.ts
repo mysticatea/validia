@@ -6,8 +6,8 @@ import { assertES5 } from "./lib/is-es5"
 import { assertSnapshot } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
-describe("schemas.partialObject({ include: schemas.anyOf(schemas.string(), schemas.array(schemas.string())), exclude: schemas.anyOf(schemas.string(), schemas.array(schemas.string())) })", () => {
-    const schema = schemas.partialObject({
+describe("schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array(schemas.string())), exclude: schemas.anyOf(schemas.string(), schemas.array(schemas.string())) })", () => {
+    const schema = schemas.object({
         include: schemas.anyOf(
             schemas.string(),
             schemas.array(schemas.string()),
@@ -96,7 +96,7 @@ describe("IsomochaCommonOptions", () => {
         "never because unsupported",
         (_x: any): _x is never => false,
     )
-    const MochaOptionsSchema = schemas.partialObject({
+    const MochaOptionsSchema = schemas.object({
         allowUncaught: schemas.boolean(),
         asyncOnly: schemas.boolean(),
         bail: schemas.boolean(),
@@ -131,13 +131,13 @@ describe("IsomochaCommonOptions", () => {
         timeout: schemas.anyOf(schemas.number(), schemas.string()),
         ui: schemas.enum(...ValidMochaUIs),
     })
-    const WebpackOptionsSchema = schemas.partialObject({
+    const WebpackOptionsSchema = schemas.object({
         context: Unsupported,
         entry: Unsupported,
         mode: Unsupported,
         output: Unsupported,
-        module: schemas.partialObject({ rules: schemas.array() }),
-        resolve: schemas.partialObject({ alias: schemas.record() }),
+        module: schemas.object({ rules: schemas.array() }),
+        resolve: schemas.object({ alias: schemas.record() }),
         resolveLoader: Unsupported,
         optimization: Unsupported,
         plugins: schemas.array(),
@@ -167,19 +167,19 @@ describe("IsomochaCommonOptions", () => {
         infrastructureLogging: Unsupported,
         snapshot: Unsupported,
     })
-    const schema = schemas.partialObject({
+    const schema = schemas.object({
         assertShim: schemas.boolean(),
-        coverageOptions: schemas.partialObject({
+        coverageOptions: schemas.object({
             outputDirectoryPath: schemas.string({ minLength: 1 }),
             reporters: schemas.array(
                 schemas.anyOf(
                     schemas.enum(...ValidCoverageReporterIds),
-                    schemas.partialObject(
+                    schemas.object(
                         {
                             id: schemas.enum(...ValidCoverageReporterIds),
                             options: schemas.record(),
                         },
-                        ["id"],
+                        { required: ["id"] },
                     ),
                 ),
             ),

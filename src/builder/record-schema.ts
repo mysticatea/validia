@@ -4,34 +4,37 @@ import { addValidation } from "./schema"
 
 export function addValidationOfRecordSchema(
     ctx: BuildContext,
-    key: string,
+    schemaKey: string,
     { properties }: Schema.RecordSchema<Schema>,
 ): string {
-    const locals: string[] = []
-    const code: string[] = []
-    code.push(`
-        if (typeof value !== "object" || value === null) {
-            errors.push({ code: "object", args: { name: name }, depth: depth });
-    `)
-    if (properties.type === "any") {
-        code.push("}")
-    } else {
-        const validateVar = addValidation(ctx, `${key}.properties`, properties)
-        locals.push("keys = null", 'key = ""', "i = 0")
-        code.push(`
-                return errors;
-            }
-            keys = Object.keys(value);
-            for (i = 0; i < keys.length; ++i) {
-                key = keys[i]
-                ${validateVar}(name + "." + key, value[key], depth + 1, errors);
-            }
-        `)
-    }
+    return ctx.addValidation(function* (locals, name, value, depth, errors) {
+        yield `
+            if (typeof ${value} !== "object" || ${value} === null) {
+                ${errors}.push({ code: "object", args: { name: ${name} }, depth: ${depth} });
+        `
 
-    code.push("return errors;")
-    if (locals.length > 0) {
-        code.unshift(`var ${locals.join(", ")};`)
-    }
-    return ctx.addValidation(code.join("\n"))
+        if (properties.type === "any") {
+            yield "}"
+        } else {
+            const validate = addValidation(
+                ctx,
+                `${schemaKey}.properties`,
+                properties,
+            )
+            const keys = locals.add("null")
+            const key = locals.add('""')
+            const i = locals.add("0")
+            yield `
+                    return ${errors};
+                }
+                ${keys} = Object.keys(${value}).sort(undefined);
+                for (${i} = 0; ${i} < ${keys}.length; ++${i}) {
+                    ${key} = ${keys}[${i}]
+                    ${validate}(${name} + "." + ${key}, ${value}[${key}], ${depth} + 1, ${errors});
+                }
+            `
+        }
+
+        yield `return ${errors};`
+    })
 }

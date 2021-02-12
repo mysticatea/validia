@@ -28,8 +28,8 @@ export function createValidationOfSchema(
     let validation = cache.get(schema)
     if (!validation) {
         const ctx = new BuildContext()
-        addValidation(ctx, "$schema", schema)
-        validation = ctx.build(schema)
+        const id = addValidation(ctx, "$schema", schema)
+        validation = ctx.build(schema, id)
         cache.set(schema, validation)
     }
     return validation

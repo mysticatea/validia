@@ -3,15 +3,17 @@ import { BuildContext } from "./context"
 
 export function addValidationOfCustomSchema(
     ctx: BuildContext,
-    key: string,
-    { check, name }: Schema.CustomSchema<any>,
+    schemaKey: string,
+    schema: Schema.CustomSchema<any>,
 ): string {
-    const checkName = JSON.stringify(name)
-    const checkVar = ctx.addLocal(`${key}.check`, check)
-    return ctx.addValidation(`
-        if (!${checkVar}(value)) {
-            errors.push({ code: "custom", args: { name: name, checkFunc: ${checkVar}, checkName: ${checkName} }, depth: depth });
-        }
-        return errors;
-    `)
+    return ctx.addValidation((_locals, name, value, depth, errors) => {
+        const checkName = JSON.stringify(schema.name)
+        const checkFunc = ctx.addConstant(`${schemaKey}.check`, schema.check)
+        return `
+            if (!${checkFunc}(${value})) {
+                ${errors}.push({ code: "custom", args: { name: ${name}, checkFunc: ${checkFunc}, checkName: ${checkName} }, depth: ${depth} });
+            }
+            return ${errors};
+        `
+    })
 }

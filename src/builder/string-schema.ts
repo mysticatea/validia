@@ -4,94 +4,96 @@ import { BuildContext } from "./context"
 
 export function addValidationOfStringSchema(
     ctx: BuildContext,
-    _key: string,
+    _schemaKey: string,
     {
         maxLength = MaxStringLength,
         minLength = 0,
         pattern,
     }: Schema.StringSchema,
 ): string {
-    const locals: string[] = []
-    const code: string[] = []
-    code.push(`
-        if (typeof value !== "string") {
-            errors.push({ code: "string", args: { name: name }, depth: depth });
-    `)
+    return ctx.addValidation(function* (locals, name, value, depth, errors) {
+        const shouldCheckContent =
+            maxLength < MaxStringLength ||
+            minLength > 0 ||
+            pattern !== undefined
+        yield `
+            if (typeof ${value} !== "string") {
+                ${errors}.push({ code: "string", args: { name: ${name} }, depth: ${depth} });
+        `
 
-    if (
-        maxLength >= MaxStringLength &&
-        minLength <= 0 &&
-        pattern === undefined
-    ) {
-        code.push("}")
-    } else {
-        code.push(`
-                return errors;
+        if (!shouldCheckContent) {
+            yield "}"
+        } else {
+            yield `
+                    return ${errors};
+                }
+            `
+
+            let countChars = ""
+            if (maxLength < MaxStringLength || minLength > 0) {
+                countChars = addCountChars(ctx)
             }
-        `)
-
-        let countVar = ""
-        if (maxLength < MaxStringLength || minLength > 0) {
-            countVar = ctx.addFunction(
-                ["str", "end"],
-                `
-                    var count = 0, code = 0, i = 0, length = str.length;
-                    while (i < length) {
-                        count += 1;
-                        if (count >= end) {
-                            return count;
+            if (maxLength < MaxStringLength) {
+                const end = maxLength + 1
+                if (minLength > 0) {
+                    if (minLength > maxLength) {
+                        throw new Error(
+                            '"maxLength" must be "minLength" or greater than it.',
+                        )
+                    }
+                    const count = locals.add("0")
+                    yield `
+                        ${count} = ${countChars}(${value}, ${end});
+                        if (${count} > ${maxLength}) {
+                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} });
                         }
-                        i += (code = str.charCodeAt(i)) >= 0xd800 && code <= 0xdbff ? 2 : 1;
-                    }
-                    return count
-                `,
-            )
-        }
-        if (maxLength < MaxStringLength) {
-            const end = maxLength + 1
-            if (minLength > 0) {
-                if (minLength > maxLength) {
-                    throw new Error(
-                        '"maxLength" must be "minLength" or greater than it.',
-                    )
+                        if (${count} < ${minLength}) {
+                            ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} });
+                        }
+                    `
+                } else {
+                    yield `
+                        if (${countChars}(${value}, ${end}) > ${maxLength}) {
+                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} });
+                        }
+                    `
                 }
-                locals.push("count = 0")
-                code.push(`
-                    count = ${countVar}(value, ${end});
-                    if (count > ${maxLength}) {
-                        errors.push({ code: "stringMaxLength", args: { name: name, maxLength: ${maxLength} }, depth: depth });
+            } else if (minLength > 0) {
+                yield `
+                    if (${countChars}(${value}, ${minLength}) < ${minLength}) {
+                        ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} });
                     }
-                    if (count < ${minLength}) {
-                        errors.push({ code: "stringMinLength", args: { name: name, minLength: ${minLength} }, depth: depth });
-                    }
-                `)
-            } else {
-                code.push(`
-                    if (${countVar}(value, ${end}) > ${maxLength}) {
-                        errors.push({ code: "stringMaxLength", args: { name: name, maxLength: ${maxLength} }, depth: depth });
-                    }
-                `)
+                `
             }
-        } else if (minLength > 0) {
-            code.push(`
-                if (${countVar}(value, ${minLength}) < ${minLength}) {
-                    errors.push({ code: "stringMinLength", args: { name: name, minLength: ${minLength} }, depth: depth });
-                }
-            `)
+
+            if (pattern !== undefined) {
+                yield `
+                    if (!${pattern}.test(${value})) {
+                        ${errors}.push({ code: "stringPattern", args: { name: ${name}, pattern: ${pattern} }, depth: ${depth} });
+                    }
+                `
+            }
         }
 
-        if (pattern !== undefined) {
-            code.push(`
-                if (!${pattern}.test(value)) {
-                    errors.push({ code: "stringPattern", args: { name: name, pattern: ${pattern} }, depth: depth });
-                }
-            `)
-        }
-    }
+        yield `return ${errors};`
+    })
+}
 
-    code.push("return errors;")
-    if (locals.length > 0) {
-        code.unshift(`var ${locals.join(", ")};`)
-    }
-    return ctx.addValidation(code.join("\n"))
+function addCountChars(ctx: BuildContext): string {
+    return ctx.addFunction((locals, str, end) => {
+        const count = locals.add("0")
+        const code = locals.add("0")
+        const i = locals.add("0")
+        const length = locals.add(`${str}.length`)
+        return `
+            while (${i} < ${length}) {
+                ${count} += 1;
+                if (${count} >= ${end}) {
+                    return ${count};
+                }
+                ${i} += (${code} = ${str}.charCodeAt(${i})) >= 0xd800 && ${code} <= 0xdbff ? 2 : 1;
+            }
+            return ${count}
+        `
+    })
 }

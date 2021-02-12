@@ -3,8 +3,10 @@ import { BuildContext } from "./context"
 
 export function addValidationOfAnySchema(
     ctx: BuildContext,
-    _key: string,
+    _schemaKey: string,
     _schema: Schema.AnySchema,
 ): string {
-    return ctx.addValidation("return errors;")
+    return ctx.addValidation(
+        (_locals, _name, _value, _depth, errors) => `return ${errors};`,
+    )
 }

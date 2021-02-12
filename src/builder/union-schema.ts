@@ -1,92 +1,122 @@
+import { MaxInt32 } from "../constants"
 import { Schema } from "../schema-types"
 import { BuildContext } from "./context"
 import { addValidation } from "./schema"
 
 export function addValidationOfUnionSchema(
     ctx: BuildContext,
-    key: string,
+    schemaKey: string,
     { schemas }: Schema.UnionSchema<Schema>,
 ): string {
-    const flattened = flatten(`${key}.schemas`, schemas)
+    const flattened = flatten(`${schemaKey}.schemas`, schemas)
     if (flattened.length === 0) {
         throw new Error("UnionSchema must have 1 or more schemas.")
     }
     if (flattened.length === 1) {
-        return addValidation(ctx, flattened[0].schemaKey, flattened[0].schema)
+        return addValidation(
+            ctx,
+            flattened[0].childSchemaKey,
+            flattened[0].childSchema,
+        )
     }
 
     const validationIds: string[] = []
     const schemaIds: string[] = []
-    for (const { schemaKey, schema } of flattened) {
-        const validationId = addValidation(ctx, schemaKey, schema)
+    for (const { childSchemaKey, childSchema } of flattened) {
+        const validationId = addValidation(ctx, childSchemaKey, childSchema)
         if (validationIds.includes(validationId)) {
             continue
         }
-        const schemaId = ctx.mapSchema(validationId, schemaKey)
+        const schemaId = ctx.mapSchema(validationId, childSchemaKey)
 
         validationIds.push(validationId)
         schemaIds.push(schemaId)
     }
 
-    const reduceMinDepthVar = ctx.addFunction(
-        ["minDepth", "error"],
-        "return minDepth <= error.depth ? minDepth : error.depth;",
-    )
+    const validateUnion = addValidateUnion(ctx)
     const validationsStr = validationIds.join(", ")
     const schemasStr = schemaIds.join(", ")
-    return ctx.addValidation(`
-        var varidations = [${validationsStr}], errorsOfMaxDepth = [], e = null, maxDepth = -1, d = 0, i = 0;
-        for (i = 0; i < varidations.length; ++i) {
-            e = varidations[i](name, value, depth, []);
-            if (e.length === 0) {
-                return errors;
-            }
-            d = e.reduce(${reduceMinDepthVar}, Number.MAX_SAFE_INTEGER)
-            if (d > maxDepth) {
-                errorsOfMaxDepth = [e]
-                maxDepth = d;
-            } else if (d === maxDepth) {
-                errorsOfMaxDepth.push(e);
-            }
-        }
-        if (errorsOfMaxDepth.length === 1) {
-            errorsOfMaxDepth = errorsOfMaxDepth[0]
-            for (d = 0; d < errorsOfMaxDepth.length; ++d) {
-                errors.push(errorsOfMaxDepth[d])
-            }
-        } else if (errorsOfMaxDepth.length >= 2) {
-            errors.push({ code: "union", args: { name: name, schemas: [${schemasStr}] }, depth: depth });
-        }
-        return errors;
-    `)
+    return ctx.addValidation(
+        (_locals, name, value, depth, errors) =>
+            `return ${validateUnion}(${name}, ${value}, ${depth}, ${errors}, [${schemasStr}], [${validationsStr}]);`,
+    )
 }
 
 function flatten(
     key: string,
     schemas: readonly Schema[],
     flattened: {
-        schemaKey: string
-        schema: Exclude<Schema, Schema.UnionSchema<any>>
+        childSchemaKey: string
+        childSchema: Exclude<Schema, Schema.UnionSchema<any>>
     }[] = [],
-): { schemaKey: string; schema: Exclude<Schema, Schema.UnionSchema<any>> }[] {
+): {
+    childSchemaKey: string
+    childSchema: Exclude<Schema, Schema.UnionSchema<any>>
+}[] {
     for (let i = 0; i < schemas.length; ++i) {
-        const schema = schemas[i]
-        const schemaKey = `${key}[${i}]`
-        if (schema.type === "any") {
-            return [{ schemaKey, schema }]
+        const childSchema = schemas[i]
+        const childSchemaKey = `${key}[${i}]`
+        if (childSchema.type === "any") {
+            return [{ childSchemaKey, childSchema }]
         }
-        if (schema.type === "union") {
+        if (childSchema.type === "union") {
             const retv = flatten(
-                `${schemaKey}.schemas`,
-                schema.schemas,
+                `${childSchemaKey}.schemas`,
+                childSchema.schemas,
                 flattened,
             )
             if (retv !== flattened) {
                 return retv
             }
         } else {
-            flattened.push({ schemaKey, schema })
+            flattened.push({ childSchemaKey, childSchema })
         }
     }
     return flattened
+}
+
+function addValidateUnion(ctx: BuildContext): string {
+    return ctx.addFunction(
+        (locals, name, value, depth, errors, schemas, validates) => {
+            const maxDepth = MaxInt32 >> 1
+            const reduceMinDepthVar = addReduceMinDepth(ctx)
+            const currentErrorsList = locals.add("[]")
+            const thisErrors = locals.add("null")
+            const currentMaxDepth = locals.add("-1")
+            const thisDepth = locals.add("0")
+            const i = locals.add("0")
+            return `
+                for (${i} = 0; ${i} < ${validates}.length; ++${i}) {
+                    ${thisErrors} = ${validates}[${i}](${name}, ${value}, ${depth}, []);
+                    if (${thisErrors}.length === 0) {
+                        return ${errors};
+                    }
+                    ${thisDepth} = ${thisErrors}.reduce(${reduceMinDepthVar}, ${maxDepth})
+                    if (${thisDepth} > ${currentMaxDepth}) {
+                        ${currentErrorsList} = [${thisErrors}];
+                        ${currentMaxDepth} = ${thisDepth};
+                    } else if (${thisDepth} === ${currentMaxDepth}) {
+                        ${currentErrorsList}.push(${thisErrors});
+                    }
+                }
+                if (${currentErrorsList}.length === 1) {
+                    ${currentErrorsList} = ${currentErrorsList}[0];
+                    for (${i} = 0; ${i} < ${currentErrorsList}.length; ++${i}) {
+                        ${errors}.push(${currentErrorsList}[${i}]);
+                    }
+                } else if (${currentErrorsList}.length >= 2) {
+                    ${errors}.push({ code: "union", args: { name: ${name}, schemas: ${schemas} }, depth: ${depth} });
+                }
+                return ${errors};
+            `
+        },
+    )
+}
+
+function addReduceMinDepth(ctx: BuildContext): string {
+    return ctx.addFunction(
+        (_locals, minDepth, error) => `
+            return ${minDepth} <= ${error}.depth ? ${minDepth} : ${error}.depth;
+        `,
+    )
 }

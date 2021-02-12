@@ -3,13 +3,32 @@ import { BuildContext } from "./context"
 
 export function addValidationOfEnumSchema(
     ctx: BuildContext,
-    key: string,
+    schemaKey: string,
     { values }: Schema.EnumSchema<unknown>,
 ): string {
     if (values.length === 0) {
         throw new Error("EnumSchema must have 1 or more values.")
     }
-    const valueStrs = values.map((value, i) => {
+    return ctx.addValidation((_locals, name, value, depth, errors) => {
+        const valueStrs = values.map(valueToString(ctx, schemaKey))
+        const conditionStr = valueStrs
+            .map(stringToCondition(value))
+            .join(" && ")
+        const optionsStr = valueStrs.join(", ")
+        return `
+            if (${conditionStr}) {
+                ${errors}.push({ code: "enum", args: { name: ${name}, values: [${optionsStr}] }, depth: ${depth} });
+            }
+            return ${errors};
+        `
+    })
+}
+
+function valueToString(
+    ctx: BuildContext,
+    key: string,
+): (value: unknown, i: number) => string {
+    return (value, i) => {
         switch (typeof value) {
             case "bigint":
                 return `${value}n`
@@ -17,7 +36,7 @@ export function addValidationOfEnumSchema(
                 return String(value)
             case "function":
             case "symbol":
-                return ctx.addLocal(`${key}.values[${i}]`, values[i])
+                return ctx.addConstant(`${key}.values[${i}]`, value)
             case "number":
                 return Number.isNaN(value)
                     ? "Number.NaN"
@@ -29,7 +48,7 @@ export function addValidationOfEnumSchema(
             case "object":
                 return value === null
                     ? "null"
-                    : ctx.addLocal(`${key}.values[${i}]`, values[i])
+                    : ctx.addConstant(`${key}.values[${i}]`, value)
             case "string":
                 return JSON.stringify(value)
             case "undefined":
@@ -39,18 +58,12 @@ export function addValidationOfEnumSchema(
             default:
                 throw new Error(`Unknown type: ${typeof value}`)
         }
-    })
-    const conditionStr = valueStrs
-        .map(s =>
-            s === "Number.NaN" ? "!Number.isNaN(value)" : `value !== ${s}`,
-        )
-        .join(" && ")
-    const optionsStr = `[${valueStrs.join(", ")}]`
+    }
+}
 
-    return ctx.addValidation(`
-        if (${conditionStr}) {
-            errors.push({ code: "enum", args: { name: name, values: ${optionsStr} }, depth: depth });
-        }
-        return errors;
-    `)
+function stringToCondition(value: string): (criteria: string) => string {
+    return criteria =>
+        criteria === "Number.NaN"
+            ? `!Number.isNaN(${value})`
+            : `${value} !== ${criteria}`
 }

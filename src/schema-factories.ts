@@ -234,61 +234,114 @@ class SchemaFactories {
     /**
      * The schema for any objects.
      */
-    object(): Schema.RecordSchema<Schema.AnySchema>
+    object(): Schema.ObjectSchema<{}, never, true>
 
     /**
-     * The schema for plain objects. All properties are required.
+     * The schema for plain objects. All known properties are optional.
      * @param properties The schema of known properties.
      */
-    object<TProperties extends Record<any, Schema>>(
+    object<TProperties extends Record<string | number, Schema>>(
         properties: TProperties,
-    ): Schema.ObjectSchema<TProperties, keyof TProperties>
+    ): Schema.ObjectSchema<TProperties, never, false>
+
+    /**
+     * The schema for plain objects. All known properties are optional.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<TProperties extends Record<string | number, Schema>>(
+        properties: TProperties,
+        options: Record<string | number | symbol, never>,
+    ): Schema.ObjectSchema<TProperties, never, false>
+
+    /**
+     * The schema for plain objects. All known properties are optional.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<
+        TProperties extends Record<string | number, Schema>,
+        TAllowUnknown extends boolean
+    >(
+        properties: TProperties,
+        options: { allowUnknown: TAllowUnknown },
+    ): Schema.ObjectSchema<TProperties, never, TAllowUnknown>
+
+    /**
+     * The schema for plain objects. All known properties are required.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<TProperties extends Record<string | number, Schema>>(
+        properties: TProperties,
+        options: { required: true },
+    ): Schema.ObjectSchema<TProperties, keyof TProperties, false>
+
+    /**
+     * The schema for plain objects. Specified known properties are required.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<
+        TProperties extends Record<string | number, Schema>,
+        TRequired extends keyof TProperties
+    >(
+        properties: TProperties,
+        options: { required: readonly TRequired[] },
+    ): Schema.ObjectSchema<TProperties, TRequired, false>
+
+    /**
+     * The schema for plain objects. All known properties are required.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<
+        TProperties extends Record<string | number, Schema>,
+        TAllowUnknown extends boolean
+    >(
+        properties: TProperties,
+        options: { allowUnknown: TAllowUnknown; required: true },
+    ): Schema.ObjectSchema<TProperties, keyof TProperties, TAllowUnknown>
+
+    /**
+     * The schema for plain objects. Specific properties are required.
+     * @param properties The schema of known properties.
+     * @param options The options.
+     */
+    object<
+        TProperties extends Record<string | number, Schema>,
+        TRequired extends keyof TProperties,
+        TAllowUnknown extends boolean
+    >(
+        properties: TProperties,
+        options: {
+            allowUnknown: TAllowUnknown
+            required: readonly TRequired[]
+        },
+    ): Schema.ObjectSchema<TProperties, TRequired, TAllowUnknown>
 
     // Implementation
     object(
-        properties?: Record<any, Schema>,
-    ):
-        | Schema.RecordSchema<Schema.AnySchema>
-        | Schema.ObjectSchema<Record<any, Schema>, any> {
+        properties?: Record<string | number, Schema>,
+        {
+            allowUnknown = false,
+            required = [],
+        }: { allowUnknown?: boolean; required?: true | readonly string[] } = {},
+    ): Schema.ObjectSchema<Record<string | number, Schema>, any, boolean> {
         if (properties === undefined) {
-            return { type: "record", properties: { type: "any" } }
+            return {
+                type: "object",
+                allowUnknown: true,
+                properties: {},
+                required: [],
+            }
         }
-        return { type: "object", properties, required: Object.keys(properties) }
-    }
-
-    /**
-     * The schema for plain objects. All properties are optional.
-     * @param properties The schema of known properties.
-     */
-    partialObject<TProperties extends Record<any, Schema>>(
-        properties: TProperties,
-    ): Schema.ObjectSchema<TProperties, never>
-
-    /**
-     * The schema for plain objects.
-     * @param properties The schema of known properties.
-     * @param required The names of required properties.
-     */
-    partialObject<
-        TProperties extends Record<any, Schema>,
-        TRequired extends (keyof TProperties)[]
-    >(
-        properties: TProperties,
-        required: TRequired,
-    ): Schema.ObjectSchema<TProperties, TRequired[number]>
-
-    // Implementation
-    partialObject<
-        TProperties extends Record<any, Schema>,
-        TRequired extends (keyof TProperties)[]
-    >(
-        properties: TProperties,
-        required?: TRequired,
-    ): Schema.ObjectSchema<TProperties, TRequired[number]> {
-        if (required && required.length > 0) {
-            return { type: "object", properties, required }
+        return {
+            type: "object",
+            allowUnknown,
+            properties,
+            required: required === true ? Object.keys(properties) : required,
         }
-        return { type: "object", properties }
     }
 
     /**

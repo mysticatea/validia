@@ -2,26 +2,41 @@ import { Schema } from "../schema-types"
 import { ValidationError } from "../validation-error"
 
 export class BuildContext {
-    private readonly locals: unknown[] = []
+    private readonly constants: unknown[] = []
     private readonly functionMap = new Map<string, string>()
-    private readonly schemaMap = new Map<string, object>()
+    private readonly flyweightMap = new Map<string, object>()
     private readonly code: string[] = ['"use strict";']
-    private lastValidationId = ""
     private indent = 0
 
-    addValidation(code: string): string {
-        this.lastValidationId = this.addFunction(
-            ["name", "value", "depth", "errors"],
-            code,
-        )
-        return this.lastValidationId
+    addValidation(
+        createBody: (
+            locals: BuildContext.Locals,
+            name: string,
+            value: string,
+            depth: string,
+            errors: string,
+        ) => string | IterableIterator<string>,
+    ): string {
+        return this.addFunction(createBody)
     }
 
-    addFunction(params: string[], code: string): string {
+    addFunction(
+        createBody: (
+            locals: BuildContext.Locals,
+            ...params: string[]
+        ) => string | IterableIterator<string>,
+    ): string {
+        const numArgs = Math.max(0, createBody.length - 1)
+        const locals = new Locals()
+        const params = Array.from({ length: numArgs }, () => locals.addArgs())
+        const bodyGen = createBody(locals, ...params)
+        const body =
+            typeof bodyGen === "string" ? bodyGen : [...bodyGen].join("\n")
+        const code = locals.getVariableDeclaration() + body
         let id = this.functionMap.get(code)
         if (id === undefined) {
-            id = localId("_", this.locals.length)
-            this.locals.push({ params, code })
+            id = constantId("_", this.constants.length)
+            this.constants.push({ params, code })
             this.addCodeFragment(`function ${id}(${params.join(", ")}) {`)
             this.addCodeFragment(code)
             this.addCodeFragment("}")
@@ -53,32 +68,42 @@ export class BuildContext {
     }
 
     mapSchema(validationId: string, schemaKey: string): string {
-        let schemaRef = this.schemaMap.get(validationId)
-        if (!schemaRef) {
-            schemaRef = { validationId }
-            this.schemaMap.set(validationId, schemaRef)
+        let ref = this.flyweightMap.get(validationId)
+        if (!ref) {
+            ref = {}
+            this.flyweightMap.set(validationId, ref)
         }
-        return this.addLocal(schemaKey, schemaRef)
+        return this.addConstant(schemaKey, ref)
     }
 
-    addLocal(valueName: string, valueRef: unknown): string {
-        const i = this.locals.indexOf(valueRef)
+    addFlyweightConstant(valueExpr: string): string {
+        let ref = this.flyweightMap.get(valueExpr)
+        if (!ref) {
+            ref = {}
+            this.flyweightMap.set(valueExpr, ref)
+        }
+        return this.addConstant(valueExpr, ref)
+    }
+
+    addConstant(valueExpr: string, valueRef: unknown): string {
+        const i = this.constants.indexOf(valueRef)
         if (i !== -1) {
-            return localId("_", i)
+            return constantId("_", i)
         }
 
-        const id = localId("_", this.locals.length)
-        this.addCodeFragment(`var ${id} = ${valueName};`)
-        this.locals.push(valueRef)
+        const id = constantId("_", this.constants.length)
+        this.addCodeFragment(`var ${id} = ${valueExpr};`)
+        this.constants.push(valueRef)
         return id
     }
 
     build(
         schema: Schema,
+        validationId: string,
     ): (name: string, value: any) => ValidationError.ErrorInfo[] {
         this.addCodeFragment(`
             return function validate(name, value) {
-                return ${this.lastValidationId}(name, value, 0, [])
+                return ${validationId}(name, value, 0, []);
             };
         `)
         const code = this.code.join("\n")
@@ -97,7 +122,43 @@ export class BuildContext {
         return func
     }
 }
+export namespace BuildContext {
+    export interface Locals {
+        add(initExpr: string): string
+    }
+}
 
-function localId(type: string, i: number): string {
+const Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+class Locals {
+    private numArgs = 0
+    private localInits: string[] = []
+
+    addArgs(): string {
+        return localId(this.numArgs++)
+    }
+
+    add(initExpr: string): string {
+        const id = localId(this.numArgs + this.localInits.length)
+        this.localInits.push(`${id} = ${initExpr}`)
+        return id
+    }
+
+    getVariableDeclaration(): string {
+        if (this.localInits.length > 0) {
+            return `var ${this.localInits.join(", ")};\n`
+        }
+        return ""
+    }
+}
+
+function constantId(type: string, i: number): string {
     return `${type}${i.toString(36)}`
+}
+
+function localId(i: number): string {
+    if (i >= Chars.length) {
+        throw new Error("Too many locals")
+    }
+    return Chars[i]
 }

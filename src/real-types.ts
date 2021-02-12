@@ -97,15 +97,24 @@ export namespace TypeOf {
      */
     export type ObjectSchema<T extends Schema> = T extends Schema.ObjectSchema<
         infer P,
-        infer R
+        infer R,
+        infer A
     >
         ? ObjectSchema.Flatten<
-              { [K in Extract<keyof P, R>]: TypeOf<P[K]> } &
-                  { [K in Exclude<keyof P, R>]?: TypeOf<P[K]> | undefined }
+              ObjectSchema.KnownProperties<P, R> &
+                  ObjectSchema.UnknownProperties<A>
           >
         : never
 
     export namespace ObjectSchema {
+        export type KnownProperties<
+            P extends Record<string | number, Schema>,
+            R extends keyof P
+        > = { [K in Extract<keyof P, R>]: TypeOf<P[K]> } &
+            { [K in Exclude<keyof P, R>]?: TypeOf<P[K]> | undefined }
+        export type UnknownProperties<A extends boolean> = A extends true
+            ? Record<string | number, unknown>
+            : {}
         export type Flatten<T> = T extends any
             ? { [P in keyof T]: T[P] }
             : never
