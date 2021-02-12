@@ -35,8 +35,8 @@ export class BuildContext {
         const code = locals.getVariableDeclaration() + body
         let id = this.functionMap.get(code)
         if (id === undefined) {
-            id = constantId("_", this.constants.length)
-            this.constants.push({ params, code })
+            id = constantId(this.constants.length)
+            this.constants.push({})
             this.addCodeFragment(`function ${id}(${params.join(", ")}) {`)
             this.addCodeFragment(code)
             this.addCodeFragment("}")
@@ -79,10 +79,10 @@ export class BuildContext {
     addConstant(valueExpr: string, valueRef: unknown): string {
         const i = this.constants.indexOf(valueRef)
         if (i !== -1) {
-            return constantId("_", i)
+            return constantId(i)
         }
 
-        const id = constantId("_", this.constants.length)
+        const id = constantId(this.constants.length)
         this.addCodeFragment(`var ${id} = ${valueExpr};`)
         this.constants.push(valueRef)
         return id
@@ -143,8 +143,8 @@ class Locals {
     }
 }
 
-function constantId(type: string, i: number): string {
-    return `${type}${i.toString(36)}`
+function constantId(i: number): string {
+    return `_${i.toString(36)}`
 }
 
 function localId(i: number): string {
