@@ -308,13 +308,13 @@ describe("schemas.enum(myObj, Number.NaN)", () => {
     it("should fail on {}", () => {
         assert.throws(
             () => validate(schema, {}),
-            new Error('"value" must be any of [object Object] and NaN.'),
+            new Error('"value" must be [object Object] or NaN.'),
         )
     })
     it("should fail on 0", () => {
         assert.throws(
             () => validate(schema, 0),
-            new Error('"value" must be any of [object Object] and NaN.'),
+            new Error('"value" must be [object Object] or NaN.'),
         )
     })
 

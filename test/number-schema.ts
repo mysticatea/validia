@@ -405,7 +405,7 @@ describe("schemas.number({ maxValue: 1 })", () => {
     it("should fail on 2", () => {
         assert.throws(
             () => validate(schema, 2),
-            new Error('"value" must be 1 or less than it.'),
+            new Error('"value" must be less than or equal to 1.'),
         )
     })
 
@@ -441,7 +441,7 @@ describe("schemas.number({ minValue: 1 })", () => {
     it("should fail on 0", () => {
         assert.throws(
             () => validate(schema, 0),
-            new Error('"value" must be 1 or greater than it.'),
+            new Error('"value" must be greater than or equal to 1.'),
         )
     })
 
@@ -480,14 +480,14 @@ describe("schemas.number({ maxValue: 1, minValue: 0 })", () => {
     it("should fail on -1", () => {
         assert.throws(
             () => validate(schema, Number("-1")),
-            new Error('"value" must be 0 or greater than it.'),
+            new Error('"value" must be greater than or equal to 0.'),
         )
     })
 
     it("should fail on 2", () => {
         assert.throws(
             () => validate(schema, 2),
-            new Error('"value" must be 1 or less than it.'),
+            new Error('"value" must be less than or equal to 1.'),
         )
     })
 
@@ -528,14 +528,14 @@ describe("schemas.int8", () => {
     it("should fail on -129", () => {
         assert.throws(
             () => validate(schema, -129),
-            new Error('"value" must be -128 or greater than it.'),
+            new Error('"value" must be greater than or equal to -128.'),
         )
     })
 
     it("should fail on 128", () => {
         assert.throws(
             () => validate(schema, 128),
-            new Error('"value" must be 127 or less than it.'),
+            new Error('"value" must be less than or equal to 127.'),
         )
     })
 
@@ -561,14 +561,14 @@ describe("schemas.int16", () => {
     it("should fail on -32769", () => {
         assert.throws(
             () => validate(schema, -32769),
-            new Error('"value" must be -32768 or greater than it.'),
+            new Error('"value" must be greater than or equal to -32768.'),
         )
     })
 
     it("should fail on 32768", () => {
         assert.throws(
             () => validate(schema, 32768),
-            new Error('"value" must be 32767 or less than it.'),
+            new Error('"value" must be less than or equal to 32767.'),
         )
     })
 
@@ -594,14 +594,14 @@ describe("schemas.int32", () => {
     it("should fail on -2147483649", () => {
         assert.throws(
             () => validate(schema, -2147483649),
-            new Error('"value" must be -2147483648 or greater than it.'),
+            new Error('"value" must be greater than or equal to -2147483648.'),
         )
     })
 
     it("should fail on 2147483648", () => {
         assert.throws(
             () => validate(schema, 2147483648),
-            new Error('"value" must be 2147483647 or less than it.'),
+            new Error('"value" must be less than or equal to 2147483647.'),
         )
     })
 
@@ -627,14 +627,14 @@ describe("schemas.uint8", () => {
     it("should fail on -1", () => {
         assert.throws(
             () => validate(schema, -1),
-            new Error('"value" must be 0 or greater than it.'),
+            new Error('"value" must be greater than or equal to 0.'),
         )
     })
 
     it("should fail on 256", () => {
         assert.throws(
             () => validate(schema, 256),
-            new Error('"value" must be 255 or less than it.'),
+            new Error('"value" must be less than or equal to 255.'),
         )
     })
 
@@ -660,14 +660,14 @@ describe("schemas.uint16", () => {
     it("should fail on -1", () => {
         assert.throws(
             () => validate(schema, -1),
-            new Error('"value" must be 0 or greater than it.'),
+            new Error('"value" must be greater than or equal to 0.'),
         )
     })
 
     it("should fail on 65536", () => {
         assert.throws(
             () => validate(schema, 65536),
-            new Error('"value" must be 65535 or less than it.'),
+            new Error('"value" must be less than or equal to 65535.'),
         )
     })
 
@@ -693,14 +693,14 @@ describe("schemas.uint32", () => {
     it("should fail on -1", () => {
         assert.throws(
             () => validate(schema, -1),
-            new Error('"value" must be 0 or greater than it.'),
+            new Error('"value" must be greater than or equal to 0.'),
         )
     })
 
     it("should fail on 4294967296", () => {
         assert.throws(
             () => validate(schema, 4294967296),
-            new Error('"value" must be 4294967295 or less than it.'),
+            new Error('"value" must be less than or equal to 4294967295.'),
         )
     })
 

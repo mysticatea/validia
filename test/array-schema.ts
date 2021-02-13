@@ -106,7 +106,7 @@ describe("schemas.array(schemas.any(), { maxLength: 2 })", () => {
     it("should fail on array that includes three strings", () => {
         assert.throws(
             () => validate(schema, ["foo", "bar", "three"]),
-            new Error('The length of "value" must be 2 or less than it.'),
+            new Error('"value" must contain less than or equal to 2 items.'),
         )
     })
 
@@ -136,7 +136,7 @@ describe("schemas.array(schemas.any(), { minLength: 2 })", () => {
     it("should fail on empty array", () => {
         assert.throws(
             () => validate(schema, []),
-            new Error('The length of "value" must be 2 or greater than it.'),
+            new Error('"value" must contain more than or equal to 2 items.'),
         )
     })
 
@@ -215,7 +215,7 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
     it("should fail on empty array", () => {
         assert.throws(
             () => validate(schema, []),
-            new Error('The length of "value" must be 1 or greater than it.'),
+            new Error('"value" must not be empty.'),
         )
     })
 
@@ -237,8 +237,8 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
         assert.throws(
             () => validate(schema, [0, "foo", "foo"]),
             new Error(
-                '"value" has multiple validation errors:\n' +
-                    '- The length of "value" must be 2 or less than it.\n' +
+                '"value" has 3 validation errors:\n' +
+                    '- "value" must contain less than or equal to 2 items.\n' +
                     '- "value" must not contain duplicate values.\n' +
                     '- "value[0]" must be a string.',
             ),

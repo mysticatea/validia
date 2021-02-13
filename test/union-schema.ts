@@ -134,7 +134,7 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
         assert.throws(
             () => validate(schema, { vale: "foo" }),
             new Error(
-                '"value" has multiple validation errors:\n' +
+                '"value" has 2 validation errors:\n' +
                     '- "value" must have the required property: value.\n' +
                     '- "value" must not have unknown property: vale.',
             ),

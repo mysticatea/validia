@@ -59,7 +59,7 @@ describe("schemas.string({ maxLength: 2 })", () => {
     it('should fail on "foo"', () => {
         assert.throws(
             () => validate(schema, "foo"),
-            new Error('The cheracters of "value" must be 2 or less than it.'),
+            new Error('"value" must be less than or equal to 2 characters.'),
         )
     })
 
@@ -69,7 +69,7 @@ describe("schemas.string({ maxLength: 2 })", () => {
     it('should fail on "👍👍1"', () => {
         assert.throws(
             () => validate(schema, "👍👍1"),
-            new Error('The cheracters of "value" must be 2 or less than it.'),
+            new Error('"value" must be less than or equal to 2 characters.'),
         )
     })
 
@@ -100,7 +100,7 @@ describe("schemas.string({ minLength: 2 })", () => {
     it('should fail on "f"', () => {
         assert.throws(
             () => validate(schema, "f"),
-            new Error('The cheracters of "value" must be 2 or more than it.'),
+            new Error('"value" must be more than or equal to 2 characters.'),
         )
     })
 
@@ -110,7 +110,7 @@ describe("schemas.string({ minLength: 2 })", () => {
     it('should fail on "👍"', () => {
         assert.throws(
             () => validate(schema, "👍"),
-            new Error('The cheracters of "value" must be 2 or more than it.'),
+            new Error('"value" must be more than or equal to 2 characters.'),
         )
     })
 
@@ -142,13 +142,13 @@ describe("schemas.string({ maxLength: 2, minLength: 1 })", () => {
     it('should fail on ""', () => {
         assert.throws(
             () => validate(schema, ""),
-            new Error('The cheracters of "value" must be 1 or more than it.'),
+            new Error('"value" must not be empty.'),
         )
     })
     it('should fail on "foo"', () => {
         assert.throws(
             () => validate(schema, "foo"),
-            new Error('The cheracters of "value" must be 2 or less than it.'),
+            new Error('"value" must be less than or equal to 2 characters.'),
         )
     })
 
@@ -161,7 +161,7 @@ describe("schemas.string({ maxLength: 2, minLength: 1 })", () => {
     it('should fail on "👍👍👍"', () => {
         assert.throws(
             () => validate(schema, "👍👍👍"),
-            new Error('The cheracters of "value" must be 2 or less than it.'),
+            new Error('"value" must be less than or equal to 2 characters.'),
         )
     })
 

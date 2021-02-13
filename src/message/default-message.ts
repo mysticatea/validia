@@ -6,37 +6,40 @@ import { Message } from "./message"
  */
 export const DefaultMessage: Message = {
     array: ({ name }) => `"${name}" must be an array.`,
-    arrayMaxLength: ({ name, maxLength }) =>
-        `The length of "${name}" must be ${maxLength} or less than it.`,
+    arrayMaxLength({ name, maxLength }) {
+        const length = plural(maxLength, "item")
+        return `"${name}" must contain less than or equal to ${length}.`
+    },
     arrayMinLength: ({ name, minLength }) =>
-        `The length of "${name}" must be ${minLength} or greater than it.`,
+        minLength === 1
+            ? `"${name}" must not be empty.`
+            : `"${name}" must contain more than or equal to ${minLength} items.`,
     arrayUnique: ({ name }) => `"${name}" must not contain duplicate values.`,
     bigint: ({ name }) => `"${name}" must be a bigint value.`,
     bigintMaxValue: ({ name, maxValue }) =>
-        `"${name}" must be ${maxValue}n or less than it.`,
+        `"${name}" must be less than or equal to ${maxValue}n.`,
     bigintMinValue: ({ name, minValue }) =>
-        `"${name}" must be ${minValue}n or greater than it.`,
+        `"${name}" must be greater than or equal to ${minValue}n.`,
     boolean: ({ name }) => `"${name}" must be a boolean value.`,
     class: ({ name, constructor: ctor }) =>
-        `"${name}" must be an instance of ${ctor.name}.`,
+        `"${name}" must be an instance of ${ctor.name || "Anonymous class"}.`,
     custom: ({ name, checkName }) => `"${name}" must be ${checkName}.`,
-    enum: ({ name, values }) =>
-        values.length === 1
-            ? `"${name}" must be ${valueToString(values[0])}.`
-            : `"${name}" must be any of ${listToString(
-                  values,
-                  "and",
-                  valueToString,
-              )}.`,
+    enum({ name, values }) {
+        const options = values.map(valueToString).filter(isNotDuplicateValue)
+        if (options.length <= 2) {
+            return `"${name}" must be ${listToString(options, "or")}.`
+        }
+        return `"${name}" must be any of ${listToString(options, "and")}.`
+    },
     function: ({ name }) => `"${name}" must be a function.`,
     number: ({ name }) => `"${name}" must be a number.`,
     numberDisallowInfinity: ({ name }) => `"${name}" must not be Infinity.`,
     numberDisallowNaN: ({ name }) => `"${name}" must not be NaN.`,
     numberIntOnly: ({ name }) => `"${name}" must be an integer.`,
     numberMaxValue: ({ name, maxValue }) =>
-        `"${name}" must be ${maxValue} or less than it.`,
+        `"${name}" must be less than or equal to ${maxValue}.`,
     numberMinValue: ({ name, minValue }) =>
-        `"${name}" must be ${minValue} or greater than it.`,
+        `"${name}" must be greater than or equal to ${minValue}.`,
     object: ({ name }) => `"${name}" must be an object.`,
     objectRequiredKeys: ({ name, keys }) =>
         keys.length === 1
@@ -47,20 +50,24 @@ export const DefaultMessage: Message = {
             ? `"${name}" must not have unknown property: ${keys[0]}.`
             : `"${name}" must not have unknown properties: ${keys.join(",")}.`,
     string: ({ name }) => `"${name}" must be a string.`,
-    stringMaxLength: ({ name, maxLength }) =>
-        `The cheracters of "${name}" must be ${maxLength} or less than it.`,
+    stringMaxLength({ name, maxLength }) {
+        const length = plural(maxLength, "character")
+        return `"${name}" must be less than or equal to ${length}.`
+    },
     stringMinLength: ({ name, minLength }) =>
-        `The cheracters of "${name}" must be ${minLength} or more than it.`,
+        minLength === 1
+            ? `"${name}" must not be empty.`
+            : `"${name}" must be more than or equal to ${minLength} characters.`,
     stringPattern: ({ name, pattern }) =>
         `"${name}" must match the pattern ${pattern}.`,
     symbol: ({ name }) => `"${name}" must be a symbol.`,
     tuple: ({ name }) => `"${name}" must be a tuple.`,
     tupleLength: ({ name, length }) =>
-        `The length of "${name}" must be ${length}.`,
+        `"${name}" must contain exactly ${plural(length, "item")}.`,
     union({ name, schemas }) {
         const options = ([] as string[])
             .concat(...schemas.map(schemaToString))
-            .filter(isNotDuplicatedValue)
+            .filter(isNotDuplicateValue)
         return options.length === 2
             ? `"${name}" must be ${listToString(options, "or")}.`
             : `"${name}" must be any of ${listToString(options, "and")}.`
@@ -69,7 +76,7 @@ export const DefaultMessage: Message = {
         if (errors.length === 1) {
             return errors[0]
         }
-        return `"${name}" has multiple validation errors:\n${errors
+        return `"${name}" has ${errors.length} validation errors:\n${errors
             .map(e => `- ${e}`)
             .join("\n")}`
     },
@@ -124,27 +131,21 @@ function schemaToString(
     }
 }
 
-function listToString<T>(
-    xs: readonly T[],
-    kind: "and" | "or",
-    select: (x: T) => string = String,
-): string {
-    switch (xs.length) {
-        case 0:
-            return ""
-        case 1:
-            return select(xs[0])
-        case 2:
-            return `${select(xs[0])} ${kind} ${select(xs[1])}`
-        default: {
-            const ys = xs.map(select)
-            const last = ys.pop()
-            return `${ys.join(", ")}, ${kind} ${last}`
-        }
+function listToString(xs: readonly string[], kind: "and" | "or"): string {
+    if (xs.length <= 2) {
+        return xs.join(` ${kind} `)
     }
+
+    const ys = [...xs]
+    const last = ys.pop()
+    return `${ys.join(", ")}, ${kind} ${last}`
 }
 
-function isNotDuplicatedValue(x: string, i: number, xs: string[]): boolean {
+function plural(n: number, unit: string): string {
+    return `${n} ${unit}${n === 1 ? "" : "s"}`
+}
+
+function isNotDuplicateValue(x: string, i: number, xs: string[]): boolean {
     for (let j = 0; j < i; ++j) {
         if (x === xs[j]) {
             return false

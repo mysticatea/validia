@@ -327,7 +327,7 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { req
         assert.throws(
             () => validate(schema, { one: null, two: null }),
             new Error(
-                '"value" has multiple validation errors:\n' +
+                '"value" has 2 validation errors:\n' +
                     '- "value.one" must be a string.\n' +
                     '- "value.two" must be a string.',
             ),
@@ -431,7 +431,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() }, { required:
         assert.throws(
             () => validate(schema, { one: 1, three: 3 }),
             new Error(
-                '"value" has multiple validation errors:\n' +
+                '"value" has 2 validation errors:\n' +
                     '- "value" must have the required property: two.\n' +
                     '- "value" must not have unknown property: three.',
             ),
@@ -508,7 +508,7 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { req
         assert.throws(
             () => validate(schema, { one: "one", three: "three" }),
             new Error(
-                '"value" has multiple validation errors:\n' +
+                '"value" has 2 validation errors:\n' +
                     '- "value" must have the required property: two.\n' +
                     '- "value" must not have unknown property: three.',
             ),

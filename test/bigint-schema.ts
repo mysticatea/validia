@@ -61,7 +61,7 @@ describe("schemas.bigInt({ maxValue: 1n })", () => {
     it("should fail on 2n", () => {
         assert.throws(
             () => validate(schema, BigInt("2")),
-            new Error('"value" must be 1n or less than it.'),
+            new Error('"value" must be less than or equal to 1n.'),
         )
     })
 
@@ -90,7 +90,7 @@ describe("schemas.bigInt({ minValue: 1n })", () => {
     it("should fail on 0n", () => {
         assert.throws(
             () => validate(schema, BigInt("0")),
-            new Error('"value" must be 1n or greater than it.'),
+            new Error('"value" must be greater than or equal to 1n.'),
         )
     })
 
@@ -122,14 +122,14 @@ describe("schemas.bigInt({ maxValue: 1n, minValue: 0n })", () => {
     it("should fail on -1n", () => {
         assert.throws(
             () => validate(schema, BigInt("-1")),
-            new Error('"value" must be 0n or greater than it.'),
+            new Error('"value" must be greater than or equal to 0n.'),
         )
     })
 
     it("should fail on 2n", () => {
         assert.throws(
             () => validate(schema, BigInt("2")),
-            new Error('"value" must be 1n or less than it.'),
+            new Error('"value" must be less than or equal to 1n.'),
         )
     })
 
@@ -167,7 +167,7 @@ describe("schemas.bigInt64", () => {
         assert.throws(
             () => validate(schema, BigInt("-9223372036854775809")),
             new Error(
-                '"value" must be -9223372036854775808n or greater than it.',
+                '"value" must be greater than or equal to -9223372036854775808n.',
             ),
         )
     })
@@ -175,7 +175,9 @@ describe("schemas.bigInt64", () => {
     it("should fail on 9223372036854775808n", () => {
         assert.throws(
             () => validate(schema, BigInt("9223372036854775808")),
-            new Error('"value" must be 9223372036854775807n or less than it.'),
+            new Error(
+                '"value" must be less than or equal to 9223372036854775807n.',
+            ),
         )
     })
 })
@@ -194,14 +196,16 @@ describe("schemas.bigUint64", () => {
     it("should fail on -1n", () => {
         assert.throws(
             () => validate(schema, BigInt("-1")),
-            new Error('"value" must be 0n or greater than it.'),
+            new Error('"value" must be greater than or equal to 0n.'),
         )
     })
 
     it("should fail on 18446744073709551616n", () => {
         assert.throws(
             () => validate(schema, BigInt("18446744073709551616")),
-            new Error('"value" must be 18446744073709551615n or less than it.'),
+            new Error(
+                '"value" must be less than or equal to 18446744073709551615n.',
+            ),
         )
     })
 })

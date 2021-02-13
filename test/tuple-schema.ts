@@ -29,7 +29,7 @@ describe("schemas.tuple()", () => {
     it("should fail on [0]", () => {
         assert.throws(
             () => validate(schema, [0]),
-            new Error('The length of "value" must be 0.'),
+            new Error('"value" must contain exactly 0 items.'),
         )
     })
 
@@ -81,7 +81,7 @@ describe("schemas.tuple(schemas.any())", () => {
     it("should fail on []", () => {
         assert.throws(
             () => validate(schema, []),
-            new Error('The length of "value" must be 1.'),
+            new Error('"value" must contain exactly 1 item.'),
         )
     })
 
@@ -111,8 +111,8 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
         assert.throws(
             () => validate(schema, []),
             new Error(
-                '"value" has multiple validation errors:\n' +
-                    '- The length of "value" must be 2.\n' +
+                '"value" has 3 validation errors:\n' +
+                    '- "value" must contain exactly 2 items.\n' +
                     '- "value[0]" must be a string.\n' +
                     '- "value[1]" must be a string.',
             ),
@@ -123,7 +123,7 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
         assert.throws(
             () => validate(schema, [1, 2]),
             new Error(
-                '"value" has multiple validation errors:\n' +
+                '"value" has 2 validation errors:\n' +
                     '- "value[0]" must be a string.\n' +
                     '- "value[1]" must be a string.',
             ),
