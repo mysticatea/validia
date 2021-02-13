@@ -98,19 +98,28 @@ export class BuildContext {
             };
         `)
         const code = this.code.join("\n")
-        const func: any = new Function("$schema", code)(schema)
+        try {
+            const func: any = new Function("$schema", code)(schema)
 
-        // #IF !PROD
-        func.toString = () => {
-            const bodyStr = code
-                .split("\n")
-                .map(line => `  ${line}`)
-                .join("\n")
-            return `var validate = (function($schema) {\n${bodyStr}\n})({});`
+            // #IF !PROD
+            func.toString = () => {
+                const bodyStr = code
+                    .split("\n")
+                    .map(line => `  ${line}`)
+                    .join("\n")
+                return `var validate = (function($schema) {\n${bodyStr}\n})({});`
+            }
+            // */
+
+            return func
+        } catch (error) {
+            //istanbul ignore next
+            if (error instanceof SyntaxError) {
+                error.message += ` in the code:\n${code}`
+            }
+            //istanbul ignore next
+            throw error
         }
-        // */
-
-        return func
     }
 }
 export namespace BuildContext {

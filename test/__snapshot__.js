@@ -1218,10 +1218,9 @@ exports["schemas.number({ allowInfinity: true }) should have validation allowing
   \"use strict\";
   function _0(a, b, c, d) {
     if (!Number.isFinite(b)) {
-      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
-      } else if (Number.isNaN(b)) {
+      if (Number.isNaN(b)) {
         d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
-      } else {
+      } else if (b !== Number.POSITIVE_INFINITY && b !== Number.NEGATIVE_INFINITY) {
         d.push({ code: \"number\", args: { name: a }, depth: c });
       }
     }
@@ -1236,12 +1235,8 @@ exports["schemas.number({ allowInfinity: true, allowNaN: true }) should have val
 "var validate = (function($schema) {
   \"use strict\";
   function _0(a, b, c, d) {
-    if (!Number.isFinite(b)) {
-      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
-      } else if (Number.isNaN(b)) {
-      } else {
-        d.push({ code: \"number\", args: { name: a }, depth: c });
-      }
+    if (typeof b !== \"number\") {
+      d.push({ code: \"number\", args: { name: a }, depth: c });
     }
     return d;
   }
@@ -1255,9 +1250,7 @@ exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) 
   \"use strict\";
   function _0(a, b, c, d) {
     if (!Number.isInteger(b)) {
-      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
-      } else if (Number.isNaN(b)) {
-      } else {
+      if (b !== Number.POSITIVE_INFINITY && b !== Number.NEGATIVE_INFINITY && !Number.isNaN(b)) {
         d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
       }
     }
@@ -1273,10 +1266,9 @@ exports["schemas.number({ allowInfinity: true, intOnly: true }) should have vali
   \"use strict\";
   function _0(a, b, c, d) {
     if (!Number.isInteger(b)) {
-      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
-      } else if (Number.isNaN(b)) {
+      if (Number.isNaN(b)) {
         d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
-      } else {
+      } else if (b !== Number.POSITIVE_INFINITY && b !== Number.NEGATIVE_INFINITY) {
         d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
       }
     }
@@ -1294,8 +1286,7 @@ exports["schemas.number({ allowNaN: true }) should have validation allowing NaN 
     if (!Number.isFinite(b)) {
       if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
         d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
-      } else if (Number.isNaN(b)) {
-      } else {
+      } else if (!Number.isNaN(b)) {
         d.push({ code: \"number\", args: { name: a }, depth: c });
       }
     }
@@ -1313,8 +1304,7 @@ exports["schemas.number({ allowNaN: true, intOnly: true }) should have validatio
     if (!Number.isInteger(b)) {
       if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
         d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
-      } else if (Number.isNaN(b)) {
-      } else {
+      } else if (!Number.isNaN(b)) {
         d.push({ code: \"numberIntOnly\", args: { name: a }, depth: c });
       }
     }
