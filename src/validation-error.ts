@@ -1,8 +1,21 @@
 import { Message } from "./message"
 
+/**
+ * Validation errors.
+ */
 export class ValidationError extends Error {
+    /**
+     * The errors.
+     * Every error has `code` and `args`.
+     */
     readonly errors: readonly ValidationError.ErrorInfo[]
 
+    /**
+     * Initialize this instance.
+     * @param message The message generator.
+     * @param name The target name.
+     * @param errors The errors.
+     */
     constructor(
         message: Message,
         name: string,
@@ -14,7 +27,13 @@ export class ValidationError extends Error {
     }
 }
 export namespace ValidationError {
+    /**
+     * The error code.
+     */
     export type ErrorCode = Exclude<keyof Message, "validation">
+    /**
+     * The pair of a error code and arguments.
+     */
     export type ErrorInfo = {
         [P in ErrorCode]: {
             code: P

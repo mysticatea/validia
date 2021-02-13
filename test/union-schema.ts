@@ -9,31 +9,31 @@ describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
     const schema = schemas.anyOf(schemas.number(), schemas.string())
 
     it("should pass 1", () => {
-        validate(schema, "x", 1)
+        validate(schema, 1)
     })
 
     it('should pass "foo"', () => {
-        validate(schema, "x", "foo")
+        validate(schema, "foo")
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a number or a string.'),
+            () => validate(schema, null),
+            new Error('"value" must be a number or a string.'),
         )
     })
 
     it("should fail on object", () => {
         assert.throws(
-            () => validate(schema, "x", {}),
-            new Error('"x" must be a number or a string.'),
+            () => validate(schema, {}),
+            new Error('"value" must be a number or a string.'),
         )
     })
 
     it("should fail on boolean", () => {
         assert.throws(
-            () => validate(schema, "x", true),
-            new Error('"x" must be a number or a string.'),
+            () => validate(schema, true),
+            new Error('"value" must be a number or a string.'),
         )
     })
 
@@ -43,7 +43,7 @@ describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
 
     it("should the value gets 'number | string' type", () => {
         const value: unknown = 0
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, number | string>>()
     })
 
@@ -59,26 +59,26 @@ describe('schemas.anyOf(schemas.number(), schemas.enum("auto", "none"))', () => 
     )
 
     it("should pass 1", () => {
-        validate(schema, "x", 1)
+        validate(schema, 1)
     })
     it('should pass "auto"', () => {
-        validate(schema, "x", "auto")
+        validate(schema, "auto")
     })
     it('should pass "none"', () => {
-        validate(schema, "x", "none")
+        validate(schema, "none")
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be any of a number, "auto", and "none".'),
+            () => validate(schema, null),
+            new Error('"value" must be any of a number, "auto", and "none".'),
         )
     })
 
     it('should fail on "foo"', () => {
         assert.throws(
-            () => validate(schema, "x", "foo"),
-            new Error('"x" must be any of a number, "auto", and "none".'),
+            () => validate(schema, "foo"),
+            new Error('"value" must be any of a number, "auto", and "none".'),
         )
     })
 
@@ -88,7 +88,7 @@ describe('schemas.anyOf(schemas.number(), schemas.enum("auto", "none"))', () => 
 
     it("should the value gets 'number | string' type", () => {
         const value: unknown = 0
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, number | "auto" | "none">>()
     })
 
@@ -105,36 +105,38 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
     )
 
     it("should pass 1", () => {
-        validate(schema, "x", 1)
+        validate(schema, 1)
     })
     it('should pass "foo"', () => {
-        validate(schema, "x", "foo")
+        validate(schema, "foo")
     })
     it("should pass { value: 1 }", () => {
-        validate(schema, "x", { value: 1 })
+        validate(schema, { value: 1 })
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be any of a number, a string, and an object.'),
+            () => validate(schema, null),
+            new Error(
+                '"value" must be any of a number, a string, and an object.',
+            ),
         )
     })
 
     it('should fail on { value: "foo" }, with the error message of the nearest choice', () => {
         assert.throws(
-            () => validate(schema, "x", { value: "foo" }),
-            new Error('"x.value" must be a number.'),
+            () => validate(schema, { value: "foo" }),
+            new Error('"value.value" must be a number.'),
         )
     })
 
     it('should fail on { valu: "foo" }, with the error message of the nearest choice', () => {
         assert.throws(
-            () => validate(schema, "x", { vale: "foo" }),
+            () => validate(schema, { vale: "foo" }),
             new Error(
-                '"x" has multiple validation errors:\n' +
-                    '- "x" must have the required property: value.\n' +
-                    '- "x" must not have unknown property: vale.',
+                '"value" has multiple validation errors:\n' +
+                    '- "value" must have the required property: value.\n' +
+                    '- "value" must not have unknown property: vale.',
             ),
         )
     })
@@ -145,7 +147,7 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
 
     it("should the value gets 'number | string' type", () => {
         const value: unknown = 0
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, number | string | { value: number }>>()
     })
 
@@ -201,9 +203,9 @@ describe("schemas.anyOf(/* all kinds of schema except any */)", () => {
 
     it("should print the name of schemas if failed", () => {
         assert.throws(
-            () => validate(schema, "x", {}),
+            () => validate(schema, {}),
             new Error(
-                '"x" must be any of an array, a bigint value, a boolean value, a RegExp instance, xxxx-check, 1n, [function myFunc], [function (anonymous)], 2, "foo", a function, a number, an object, a string, a symbol, and a tuple.',
+                '"value" must be any of an array, a bigint value, a boolean value, a RegExp instance, xxxx-check, 1n, [function myFunc], [function (anonymous)], 2, "foo", a function, a number, an object, a string, a symbol, and a tuple.',
             ),
         )
     })
@@ -241,5 +243,16 @@ describe("schemas.anyOf(/* all kinds of schema */)", () => {
             createValidationOfSchema(schema).toString(),
             createValidationOfSchema(schemas.any()).toString(),
         )
+    })
+})
+
+describe("schemas.anyOf(/* includes the same schema */)", () => {
+    const schema = schemas.anyOf(
+        schemas.anyOf(schemas.array(), schemas.bigInt(), schemas.boolean()),
+        schemas.anyOf(schemas.array(), schemas.number(), schemas.string()),
+    )
+
+    it("should check once for the same schema", () => {
+        assertSnapshot(createValidationOfSchema(schema).toString())
     })
 })

@@ -148,6 +148,7 @@ function constantId(i: number): string {
 }
 
 function localId(i: number): string {
+    //istanbul ignore if
     if (i >= Chars.length) {
         throw new Error("Too many locals")
     }

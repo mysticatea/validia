@@ -8,13 +8,13 @@ describe("createValidation(schema, options)", () => {
         )
 
         it('should pass "foo"', () => {
-            validate("x", "foo")
+            validate("foo")
         })
 
         it("should fail 0xDEADBEAF", () => {
             assert.throws(
-                () => validate("x", 0xdeadbeaf),
-                new Error('"x" must be a string.'),
+                () => validate(0xdeadbeaf),
+                new Error('"value" must be a string.'),
             )
         })
     })

@@ -9,27 +9,27 @@ describe("schemas.instanceOf(RegExp)", () => {
     const schema = schemas.instanceOf(RegExp)
 
     it("should pass /foo/u", () => {
-        validate(schema, "x", /foo/u)
+        validate(schema, /foo/u)
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be an instance of RegExp.'),
+            () => validate(schema, null),
+            new Error('"value" must be an instance of RegExp.'),
         )
     })
 
     it("should fail on string", () => {
         assert.throws(
-            () => validate(schema, "x", "/foo/u"),
-            new Error('"x" must be an instance of RegExp.'),
+            () => validate(schema, "/foo/u"),
+            new Error('"value" must be an instance of RegExp.'),
         )
     })
 
     it("should fail on other objects", () => {
         assert.throws(
-            () => validate(schema, "x", { pattern: "foo", flags: "u" }),
-            new Error('"x" must be an instance of RegExp.'),
+            () => validate(schema, { pattern: "foo", flags: "u" }),
+            new Error('"value" must be an instance of RegExp.'),
         )
     })
 
@@ -39,7 +39,7 @@ describe("schemas.instanceOf(RegExp)", () => {
 
     it("should the value gets 'RegExp' type", () => {
         const value: unknown = /foo/u
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, RegExp>>()
     })
 

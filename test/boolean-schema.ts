@@ -9,31 +9,31 @@ describe("schemas.boolean()", () => {
     const schema = schemas.boolean()
 
     it("should pass true", () => {
-        validate(schema, "x", true)
+        validate(schema, true)
     })
 
     it("should pass false", () => {
-        validate(schema, "x", false)
+        validate(schema, false)
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a boolean value.'),
+            () => validate(schema, null),
+            new Error('"value" must be a boolean value.'),
         )
     })
 
     it("should fail on number", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be a boolean value.'),
+            () => validate(schema, 0),
+            new Error('"value" must be a boolean value.'),
         )
     })
 
     it("should fail on string", () => {
         assert.throws(
-            () => validate(schema, "x", "0"),
-            new Error('"x" must be a boolean value.'),
+            () => validate(schema, "0"),
+            new Error('"value" must be a boolean value.'),
         )
     })
 
@@ -43,7 +43,7 @@ describe("schemas.boolean()", () => {
 
     it("should the value gets 'boolean' type", () => {
         const value: unknown = true
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, boolean>>()
     })
 

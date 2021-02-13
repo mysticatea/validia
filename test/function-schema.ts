@@ -9,35 +9,35 @@ describe("schemas.function()", () => {
     const schema = schemas.function()
 
     it("should pass Object", () => {
-        validate(schema, "x", Object)
+        validate(schema, Object)
     })
 
     it("should pass parseInt", () => {
-        validate(schema, "x", parseInt)
+        validate(schema, parseInt)
     })
 
     it("should pass () => {}", () => {
-        validate(schema, "x", () => {})
+        validate(schema, () => {})
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a function.'),
+            () => validate(schema, null),
+            new Error('"value" must be a function.'),
         )
     })
 
     it("should fail on number", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be a function.'),
+            () => validate(schema, 0),
+            new Error('"value" must be a function.'),
         )
     })
 
     it("should fail on string", () => {
         assert.throws(
-            () => validate(schema, "x", "0"),
-            new Error('"x" must be a function.'),
+            () => validate(schema, "0"),
+            new Error('"value" must be a function.'),
         )
     })
 
@@ -47,7 +47,7 @@ describe("schemas.function()", () => {
 
     it("should the value gets '(...args: any[]) => any' type", () => {
         const value: unknown = () => {}
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, (...args: any[]) => any>>()
     })
 

@@ -1,5 +1,5 @@
 /**
- * All schema.
+ * All schemas.
  */
 export type Schema =
     | Schema.Any

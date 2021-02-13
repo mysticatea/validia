@@ -14,20 +14,20 @@ describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)',
     )
 
     it("should pass process.cwd()", () => {
-        validate(schema, "x", process.cwd())
+        validate(schema, process.cwd())
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be an absolute path.'),
+            () => validate(schema, null),
+            new Error('"value" must be an absolute path.'),
         )
     })
 
     it("should fail on ./foo.js", () => {
         assert.throws(
-            () => validate(schema, "x", "./foo.js"),
-            new Error('"x" must be an absolute path.'),
+            () => validate(schema, "./foo.js"),
+            new Error('"value" must be an absolute path.'),
         )
     })
 
@@ -37,7 +37,7 @@ describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)',
 
     it("should the value gets 'string' type", () => {
         const value: unknown = process.cwd()
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, string>>()
     })
 

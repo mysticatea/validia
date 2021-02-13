@@ -45,7 +45,7 @@ const myOptionSchema = {
 
 // 2. Validate a value.
 declare let value: any;
-validate(myOptionSchema, "my value", value);
+validate(myOptionSchema, value);
 // The `value` is `{ include?: string[]; exclude?: string[] }` here.
 ```
 
@@ -64,7 +64,7 @@ const myOptionSchema = s.object({
 
 // 2. Validate a value.
 declare let value: any;
-validate(myOptionSchema, "my value", value);
+validate(myOptionSchema, value);
 // The `value` is `{ include?: string[]; exclude?: string[] }` here.
 ```
 
@@ -88,7 +88,7 @@ const validate: Validate<typeof myOptionSchema> = createValidation(
 
 // 3. Validate a value.
 declare let value: any;
-validate("my value", value);
+validate(value);
 // The `value` is `{ include?: string[]; exclude?: string[] }` here.
 ```
 
@@ -129,25 +129,27 @@ import {
 } from "validia";
 ```
 
-### ➡️ function `createValidation(schema, options?)`
+### ➡️ function `createValidation<T>(schema: T, options?: Options)`
 
 Compile the validation function of given schema object.
 
 #### Parameters
 
 - `schema` ... The schema object.
-- `options.messages` ... The error messages. Optional. Default is `DefaultMessage`.
+- `options` ... The options to compile.
+  - `options.defaultMessages` ... The error message generator. Optional. Default is `DefaultMessage`.
 
 #### Return Value
 
-- The validation function of the schema; `(name: string, value: any) => void`.
-  - The `name` argument will be used in error messages.
-  - If the `value` argument passed validation, the `value` argument gets good typing.
-  - If the `value` argument failed validation, the validation function throws a `ValidationError` instance.
+- The validation function of the schema; `(value: any, options?: Options) => void`.
+  - If the `value` argument passed the validation, the `value` argument gets good typing.
+    Otherwise, the validation function throws a `ValidationError` instance.
+  - The `options.messages` argument is the error message generator. Optional. Default is `options.defaultMessages`.
+  - The `options.name` argument will be used in error messages. Optional. Default is `"value"`.
 
-### ➡️ function `validate(schema, name, value, options?)`
+### ➡️ function `validate<T>(schema: T, value: any, options?: Options)`
 
-This is equivalent to `createValidation(schema, options)(name, value)`.
+This is equivalent to `createValidation<T>(schema)(value, options)`.
 
 ### ➡️ object `schemas`
 

@@ -9,31 +9,31 @@ describe("schemas.symbol()", () => {
     const schema = schemas.symbol()
 
     it("should pass Symbol.iterator", () => {
-        validate(schema, "x", Symbol.iterator)
+        validate(schema, Symbol.iterator)
     })
 
     it("should pass Symbol(foo)", () => {
-        validate(schema, "x", Symbol("foo"))
+        validate(schema, Symbol("foo"))
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a symbol.'),
+            () => validate(schema, null),
+            new Error('"value" must be a symbol.'),
         )
     })
 
     it("should fail on number", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be a symbol.'),
+            () => validate(schema, 0),
+            new Error('"value" must be a symbol.'),
         )
     })
 
     it("should fail on string", () => {
         assert.throws(
-            () => validate(schema, "x", "0"),
-            new Error('"x" must be a symbol.'),
+            () => validate(schema, "0"),
+            new Error('"value" must be a symbol.'),
         )
     })
 
@@ -43,7 +43,7 @@ describe("schemas.symbol()", () => {
 
     it("should the value gets 'symbol' type", () => {
         const value: unknown = Symbol("foo")
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, symbol>>()
     })
 

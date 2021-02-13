@@ -19,22 +19,22 @@ describe("schemas.object({ include: schemas.anyOf(schemas.string(), schemas.arra
     })
 
     it("should pass {}", () => {
-        validate(schema, "x", {})
+        validate(schema, {})
     })
     it('should pass { include: "foo" }', () => {
-        validate(schema, "x", { include: "foo" })
+        validate(schema, { include: "foo" })
     })
     it('should pass { include: ["foo"] }', () => {
-        validate(schema, "x", { include: ["foo"] })
+        validate(schema, { include: ["foo"] })
     })
     it('should pass { include: ["foo"], exclude: "bar" }', () => {
-        validate(schema, "x", { include: ["foo"], exclude: "bar" })
+        validate(schema, { include: ["foo"], exclude: "bar" })
     })
 
     it("should fail on { include: 3 }", () => {
         assert.throws(
-            () => validate(schema, "x", { include: 3 }),
-            new Error('"x.include" must be a string or an array.'),
+            () => validate(schema, { include: 3 }),
+            new Error('"value.include" must be a string or an array.'),
         )
     })
 
@@ -44,7 +44,7 @@ describe("schemas.object({ include: schemas.anyOf(schemas.string(), schemas.arra
 
     it("should the value gets 'any' type", () => {
         const value: unknown = {}
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<
             Equals<
                 typeof value,

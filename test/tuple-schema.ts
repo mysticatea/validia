@@ -9,27 +9,27 @@ describe("schemas.tuple()", () => {
     const schema = schemas.tuple()
 
     it("should pass empty array", () => {
-        validate(schema, "x", [])
+        validate(schema, [])
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a tuple.'),
+            () => validate(schema, null),
+            new Error('"value" must be a tuple.'),
         )
     })
 
     it("should fail on { length: 0 }", () => {
         assert.throws(
-            () => validate(schema, "x", { length: 0 }),
-            new Error('"x" must be a tuple.'),
+            () => validate(schema, { length: 0 }),
+            new Error('"value" must be a tuple.'),
         )
     })
 
     it("should fail on [0]", () => {
         assert.throws(
-            () => validate(schema, "x", [0]),
-            new Error('The length of "x" must be 0.'),
+            () => validate(schema, [0]),
+            new Error('The length of "value" must be 0.'),
         )
     })
 
@@ -39,7 +39,7 @@ describe("schemas.tuple()", () => {
 
     it("should the value gets '[]' type", () => {
         const value: unknown = []
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, []>>()
     })
 
@@ -52,36 +52,36 @@ describe("schemas.tuple(schemas.any())", () => {
     const schema = schemas.tuple(schemas.any())
 
     it("should pass [0]", () => {
-        validate(schema, "x", [0])
+        validate(schema, [0])
     })
     it('should pass ["foo"]', () => {
-        validate(schema, "x", ["foo"])
+        validate(schema, ["foo"])
     })
     it("should pass [null]", () => {
-        validate(schema, "x", [null])
+        validate(schema, [null])
     })
     it("should pass [undefined]", () => {
-        validate(schema, "x", [undefined])
+        validate(schema, [undefined])
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be a tuple.'),
+            () => validate(schema, null),
+            new Error('"value" must be a tuple.'),
         )
     })
 
     it("should fail on { length: 1 }", () => {
         assert.throws(
-            () => validate(schema, "x", { length: 1 }),
-            new Error('"x" must be a tuple.'),
+            () => validate(schema, { length: 1 }),
+            new Error('"value" must be a tuple.'),
         )
     })
 
     it("should fail on []", () => {
         assert.throws(
-            () => validate(schema, "x", []),
-            new Error('The length of "x" must be 1.'),
+            () => validate(schema, []),
+            new Error('The length of "value" must be 1.'),
         )
     })
 
@@ -91,7 +91,7 @@ describe("schemas.tuple(schemas.any())", () => {
 
     it("should the value gets '[any]' type", () => {
         const value: unknown = [0]
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, [any]>>()
     })
 
@@ -104,36 +104,36 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
     const schema = schemas.tuple(schemas.string(), schemas.string())
 
     it('should pass ["a", "b"]', () => {
-        validate(schema, "x", ["a", "b"])
+        validate(schema, ["a", "b"])
     })
 
     it("should fail on []", () => {
         assert.throws(
-            () => validate(schema, "x", []),
+            () => validate(schema, []),
             new Error(
-                '"x" has multiple validation errors:\n' +
-                    '- The length of "x" must be 2.\n' +
-                    '- "x[0]" must be a string.\n' +
-                    '- "x[1]" must be a string.',
+                '"value" has multiple validation errors:\n' +
+                    '- The length of "value" must be 2.\n' +
+                    '- "value[0]" must be a string.\n' +
+                    '- "value[1]" must be a string.',
             ),
         )
     })
 
     it("should fail on [1, 2]", () => {
         assert.throws(
-            () => validate(schema, "x", [1, 2]),
+            () => validate(schema, [1, 2]),
             new Error(
-                '"x" has multiple validation errors:\n' +
-                    '- "x[0]" must be a string.\n' +
-                    '- "x[1]" must be a string.',
+                '"value" has multiple validation errors:\n' +
+                    '- "value[0]" must be a string.\n' +
+                    '- "value[1]" must be a string.',
             ),
         )
     })
 
     it('should fail on ["a", null]', () => {
         assert.throws(
-            () => validate(schema, "x", ["a", null]),
-            new Error('"x[1]" must be a string.'),
+            () => validate(schema, ["a", null]),
+            new Error('"value[1]" must be a string.'),
         )
     })
 
@@ -143,7 +143,7 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
 
     it("should the value gets '[string, string]' type", () => {
         const value: unknown = ["a", "b"]
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, [string, string]>>()
     })
 

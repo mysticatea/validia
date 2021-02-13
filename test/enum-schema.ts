@@ -20,19 +20,19 @@ describe("schemas.enum(null)", () => {
     const schema = schemas.enum(null)
 
     it("should pass null", () => {
-        validate(schema, "x", null)
+        validate(schema, null)
     })
 
     it("should fail on 0", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be null.'),
+            () => validate(schema, 0),
+            new Error('"value" must be null.'),
         )
     })
     it("should fail on undefined", () => {
         assert.throws(
-            () => validate(schema, "x", undefined),
-            new Error('"x" must be null.'),
+            () => validate(schema, undefined),
+            new Error('"value" must be null.'),
         )
     })
 
@@ -42,7 +42,7 @@ describe("schemas.enum(null)", () => {
 
     it("should the value gets 'number' type", () => {
         const value: unknown = null
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, null>>()
     })
 
@@ -62,31 +62,31 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
     )
 
     it("should pass 1n", () => {
-        validate(schema, "x", BigInt("1"))
+        validate(schema, BigInt("1"))
     })
     it("should pass true", () => {
-        validate(schema, "x", true)
+        validate(schema, true)
     })
     it("should pass 0", () => {
-        validate(schema, "x", 0)
+        validate(schema, 0)
     })
     it("should pass null", () => {
-        validate(schema, "x", null)
+        validate(schema, null)
     })
     it('should pass "foo"', () => {
-        validate(schema, "x", "foo")
+        validate(schema, "foo")
     })
     it("should pass undefined", () => {
-        validate(schema, "x", undefined)
+        validate(schema, undefined)
     })
 
     it("should fail on 0n", () => {
         try {
-            validate(schema, "x", BigInt("0"))
+            validate(schema, BigInt("0"))
         } catch (error) {
             assert.strictEqual(
                 error.message,
-                '"x" must be any of 1n, true, 0, null, "foo", and undefined.',
+                '"value" must be any of 1n, true, 0, null, "foo", and undefined.',
             )
             return
         }
@@ -95,11 +95,11 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
 
     it("should fail on false", () => {
         try {
-            validate(schema, "x", false)
+            validate(schema, false)
         } catch (error) {
             assert.strictEqual(
                 error.message,
-                '"x" must be any of 1n, true, 0, null, "foo", and undefined.',
+                '"value" must be any of 1n, true, 0, null, "foo", and undefined.',
             )
             return
         }
@@ -108,11 +108,11 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
 
     it("should fail on 1", () => {
         try {
-            validate(schema, "x", 1)
+            validate(schema, 1)
         } catch (error) {
             assert.strictEqual(
                 error.message,
-                '"x" must be any of 1n, true, 0, null, "foo", and undefined.',
+                '"value" must be any of 1n, true, 0, null, "foo", and undefined.',
             )
             return
         }
@@ -121,11 +121,11 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
 
     it("should fail on an object", () => {
         try {
-            validate(schema, "x", {})
+            validate(schema, {})
         } catch (error) {
             assert.strictEqual(
                 error.message,
-                '"x" must be any of 1n, true, 0, null, "foo", and undefined.',
+                '"value" must be any of 1n, true, 0, null, "foo", and undefined.',
             )
             return
         }
@@ -134,11 +134,11 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
 
     it('should fail on "bar"', () => {
         try {
-            validate(schema, "x", "bar")
+            validate(schema, "bar")
         } catch (error) {
             assert.strictEqual(
                 error.message,
-                '"x" must be any of 1n, true, 0, null, "foo", and undefined.',
+                '"value" must be any of 1n, true, 0, null, "foo", and undefined.',
             )
             return
         }
@@ -151,7 +151,7 @@ describe('schemas.enum(1n, true, 0, null, "foo", undefined)', () => {
 
     it("should the value gets '1n | true | 0 | null | \"foo\" | undefined' type", () => {
         const value: unknown = 0
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<
             Equals<typeof value, 1n | true | 0 | null | "foo" | undefined>
         >()
@@ -174,19 +174,19 @@ describe("schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INF
     )
 
     it("should pass Number.NaN", () => {
-        validate(schema, "x", Number.NaN)
+        validate(schema, Number.NaN)
     })
     it("should pass Number.POSITIVE_INFINITY", () => {
-        validate(schema, "x", Number.POSITIVE_INFINITY)
+        validate(schema, Number.POSITIVE_INFINITY)
     })
     it("should pass Number.NEGATIVE_INFINITY", () => {
-        validate(schema, "x", Number.NEGATIVE_INFINITY)
+        validate(schema, Number.NEGATIVE_INFINITY)
     })
 
     it("should fail on 0", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be any of NaN, Infinity, and -Infinity.'),
+            () => validate(schema, 0),
+            new Error('"value" must be any of NaN, Infinity, and -Infinity.'),
         )
     })
 
@@ -196,7 +196,7 @@ describe("schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INF
 
     it("should the value gets 'number' type", () => {
         const value: unknown = Number.NaN
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, number>>()
     })
 
@@ -209,25 +209,25 @@ describe("schemas.enum(Symbol.iterator)", () => {
     const schema = schemas.enum(Symbol.iterator)
 
     it("should pass Symbol.iterator", () => {
-        validate(schema, "x", Symbol.iterator)
+        validate(schema, Symbol.iterator)
     })
 
     it("should fail on 0", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be Symbol(Symbol.iterator).'),
+            () => validate(schema, 0),
+            new Error('"value" must be Symbol(Symbol.iterator).'),
         )
     })
     it("should fail on undefined", () => {
         assert.throws(
-            () => validate(schema, "x", undefined),
-            new Error('"x" must be Symbol(Symbol.iterator).'),
+            () => validate(schema, undefined),
+            new Error('"value" must be Symbol(Symbol.iterator).'),
         )
     })
     it("should fail on another symbol", () => {
         assert.throws(
-            () => validate(schema, "x", Symbol.toStringTag),
-            new Error('"x" must be Symbol(Symbol.iterator).'),
+            () => validate(schema, Symbol.toStringTag),
+            new Error('"value" must be Symbol(Symbol.iterator).'),
         )
     })
 
@@ -237,7 +237,7 @@ describe("schemas.enum(Symbol.iterator)", () => {
 
     it("should the value gets 'symbol' type", () => {
         const value: unknown = Symbol.iterator
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, symbol>>()
     })
 
@@ -253,28 +253,28 @@ describe("schemas.enum(myObj, mySymbol, myFunc)", () => {
     const schema = schemas.enum(myObj, mySymbol, myFunc)
 
     it("should pass myObj", () => {
-        validate(schema, "x", myObj)
+        validate(schema, myObj)
     })
     it("should pass mySymbol", () => {
-        validate(schema, "x", mySymbol)
+        validate(schema, mySymbol)
     })
     it("should pass myFunc", () => {
-        validate(schema, "x", myFunc)
+        validate(schema, myFunc)
     })
 
     it("should fail on {}", () => {
         assert.throws(
-            () => validate(schema, "x", {}),
+            () => validate(schema, {}),
             new Error(
-                '"x" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
+                '"value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
             ),
         )
     })
     it("should fail on another symbol", () => {
         assert.throws(
-            () => validate(schema, "x", Symbol("mySymbol")),
+            () => validate(schema, Symbol("mySymbol")),
             new Error(
-                '"x" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
+                '"value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
             ),
         )
     })
@@ -285,7 +285,7 @@ describe("schemas.enum(myObj, mySymbol, myFunc)", () => {
 
     it("should the value gets 'number' type", () => {
         const value: unknown = myObj
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, {} | typeof mySymbol | (() => void)>>()
     })
 
@@ -299,22 +299,22 @@ describe("schemas.enum(myObj, Number.NaN)", () => {
     const schema = schemas.enum(myObj, Number.NaN)
 
     it("should pass myObj", () => {
-        validate(schema, "x", myObj)
+        validate(schema, myObj)
     })
     it("should pass Number.NaN", () => {
-        validate(schema, "x", Number.NaN)
+        validate(schema, Number.NaN)
     })
 
     it("should fail on {}", () => {
         assert.throws(
-            () => validate(schema, "x", {}),
-            new Error('"x" must be any of [object Object] and NaN.'),
+            () => validate(schema, {}),
+            new Error('"value" must be any of [object Object] and NaN.'),
         )
     })
     it("should fail on 0", () => {
         assert.throws(
-            () => validate(schema, "x", 0),
-            new Error('"x" must be any of [object Object] and NaN.'),
+            () => validate(schema, 0),
+            new Error('"value" must be any of [object Object] and NaN.'),
         )
     })
 

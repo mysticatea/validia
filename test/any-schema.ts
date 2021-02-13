@@ -8,13 +8,13 @@ describe("schemas.any()", () => {
     const schema = schemas.any()
 
     it("should pass true", () => {
-        validate(schema, "x", true)
+        validate(schema, true)
     })
     it("should pass 1", () => {
-        validate(schema, "x", 1)
+        validate(schema, 1)
     })
     it('should pass "foo"', () => {
-        validate(schema, "x", "foo")
+        validate(schema, "foo")
     })
 
     it("should have no validation", () => {
@@ -23,7 +23,7 @@ describe("schemas.any()", () => {
 
     it("should the value gets 'any' type", () => {
         const value: unknown = true
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<Equals<typeof value, any>>()
     })
 

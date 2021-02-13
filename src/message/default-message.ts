@@ -1,6 +1,9 @@
 import { Schema } from "../schema-types"
 import { Message } from "./message"
 
+/**
+ * The default error message generator.
+ */
 export const DefaultMessage: Message = {
     array: ({ name }) => `"${name}" must be an array.`,
     arrayMaxLength: ({ name, maxLength }) =>

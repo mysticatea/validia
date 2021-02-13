@@ -9,15 +9,15 @@ describe("schemas.record()", () => {
     const schema = schemas.record()
 
     it("should pass empty object", () => {
-        validate(schema, "x", {})
+        validate(schema, {})
     })
 
     it("should pass empty array", () => {
-        validate(schema, "x", [])
+        validate(schema, [])
     })
 
     it("should pass object that has various kinds of properties", () => {
-        validate(schema, "x", {
+        validate(schema, {
             n: 1,
             s: "str",
             b: true,
@@ -30,15 +30,15 @@ describe("schemas.record()", () => {
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be an object.'),
+            () => validate(schema, null),
+            new Error('"value" must be an object.'),
         )
     })
 
     it("should fail on string", () => {
         assert.throws(
-            () => validate(schema, "x", "foo"),
-            new Error('"x" must be an object.'),
+            () => validate(schema, "foo"),
+            new Error('"value" must be an object.'),
         )
     })
 
@@ -48,7 +48,7 @@ describe("schemas.record()", () => {
 
     it("should the value gets 'Record<number | string | symbol, any>' type", () => {
         const value: unknown = []
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<
             Equals<typeof value, Record<number | string | symbol, any>>
         >()
@@ -63,36 +63,36 @@ describe("schemas.record(schemas.string())", () => {
     const schema = schemas.record(schemas.string())
 
     it("should pass empty object", () => {
-        validate(schema, "x", {})
+        validate(schema, {})
     })
     it("should pass object that has string properties", () => {
-        validate(schema, "x", { one: "one", two: "two" })
+        validate(schema, { one: "one", two: "two" })
     })
     it("should pass empty array", () => {
-        validate(schema, "x", [])
+        validate(schema, [])
     })
     it("should pass array that includes strings", () => {
-        validate(schema, "x", ["foo", "bar"])
+        validate(schema, ["foo", "bar"])
     })
 
     it("should fail on null", () => {
         assert.throws(
-            () => validate(schema, "x", null),
-            new Error('"x" must be an object.'),
+            () => validate(schema, null),
+            new Error('"value" must be an object.'),
         )
     })
 
     it("should fail on object that has null property", () => {
         assert.throws(
-            () => validate(schema, "x", { foo: null }),
-            new Error('"x.foo" must be a string.'),
+            () => validate(schema, { foo: null }),
+            new Error('"value.foo" must be a string.'),
         )
     })
 
     it("should fail on array that includes null", () => {
         assert.throws(
-            () => validate(schema, "x", ["foo", null]),
-            new Error('"x.1" must be a string.'),
+            () => validate(schema, ["foo", null]),
+            new Error('"value.1" must be a string.'),
         )
     })
 
@@ -102,7 +102,7 @@ describe("schemas.record(schemas.string())", () => {
 
     it("should the value gets 'Record<number | string | symbol, string>' type", () => {
         const value: unknown = {}
-        validate(schema, "x", value)
+        validate(schema, value)
         assertType<
             Equals<typeof value, Record<number | string | symbol, string>>
         >()

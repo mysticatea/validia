@@ -533,6 +533,85 @@ exports["schemas.any() should have no validation #[0]"] = String.raw`
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.anyOf(/* includes the same schema */) should check once for the same schema #[0]"] = String.raw`
+"var validate = (function($schema) {
+  \"use strict\";
+  function _0(a, b, c, d) {
+    if (!Array.isArray(b)) {
+      d.push({ code: \"array\", args: { name: a }, depth: c });
+    }
+    return d;
+  }
+  var _1 = $schema.schemas[0].schemas[0];
+  function _2(a, b, c, d) {
+    if (typeof b !== \"bigint\") {
+      d.push({ code: \"bigint\", args: { name: a }, depth: c });
+    }
+    return d;
+  }
+  var _3 = $schema.schemas[0].schemas[1];
+  function _4(a, b, c, d) {
+    if (typeof b !== \"boolean\") {
+      d.push({ code: \"boolean\", args: { name: a }, depth: c });
+    }
+    return d;
+  }
+  var _5 = $schema.schemas[0].schemas[2];
+  function _6(a, b, c, d) {
+    if (!Number.isFinite(b)) {
+      if (b === Number.POSITIVE_INFINITY || b === Number.NEGATIVE_INFINITY) {
+        d.push({ code: \"numberDisallowInfinity\", args: { name: a }, depth: c });
+      } else if (Number.isNaN(b)) {
+        d.push({ code: \"numberDisallowNaN\", args: { name: a }, depth: c });
+      } else {
+        d.push({ code: \"number\", args: { name: a }, depth: c });
+      }
+    }
+    return d;
+  }
+  var _7 = $schema.schemas[1].schemas[1];
+  function _8(a, b, c, d) {
+    if (typeof b !== \"string\") {
+      d.push({ code: \"string\", args: { name: a }, depth: c });
+    }
+    return d;
+  }
+  var _9 = $schema.schemas[1].schemas[2];
+  function _a(a, b) {
+    return a <= b.depth ? a : b.depth;
+  }
+  function _b(a, b, c, d, e, f) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
+      h = f[k](a, b, c, []);
+      if (h.length === 0) {
+        return d;
+      }
+      j = h.reduce(_a, 1073741823)
+      if (j > i) {
+        g = h;
+        i = j;
+      } else if (j === i) {
+        g = null;
+      }
+    }
+    if (g !== null) {
+      for (k = 0; k < g.length; ++k) {
+        d.push(g[k]);
+      }
+    } else {
+      d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
+    }
+    return d;
+  }
+  function _c(a, b, c, d) {
+    return _b(a, b, c, d, [_1, _3, _5, _7, _9], [_0, _2, _4, _6, _8]);
+  }
+  return function validate(name, value) {
+    return _c(name, value, 0, []);
+  };
+})({});"
+`.slice(1, -1)
 exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
