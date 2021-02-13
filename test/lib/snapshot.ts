@@ -6,6 +6,7 @@ import util from "util"
 
 const IsUpdateMode = Boolean(process.env.UPDATE_SNAPSHOT) // eslint-disable-line no-process-env
 const SnapshotFilePath = path.resolve(__dirname, "../__snapshot__.js")
+const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 let snapshot: Record<string, string> = Object.create(null)
@@ -16,9 +17,16 @@ let currentIndex = 0
 
 export const mochaHooks = {
     // Load the snapshot.
-    beforeAll() {
-        delete require.cache[SnapshotFilePath]
-        snapshot = require(SnapshotFilePath) // eslint-disable-line @mysticatea/ts/no-require-imports
+    async beforeAll() {
+        snapshot = Object.create(null)
+        try {
+            const content = await readFile(SnapshotFilePath, "utf8")
+            new Function("exports", content)(snapshot)
+        } catch (error) {
+            if (error?.code !== "ENOENT") {
+                throw error
+            }
+        }
         snapshotUpdated = false
         unusedKeys = new Set(Object.keys(snapshot))
     },
