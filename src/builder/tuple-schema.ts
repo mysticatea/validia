@@ -5,7 +5,7 @@ import { addValidation } from "./schema"
 export function addValidationOfTupleSchema(
     ctx: BuildContext,
     schemaKey: string,
-    { elements }: Schema.TupleSchema<readonly Schema[]>,
+    { elements }: Schema.Tuple<readonly Schema[]>,
 ): string {
     return ctx.addValidation(function* (_locals, name, value, depth, errors) {
         const length = elements.length

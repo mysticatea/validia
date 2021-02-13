@@ -84,7 +84,7 @@ function valueToString(value: any): string {
 }
 
 function schemaToString(
-    schema: Exclude<Schema, Schema.AnySchema | Schema.UnionSchema<any>>,
+    schema: Exclude<Schema, Schema.Any | Schema.Union<any>>,
 ): string | string[] {
     switch (schema.type) {
         case "array":

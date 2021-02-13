@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfClassSchema(
     ctx: BuildContext,
     schemaKey: string,
-    schema: Schema.ClassSchema<any>,
+    schema: Schema.Class<any>,
 ): string {
     return ctx.addValidation((_locals, name, value, depth, errors) => {
         // eslint-disable-next-line no-shadow

@@ -21,7 +21,7 @@ class SchemaFactories {
     /**
      * The schema for any values.
      */
-    any(): Schema.AnySchema {
+    any(): Schema.Any {
         return { type: "any" }
     }
 
@@ -30,7 +30,7 @@ class SchemaFactories {
      * @param elements The schema of element types.
      * @param options The options.
      */
-    array(): Schema.ArraySchema<Schema.AnySchema>
+    array(): Schema.Array<Schema.Any>
 
     /**
      * The schema for array instances.
@@ -39,8 +39,8 @@ class SchemaFactories {
      */
     array<T extends Schema>(
         elements: T,
-        options?: Omit<Schema.ArraySchema<T>, "type" | "elements">,
-    ): Schema.ArraySchema<T>
+        options?: Omit<Schema.Array<T>, "type" | "elements">,
+    ): Schema.Array<T>
 
     // Implementation
     array(
@@ -49,8 +49,8 @@ class SchemaFactories {
             maxLength = MaxArrayLength,
             minLength = 0,
             unique = false,
-        }: Omit<Schema.ArraySchema<any>, "type" | "elements"> = {},
-    ): Schema.ArraySchema<Schema> {
+        }: Omit<Schema.Array<any>, "type" | "elements"> = {},
+    ): Schema.Array<Schema> {
         return { type: "array", elements, maxLength, minLength, unique }
     }
 
@@ -61,14 +61,14 @@ class SchemaFactories {
     bigInt({
         maxValue,
         minValue,
-    }: Omit<Schema.BigIntSchema, "type"> = {}): Schema.BigIntSchema {
+    }: Omit<Schema.BigInt, "type"> = {}): Schema.BigInt {
         return { type: "bigint", maxValue, minValue }
     }
 
     /**
      * The schema for 64 bits signed integers.
      */
-    bigInt64: Schema.BigIntSchema = {
+    bigInt64: Schema.BigInt = {
         type: "bigint",
         minValue: MinInt64,
         maxValue: MaxInt64,
@@ -77,7 +77,7 @@ class SchemaFactories {
     /**
      * The schema for 64 bits unsigned integers.
      */
-    bigUint64: Schema.BigIntSchema = {
+    bigUint64: Schema.BigInt = {
         type: "bigint",
         minValue: BigInt("0"),
         maxValue: MaxUint64,
@@ -86,7 +86,7 @@ class SchemaFactories {
     /**
      * The schema for true or false.
      */
-    boolean(): Schema.BooleanSchema {
+    boolean(): Schema.Boolean {
         return { type: "boolean" }
     }
 
@@ -96,8 +96,8 @@ class SchemaFactories {
      */
     instanceOf<T>(
         // eslint-disable-next-line no-shadow
-        constructor: Schema.ClassSchema<T>["constructor"],
-    ): Schema.ClassSchema<T> {
+        constructor: Schema.Class<T>["constructor"],
+    ): Schema.Class<T> {
         return { type: "class", constructor }
     }
 
@@ -106,7 +106,7 @@ class SchemaFactories {
      * @param name The name of the valid values. This name will be shown in error messages.
      * @param check The check.
      */
-    custom<T>(name: string, check: (x: any) => x is T): Schema.CustomSchema<T> {
+    custom<T>(name: string, check: (x: any) => x is T): Schema.Custom<T> {
         return { type: "custom", check, name }
     }
 
@@ -118,10 +118,10 @@ class SchemaFactories {
     enum<T, U extends readonly any[]>(
         firstValue: T,
         ...restValues: U
-    ): Schema.EnumSchema<T | U[number]>
+    ): Schema.Enum<T | U[number]>
 
     // Implementation
-    enum<T extends readonly any[]>(...values: T): Schema.EnumSchema<T[number]> {
+    enum<T extends readonly any[]>(...values: T): Schema.Enum<T[number]> {
         return { type: "enum", values }
     }
 
@@ -129,12 +129,12 @@ class SchemaFactories {
      * The schema for null.
      * Equivalent to `schemas.enum(null)`.
      */
-    null: Schema.EnumSchema<null> = { type: "enum", values: [null] }
+    null: Schema.Enum<null> = { type: "enum", values: [null] }
 
     /**
      * The schema for any functions.
      */
-    function(): Schema.FunctionSchema {
+    function(): Schema.Function {
         return { type: "function" }
     }
 
@@ -148,7 +148,7 @@ class SchemaFactories {
         intOnly = false,
         maxValue,
         minValue,
-    }: Omit<Schema.NumberSchema, "type"> = {}): Schema.NumberSchema {
+    }: Omit<Schema.Number, "type"> = {}): Schema.Number {
         return {
             type: "number",
             allowInfinity,
@@ -162,7 +162,7 @@ class SchemaFactories {
     /**
      * The schema for 8 bits signed integers.
      */
-    int8: Schema.NumberSchema = {
+    int8: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -174,7 +174,7 @@ class SchemaFactories {
     /**
      * The schema for 16 bits signed integers.
      */
-    int16: Schema.NumberSchema = {
+    int16: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -186,7 +186,7 @@ class SchemaFactories {
     /**
      * The schema for 32 bits signed integers.
      */
-    int32: Schema.NumberSchema = {
+    int32: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -198,7 +198,7 @@ class SchemaFactories {
     /**
      * The schema for 8 bits unsigned integers.
      */
-    uint8: Schema.NumberSchema = {
+    uint8: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -210,7 +210,7 @@ class SchemaFactories {
     /**
      * The schema for 16 bits unsigned integers.
      */
-    uint16: Schema.NumberSchema = {
+    uint16: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -222,7 +222,7 @@ class SchemaFactories {
     /**
      * The schema for 32 bits unsigned integers.
      */
-    uint32: Schema.NumberSchema = {
+    uint32: Schema.Number = {
         type: "number",
         allowInfinity: false,
         allowNaN: false,
@@ -234,7 +234,7 @@ class SchemaFactories {
     /**
      * The schema for any objects.
      */
-    object(): Schema.ObjectSchema<{}, never, true>
+    object(): Schema.Object<{}, never, true>
 
     /**
      * The schema for plain objects. All known properties are optional.
@@ -242,7 +242,7 @@ class SchemaFactories {
      */
     object<TProperties extends Record<string | number, Schema>>(
         properties: TProperties,
-    ): Schema.ObjectSchema<TProperties, never, false>
+    ): Schema.Object<TProperties, never, false>
 
     /**
      * The schema for plain objects. All known properties are optional.
@@ -252,7 +252,7 @@ class SchemaFactories {
     object<TProperties extends Record<string | number, Schema>>(
         properties: TProperties,
         options: Record<string | number | symbol, never>,
-    ): Schema.ObjectSchema<TProperties, never, false>
+    ): Schema.Object<TProperties, never, false>
 
     /**
      * The schema for plain objects. All known properties are optional.
@@ -265,7 +265,7 @@ class SchemaFactories {
     >(
         properties: TProperties,
         options: { allowUnknown: TAllowUnknown },
-    ): Schema.ObjectSchema<TProperties, never, TAllowUnknown>
+    ): Schema.Object<TProperties, never, TAllowUnknown>
 
     /**
      * The schema for plain objects. All known properties are required.
@@ -275,7 +275,7 @@ class SchemaFactories {
     object<TProperties extends Record<string | number, Schema>>(
         properties: TProperties,
         options: { required: true },
-    ): Schema.ObjectSchema<TProperties, keyof TProperties, false>
+    ): Schema.Object<TProperties, keyof TProperties, false>
 
     /**
      * The schema for plain objects. Specified known properties are required.
@@ -288,7 +288,7 @@ class SchemaFactories {
     >(
         properties: TProperties,
         options: { required: readonly TRequired[] },
-    ): Schema.ObjectSchema<TProperties, TRequired, false>
+    ): Schema.Object<TProperties, TRequired, false>
 
     /**
      * The schema for plain objects. All known properties are required.
@@ -301,7 +301,7 @@ class SchemaFactories {
     >(
         properties: TProperties,
         options: { allowUnknown: TAllowUnknown; required: true },
-    ): Schema.ObjectSchema<TProperties, keyof TProperties, TAllowUnknown>
+    ): Schema.Object<TProperties, keyof TProperties, TAllowUnknown>
 
     /**
      * The schema for plain objects. Specific properties are required.
@@ -318,7 +318,7 @@ class SchemaFactories {
             allowUnknown: TAllowUnknown
             required: readonly TRequired[]
         },
-    ): Schema.ObjectSchema<TProperties, TRequired, TAllowUnknown>
+    ): Schema.Object<TProperties, TRequired, TAllowUnknown>
 
     // Implementation
     object(
@@ -327,7 +327,7 @@ class SchemaFactories {
             allowUnknown = false,
             required = [],
         }: { allowUnknown?: boolean; required?: true | readonly string[] } = {},
-    ): Schema.ObjectSchema<Record<string | number, Schema>, any, boolean> {
+    ): Schema.Object<Record<string | number, Schema>, any, boolean> {
         if (properties === undefined) {
             return {
                 type: "object",
@@ -347,16 +347,16 @@ class SchemaFactories {
     /**
      * The schema for any objects.
      */
-    record(): Schema.RecordSchema<Schema.AnySchema>
+    record(): Schema.Record<Schema.Any>
 
     /**
      * The schema for plain objects.
      * @param properties The schema of properties.
      */
-    record<T extends Schema>(properties: T): Schema.RecordSchema<T>
+    record<T extends Schema>(properties: T): Schema.Record<T>
 
     // Implementation
-    record(properties: Schema = { type: "any" }): Schema.RecordSchema<Schema> {
+    record(properties: Schema = { type: "any" }): Schema.Record<Schema> {
         return { type: "record", properties }
     }
 
@@ -368,14 +368,14 @@ class SchemaFactories {
         maxLength = MaxStringLength,
         minLength = 0,
         pattern,
-    }: Omit<Schema.StringSchema, "type"> = {}): Schema.StringSchema {
+    }: Omit<Schema.String, "type"> = {}): Schema.String {
         return { type: "string", maxLength, minLength, pattern }
     }
 
     /**
      * The schema for any symbols.
      */
-    symbol(): Schema.SymbolSchema {
+    symbol(): Schema.Symbol {
         return { type: "symbol" }
     }
 
@@ -383,7 +383,7 @@ class SchemaFactories {
      * The schema for tuples.
      * @param elements The schema of elements.
      */
-    tuple<T extends readonly Schema[]>(...elements: T): Schema.TupleSchema<T> {
+    tuple<T extends readonly Schema[]>(...elements: T): Schema.Tuple<T> {
         return { type: "tuple", elements }
     }
 
@@ -395,12 +395,10 @@ class SchemaFactories {
     anyOf<T extends Schema, U extends readonly Schema[]>(
         firstSchema: T,
         ...restSchemas: U
-    ): Schema.UnionSchema<T | U[number]>
+    ): Schema.Union<T | U[number]>
 
     // Implementation
-    anyOf<T extends readonly Schema[]>(
-        ...schemas: T
-    ): Schema.UnionSchema<T[number]> {
+    anyOf<T extends readonly Schema[]>(...schemas: T): Schema.Union<T[number]> {
         return { type: "union", schemas }
     }
 }

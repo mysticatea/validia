@@ -10,7 +10,7 @@ export function addValidationOfNumberSchema(
         intOnly = false,
         maxValue,
         minValue,
-    }: Schema.NumberSchema,
+    }: Schema.Number,
 ): string {
     return ctx.addValidation(function* (_locals, name, value, depth, errors) {
         const checker = intOnly ? "isInteger" : "isFinite"

@@ -3,7 +3,7 @@ import { createValidation, Schema, schemas, Validate } from "../src"
 
 describe("createValidation(schema, options)", () => {
     describe("createValidation(schemas.string())", () => {
-        const validate: Validate<Schema.StringSchema> = createValidation(
+        const validate: Validate<Schema.String> = createValidation(
             schemas.string(),
         )
 

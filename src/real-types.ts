@@ -24,37 +24,40 @@ export namespace TypeOf {
     /**
      * The type function to derive the type of schemas.
      */
-    export type AnySchema<T extends Schema> = T extends Schema.AnySchema
-        ? any
-        : never
+    export type AnySchema<T extends Schema> = T extends Schema.Any ? any : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type ArraySchema<T extends Schema> = T extends Schema.ArraySchema<
-        infer U
-    >
+    export type ArraySchema<T extends Schema> = T extends Schema.Array<infer U>
         ? TypeOf<U>[]
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type BigIntSchema<T extends Schema> = T extends Schema.BigIntSchema
+    export type BigIntSchema<T extends Schema> = T extends Schema.BigInt
         ? bigint
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type BooleanSchema<T extends Schema> = T extends Schema.BooleanSchema
+    export type BooleanSchema<T extends Schema> = T extends Schema.Boolean
         ? boolean
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type ClassSchema<T extends Schema> = T extends Schema.ClassSchema<
+    export type ClassSchema<T extends Schema> = T extends Schema.Class<infer U>
+        ? U
+        : never
+
+    /**
+     * The type function to derive the type of schemas.
+     */
+    export type CustomSchema<T extends Schema> = T extends Schema.Custom<
         infer U
     >
         ? U
@@ -63,39 +66,28 @@ export namespace TypeOf {
     /**
      * The type function to derive the type of schemas.
      */
-    export type CustomSchema<T extends Schema> = T extends Schema.CustomSchema<
-        infer U
-    >
+    export type EnumSchema<T extends Schema> = T extends Schema.Enum<infer U>
         ? U
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type EnumSchema<T extends Schema> = T extends Schema.EnumSchema<
-        infer U
-    >
-        ? U
+    export type FunctionSchema<T extends Schema> = T extends Schema.Function
+        ? (...args: any[]) => any
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type FunctionSchema<
-        T extends Schema
-    > = T extends Schema.FunctionSchema ? (...args: any[]) => any : never
-
-    /**
-     * The type function to derive the type of schemas.
-     */
-    export type NumberSchema<T extends Schema> = T extends Schema.NumberSchema
+    export type NumberSchema<T extends Schema> = T extends Schema.Number
         ? number
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type ObjectSchema<T extends Schema> = T extends Schema.ObjectSchema<
+    export type ObjectSchema<T extends Schema> = T extends Schema.Object<
         infer P,
         infer R,
         infer A
@@ -123,7 +115,7 @@ export namespace TypeOf {
     /**
      * The type function to derive the type of schemas.
      */
-    export type RecordSchema<T extends Schema> = T extends Schema.RecordSchema<
+    export type RecordSchema<T extends Schema> = T extends Schema.Record<
         infer U
     >
         ? Record<number | string | symbol, TypeOf<U>>
@@ -132,23 +124,21 @@ export namespace TypeOf {
     /**
      * The type function to derive the type of schemas.
      */
-    export type StringSchema<T extends Schema> = T extends Schema.StringSchema
+    export type StringSchema<T extends Schema> = T extends Schema.String
         ? string
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type SymbolSchema<T extends Schema> = T extends Schema.SymbolSchema
+    export type SymbolSchema<T extends Schema> = T extends Schema.Symbol
         ? symbol
         : never
 
     /**
      * The type function to derive the type of schemas.
      */
-    export type TupleSchema<T extends Schema> = T extends Schema.TupleSchema<
-        infer U
-    >
+    export type TupleSchema<T extends Schema> = T extends Schema.Tuple<infer U>
         ? U extends readonly any[]
             ? { [P in keyof U]: TypeOf<U[P]> }
             : never
@@ -157,9 +147,7 @@ export namespace TypeOf {
     /**
      * The type function to derive the type of schemas.
      */
-    export type UnionSchema<T extends Schema> = T extends Schema.UnionSchema<
-        infer U
-    >
+    export type UnionSchema<T extends Schema> = T extends Schema.Union<infer U>
         ? TypeOf<U>
         : never
 }

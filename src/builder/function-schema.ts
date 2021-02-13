@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfFunctionSchema(
     ctx: BuildContext,
     _schemaKey: string,
-    _schema: Schema.FunctionSchema,
+    _schema: Schema.Function,
 ): string {
     return ctx.addValidation(
         (_locals, name, value, depth, errors) => `

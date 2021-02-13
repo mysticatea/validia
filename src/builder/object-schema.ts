@@ -9,7 +9,7 @@ export function addValidationOfObjectSchema(
         allowUnknown = false,
         properties,
         required = [],
-    }: Schema.ObjectSchema<Record<string, Schema>, string, boolean>,
+    }: Schema.Object<Record<string, Schema>, string, boolean>,
 ): string {
     return ctx.addValidation(function* (locals, name, value, depth, errors) {
         const requiredKeys = Array.from(new Set(required)).sort(undefined)

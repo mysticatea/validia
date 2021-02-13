@@ -5,11 +5,7 @@ import { BuildContext } from "./context"
 export function addValidationOfStringSchema(
     ctx: BuildContext,
     _schemaKey: string,
-    {
-        maxLength = MaxStringLength,
-        minLength = 0,
-        pattern,
-    }: Schema.StringSchema,
+    { maxLength = MaxStringLength, minLength = 0, pattern }: Schema.String,
 ): string {
     return ctx.addValidation(function* (locals, name, value, depth, errors) {
         const shouldCheckContent =

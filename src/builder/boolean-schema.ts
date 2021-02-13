@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfBooleanSchema(
     ctx: BuildContext,
     _schemaKey: string,
-    _schema: Schema.BooleanSchema,
+    _schema: Schema.Boolean,
 ): string {
     return ctx.addValidation(
         (_locals, name, value, depth, errors) => `

@@ -6,7 +6,7 @@ import { assertSnapshot } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe('{ type: "enum", values: [] }', () => {
-    const schema: Schema.EnumSchema<never> = { type: "enum", values: [] }
+    const schema: Schema.Enum<never> = { type: "enum", values: [] }
 
     it("should fail on compile", () => {
         assert.throws(

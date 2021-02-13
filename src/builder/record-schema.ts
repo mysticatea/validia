@@ -5,7 +5,7 @@ import { addValidation } from "./schema"
 export function addValidationOfRecordSchema(
     ctx: BuildContext,
     schemaKey: string,
-    { properties }: Schema.RecordSchema<Schema>,
+    { properties }: Schema.Record<Schema>,
 ): string {
     return ctx.addValidation(function* (locals, name, value, depth, errors) {
         yield `

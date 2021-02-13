@@ -2,27 +2,27 @@
  * All schema.
  */
 export type Schema =
-    | Schema.AnySchema
-    | Schema.ArraySchema<Schema>
-    | Schema.BigIntSchema
-    | Schema.BooleanSchema
-    | Schema.ClassSchema<any>
-    | Schema.CustomSchema<any>
-    | Schema.EnumSchema<any>
-    | Schema.FunctionSchema
-    | Schema.NumberSchema
-    | Schema.ObjectSchema<Record<string, Schema>, any, boolean>
-    | Schema.RecordSchema<Schema>
-    | Schema.StringSchema
-    | Schema.SymbolSchema
-    | Schema.TupleSchema<readonly Schema[]>
-    | Schema.UnionSchema<Schema>
+    | Schema.Any
+    | Schema.Array<Schema>
+    | Schema.BigInt
+    | Schema.Boolean
+    | Schema.Class<any>
+    | Schema.Custom<any>
+    | Schema.Enum<any>
+    | Schema.Function
+    | Schema.Number
+    | Schema.Object<Record<string, Schema>, any, boolean>
+    | Schema.Record<Schema>
+    | Schema.String
+    | Schema.Symbol
+    | Schema.Tuple<readonly Schema[]>
+    | Schema.Union<Schema>
 
 export namespace Schema {
     /**
      * The schema that allows any values.
      */
-    export interface AnySchema {
+    export interface Any {
         /** The schema type. */
         readonly type: "any"
     }
@@ -30,7 +30,7 @@ export namespace Schema {
     /**
      * The schema for arrays.
      */
-    export interface ArraySchema<T extends Schema> {
+    export interface Array<T extends Schema> {
         /** The schema type. */
         readonly type: "array"
         /** The schema of elements. */
@@ -46,7 +46,7 @@ export namespace Schema {
     /**
      * The schema for bigint values.
      */
-    export interface BigIntSchema {
+    export interface BigInt {
         /** The schema type. */
         readonly type: "bigint"
         /** The maximum value. */
@@ -58,7 +58,7 @@ export namespace Schema {
     /**
      * The schema for arrays.
      */
-    export interface BooleanSchema {
+    export interface Boolean {
         /** The schema type. */
         readonly type: "boolean"
     }
@@ -66,7 +66,7 @@ export namespace Schema {
     /**
      * The schema for class instances.
      */
-    export interface ClassSchema<T> {
+    export interface Class<T> {
         /** The schema type. */
         readonly type: "class"
         /** The constructor of allowed instances. */
@@ -80,7 +80,7 @@ export namespace Schema {
     /**
      * The schema for user-defined checks.
      */
-    export interface CustomSchema<T> {
+    export interface Custom<T> {
         /** The schema type. */
         readonly type: "custom"
         /** The name to show in error messages. */
@@ -92,7 +92,7 @@ export namespace Schema {
     /**
      * The schema for any of listed values.
      */
-    export interface EnumSchema<T> {
+    export interface Enum<T> {
         /** The schema type. */
         readonly type: "enum"
         /** The allowed values. */
@@ -102,7 +102,7 @@ export namespace Schema {
     /**
      * The schema for functions.
      */
-    export interface FunctionSchema {
+    export interface Function {
         /** The schema type. */
         readonly type: "function"
     }
@@ -110,7 +110,7 @@ export namespace Schema {
     /**
      * The schema for numbers.
      */
-    export interface NumberSchema {
+    export interface Number {
         /** The schema type. */
         readonly type: "number"
         /** The flag to allow `Infinity` and `-Infinity`. Infinities are disallowed by default. */
@@ -128,8 +128,8 @@ export namespace Schema {
     /**
      * The schema for plain objects.
      */
-    export interface ObjectSchema<
-        TProperties extends Record<string | number, Schema>,
+    export interface Object<
+        TProperties extends globalThis.Record<string | number, Schema>,
         TRequired extends keyof TProperties,
         TAllowUnknown extends boolean
     > {
@@ -146,7 +146,7 @@ export namespace Schema {
     /**
      * The schema for record objects.
      */
-    export interface RecordSchema<T extends Schema> {
+    export interface Record<T extends Schema> {
         /** The schema type. */
         readonly type: "record"
         /** The schema of known properties. */
@@ -156,7 +156,7 @@ export namespace Schema {
     /**
      * The schema for strings.
      */
-    export interface StringSchema {
+    export interface String {
         /** The schema type. */
         readonly type: "string"
         /** The maximum length. */
@@ -164,13 +164,13 @@ export namespace Schema {
         /** The minimum length. */
         readonly minLength?: number
         /** The allowed pattern. */
-        readonly pattern?: RegExp
+        readonly pattern?: globalThis.RegExp
     }
 
     /**
      * The schema for symbols.
      */
-    export interface SymbolSchema {
+    export interface Symbol {
         /** The schema type. */
         readonly type: "symbol"
     }
@@ -178,7 +178,7 @@ export namespace Schema {
     /**
      * The schema for tuples.
      */
-    export interface TupleSchema<T extends readonly Schema[]> {
+    export interface Tuple<T extends readonly Schema[]> {
         /** The schema type. */
         readonly type: "tuple"
         /** The schema of elements */
@@ -188,7 +188,7 @@ export namespace Schema {
     /**
      * The schema for satisfying any of listed schemas.
      */
-    export interface UnionSchema<T extends Schema> {
+    export interface Union<T extends Schema> {
         /** The schema type. */
         readonly type: "union"
         /** The schemas of allowed values. */

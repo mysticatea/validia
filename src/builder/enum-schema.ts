@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfEnumSchema(
     ctx: BuildContext,
     schemaKey: string,
-    { values }: Schema.EnumSchema<unknown>,
+    { values }: Schema.Enum<unknown>,
 ): string {
     if (values.length === 0) {
         throw new Error("EnumSchema must have 1 or more values.")

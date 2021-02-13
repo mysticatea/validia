@@ -35,10 +35,7 @@ export interface Message {
     tupleLength(vars: { name: string; length: number }): string
     union(vars: {
         name: string
-        schemas: readonly Exclude<
-            Schema,
-            Schema.AnySchema | Schema.UnionSchema<any>
-        >[]
+        schemas: readonly Exclude<Schema, Schema.Any | Schema.Union<any>>[]
     }): string
     validation(vars: { name: string; errors: readonly string[] }): string
 }

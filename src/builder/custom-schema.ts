@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfCustomSchema(
     ctx: BuildContext,
     schemaKey: string,
-    schema: Schema.CustomSchema<any>,
+    schema: Schema.Custom<any>,
 ): string {
     return ctx.addValidation((_locals, name, value, depth, errors) => {
         const checkName = JSON.stringify(schema.name)

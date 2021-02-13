@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfBigIntSchema(
     ctx: BuildContext,
     _schemaKey: string,
-    { maxValue, minValue }: Schema.BigIntSchema,
+    { maxValue, minValue }: Schema.BigInt,
 ): string {
     return ctx.addValidation(function* (_locals, name, value, depth, errors) {
         yield `

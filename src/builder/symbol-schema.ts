@@ -4,7 +4,7 @@ import { BuildContext } from "./context"
 export function addValidationOfSymbolSchema(
     ctx: BuildContext,
     _schemaKey: string,
-    _schema: Schema.SymbolSchema,
+    _schema: Schema.Symbol,
 ): string {
     return ctx.addValidation(
         (_locals, name, value, depth, errors) => `

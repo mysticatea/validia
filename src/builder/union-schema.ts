@@ -6,7 +6,7 @@ import { addValidation } from "./schema"
 export function addValidationOfUnionSchema(
     ctx: BuildContext,
     schemaKey: string,
-    { schemas }: Schema.UnionSchema<Schema>,
+    { schemas }: Schema.Union<Schema>,
 ): string {
     const flattened = flatten(`${schemaKey}.schemas`, schemas)
     if (flattened.length === 0) {
@@ -47,11 +47,11 @@ function flatten(
     schemas: readonly Schema[],
     flattened: {
         childSchemaKey: string
-        childSchema: Exclude<Schema, Schema.UnionSchema<any>>
+        childSchema: Exclude<Schema, Schema.Union<any>>
     }[] = [],
 ): {
     childSchemaKey: string
-    childSchema: Exclude<Schema, Schema.UnionSchema<any>>
+    childSchema: Exclude<Schema, Schema.Union<any>>
 }[] {
     for (let i = 0; i < schemas.length; ++i) {
         const childSchema = schemas[i]

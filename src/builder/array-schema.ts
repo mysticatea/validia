@@ -11,7 +11,7 @@ export function addValidationOfArraySchema(
         maxLength = MaxArrayLength,
         minLength = 0,
         unique = false,
-    }: Schema.ArraySchema<Schema>,
+    }: Schema.Array<Schema>,
 ): string {
     return ctx.addValidation(function* (locals, name, value, depth, errors) {
         const shouldCheckElements =

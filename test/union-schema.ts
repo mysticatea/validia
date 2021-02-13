@@ -155,7 +155,7 @@ describe("schemas.anyOf(schemas.number())", () => {
 })
 
 describe('{ type: "union", schemas: [] }', () => {
-    const schema: Schema.UnionSchema<never> = { type: "union", schemas: [] }
+    const schema: Schema.Union<never> = { type: "union", schemas: [] }
 
     it("should throw a fatail error on compile", () => {
         assert.throws(
