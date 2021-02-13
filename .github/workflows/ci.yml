@@ -8,6 +8,21 @@ on:
     - cron: 0 0 * * 0
 
 jobs:
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+      - name: Install Packages
+        run: npm ci
+      - name: Test
+        run: npm run -s test:static
+
   test:
     name: Test
     runs-on: ubuntu-latest
