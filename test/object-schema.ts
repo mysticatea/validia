@@ -227,6 +227,20 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() })", () 
     })
 })
 
+describe("schemas.object({ one: schemas.any(), two: schemas.any() }, { allowUnknown: true })", () => {
+    const schema = schemas.object(
+        { one: schemas.any(), two: schemas.any() },
+        { allowUnknown: true },
+    )
+
+    it("should generate the same code as schemas.object()", () => {
+        assert.strictEqual(
+            createValidationOfSchema(schema).toString(),
+            createValidationOfSchema(schemas.object()).toString(),
+        )
+    })
+})
+
 describe("schemas.object({ one: schemas.any(), two: schemas.string() }, { allowUnknown: true })", () => {
     const schema = schemas.object(
         { one: schemas.any(), two: schemas.string() },

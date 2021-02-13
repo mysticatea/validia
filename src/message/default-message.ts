@@ -55,7 +55,9 @@ export const DefaultMessage: Message = {
     tupleLength: ({ name, length }) =>
         `The length of "${name}" must be ${length}.`,
     union({ name, schemas }) {
-        const options = ([] as string[]).concat(...schemas.map(schemaToString))
+        const options = ([] as string[])
+            .concat(...schemas.map(schemaToString))
+            .filter(isNotDuplicatedValue)
         return options.length === 2
             ? `"${name}" must be ${listToString(options, "or")}.`
             : `"${name}" must be any of ${listToString(options, "and")}.`
@@ -137,4 +139,13 @@ function listToString<T>(
             return `${ys.join(", ")}, ${kind} ${last}`
         }
     }
+}
+
+function isNotDuplicatedValue(x: string, i: number, xs: string[]): boolean {
+    for (let j = 0; j < i; ++j) {
+        if (x === xs[j]) {
+            return false
+        }
+    }
+    return true
 }

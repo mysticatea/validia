@@ -26,7 +26,7 @@ export function addValidationOfRecordSchema(
             const i = locals.add("0")
             yield `
                 ${keys} = Object.keys(${value}).sort(undefined);
-                for (${i} = 0; ${i} < ${keys}.length; ++${i}) {
+                for (; ${i} < ${keys}.length; ++${i}) {
                     ${key} = ${keys}[${i}]
                     ${validate}(${name} + "." + ${key}, ${value}[${key}], ${depth} + 1, ${errors});
                 }

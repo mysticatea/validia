@@ -80,31 +80,30 @@ function addValidateUnion(ctx: BuildContext): string {
         (locals, name, value, depth, errors, schemas, validates) => {
             const maxDepth = MaxInt32 >> 1
             const reduceMinDepthVar = addReduceMinDepth(ctx)
-            const currentErrorsList = locals.add("[]")
+            const currentErrors = locals.add("null")
             const thisErrors = locals.add("null")
             const currentMaxDepth = locals.add("-1")
             const thisDepth = locals.add("0")
             const i = locals.add("0")
             return `
-                for (${i} = 0; ${i} < ${validates}.length; ++${i}) {
+                for (; ${i} < ${validates}.length; ++${i}) {
                     ${thisErrors} = ${validates}[${i}](${name}, ${value}, ${depth}, []);
                     if (${thisErrors}.length === 0) {
                         return ${errors};
                     }
                     ${thisDepth} = ${thisErrors}.reduce(${reduceMinDepthVar}, ${maxDepth})
                     if (${thisDepth} > ${currentMaxDepth}) {
-                        ${currentErrorsList} = [${thisErrors}];
+                        ${currentErrors} = ${thisErrors};
                         ${currentMaxDepth} = ${thisDepth};
                     } else if (${thisDepth} === ${currentMaxDepth}) {
-                        ${currentErrorsList}.push(${thisErrors});
+                        ${currentErrors} = null;
                     }
                 }
-                if (${currentErrorsList}.length === 1) {
-                    ${currentErrorsList} = ${currentErrorsList}[0];
-                    for (${i} = 0; ${i} < ${currentErrorsList}.length; ++${i}) {
-                        ${errors}.push(${currentErrorsList}[${i}]);
+                if (${currentErrors} !== null) {
+                    for (${i} = 0; ${i} < ${currentErrors}.length; ++${i}) {
+                        ${errors}.push(${currentErrors}[${i}]);
                     }
-                } else if (${currentErrorsList}.length >= 2) {
+                } else {
                     ${errors}.push({ code: "union", args: { name: ${name}, schemas: ${schemas} }, depth: ${depth} });
                 }
                 return ${errors};

@@ -14,13 +14,16 @@ export function addValidationOfObjectSchema(
     return ctx.addValidation(function* (locals, name, value, depth, errors) {
         const requiredKeys = Array.from(new Set(required)).sort(undefined)
         const optionalKeys = Object.keys(properties).sort(undefined)
+        const shouldCheckProperties =
+            !allowUnknown ||
+            optionalKeys.some(k => properties[k].type !== "any")
 
         yield `
             if (typeof ${value} !== "object" || ${value} === null) {
                 ${errors}.push({ code: "object", args: { name: ${name} }, depth: ${depth} });
         `
 
-        if (!allowUnknown || optionalKeys.length > 0) {
+        if (shouldCheckProperties) {
             yield "} else {"
 
             const collectKeys = addCollectKeys(ctx)
@@ -98,7 +101,7 @@ export function addValidationOfObjectSchema(
             if (missingKeys) {
                 yield `
                     if (${missingKeys}.length > 0) {
-                        ${errors}.push({ code: "objectRequiredKeys", args: { name: ${name}, keys: ${missingKeys} }, depth: ${depth} });
+                        ${errors}.push({ code: "objectRequiredKeys", args: { name: ${name}, keys: ${missingKeys} }, depth: ${depth} + 1 });
                     }
                 `
             }
@@ -106,7 +109,7 @@ export function addValidationOfObjectSchema(
                 const setToArray = addSetToArray(ctx)
                 yield `
                     if (${remainKeys}.size > 0) {
-                        ${errors}.push({ code: "objectUnknownKeys", args: { name: ${name}, keys: ${setToArray}(${remainKeys}) }, depth: ${depth} });
+                        ${errors}.push({ code: "objectUnknownKeys", args: { name: ${name}, keys: ${setToArray}(${remainKeys}) }, depth: ${depth} + 1 });
                     }
                 `
             }

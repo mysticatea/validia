@@ -31,16 +31,30 @@ export function addValidationOfArraySchema(
             const length = locals.add("0")
             yield `${length} = ${value}.length;`
             if (maxLength < MaxArrayLength) {
-                yield `
-                    if (${length} > ${maxLength}) {
-                        ${errors}.push({ code: "arrayMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} });
-                    }
-                `
-            }
-            if (minLength > 0) {
+                if (maxLength < minLength) {
+                    throw new Error(
+                        '"maxLength" must be "minLength" or greater than it.',
+                    )
+                }
+                if (minLength > 0) {
+                    yield `
+                        if (${length} > ${maxLength}) {
+                            ${errors}.push({ code: "arrayMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} + 1 });
+                        } else if (${length} < ${minLength}) {
+                            ${errors}.push({ code: "arrayMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} + 1 });
+                        }
+                    `
+                } else {
+                    yield `
+                        if (${length} > ${maxLength}) {
+                            ${errors}.push({ code: "arrayMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} + 1 });
+                        }
+                    `
+                }
+            } else if (minLength > 0) {
                 yield `
                     if (${length} < ${minLength}) {
-                        ${errors}.push({ code: "arrayMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} });
+                        ${errors}.push({ code: "arrayMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} + 1 });
                     }
                 `
             }
@@ -48,7 +62,7 @@ export function addValidationOfArraySchema(
                 const isUnique = addIsUnique(ctx)
                 yield `
                     if (!${isUnique}(${value}, ${length})) {
-                        ${errors}.push({ code: "arrayUnique", args: { name: ${name} }, depth: ${depth} });
+                        ${errors}.push({ code: "arrayUnique", args: { name: ${name} }, depth: ${depth} + 1 });
                     }
                 `
             }

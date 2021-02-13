@@ -28,7 +28,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
       d.push({ code: \"string\", args: { name: a }, depth: c });
     } else {
       if (_2(b, 1) < 1) {
-        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 1 }, depth: c });
+        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 1 }, depth: c + 1 });
       }
     }
     return d;
@@ -67,10 +67,10 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _6(a + \".options\", g, c + 1, d);
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -80,26 +80,25 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
     return a <= b.depth ? a : b.depth;
   }
   function _b(a, b, c, d, e, f) {
-    var g = [], h = null, i = -1, j = 0, k = 0;
-    for (k = 0; k < f.length; ++k) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
       h = f[k](a, b, c, []);
       if (h.length === 0) {
         return d;
       }
       j = h.reduce(_a, 1073741823)
       if (j > i) {
-        g = [h];
+        g = h;
         i = j;
       } else if (j === i) {
-        g.push(h);
+        g = null;
       }
     }
-    if (g.length === 1) {
-      g = g[0];
+    if (g !== null) {
       for (k = 0; k < g.length; ++k) {
         d.push(g[k]);
       }
-    } else if (g.length >= 2) {
+    } else {
       d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
     }
     return d;
@@ -147,7 +146,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _e(a + \".sourceFilePatterns\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -323,7 +322,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _z(a + \".ui\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -344,7 +343,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _11(a + \".rules\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -359,7 +358,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _6(a + \".alias\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -473,7 +472,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _q(a + \".watchOptions\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -513,7 +512,7 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
         _16(a + \".webpackOptions\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _7(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -561,26 +560,25 @@ exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) shoul
     return a <= b.depth ? a : b.depth;
   }
   function _5(a, b, c, d, e, f) {
-    var g = [], h = null, i = -1, j = 0, k = 0;
-    for (k = 0; k < f.length; ++k) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
       h = f[k](a, b, c, []);
       if (h.length === 0) {
         return d;
       }
       j = h.reduce(_4, 1073741823)
       if (j > i) {
-        g = [h];
+        g = h;
         i = j;
       } else if (j === i) {
-        g.push(h);
+        g = null;
       }
     }
-    if (g.length === 1) {
-      g = g[0];
+    if (g !== null) {
       for (k = 0; k < g.length; ++k) {
         d.push(g[k]);
       }
-    } else if (g.length >= 2) {
+    } else {
       d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
     }
     return d;
@@ -620,26 +618,25 @@ exports["schemas.anyOf(schemas.number(), schemas.string()) should have validatio
     return a <= b.depth ? a : b.depth;
   }
   function _5(a, b, c, d, e, f) {
-    var g = [], h = null, i = -1, j = 0, k = 0;
-    for (k = 0; k < f.length; ++k) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
       h = f[k](a, b, c, []);
       if (h.length === 0) {
         return d;
       }
       j = h.reduce(_4, 1073741823)
       if (j > i) {
-        g = [h];
+        g = h;
         i = j;
       } else if (j === i) {
-        g.push(h);
+        g = null;
       }
     }
-    if (g.length === 1) {
-      g = g[0];
+    if (g !== null) {
       for (k = 0; k < g.length; ++k) {
         d.push(g[k]);
       }
-    } else if (g.length >= 2) {
+    } else {
       d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
     }
     return d;
@@ -698,10 +695,10 @@ exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ valu
         f.push(\"value\");
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _5(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _5(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -711,26 +708,25 @@ exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ valu
     return a <= b.depth ? a : b.depth;
   }
   function _9(a, b, c, d, e, f) {
-    var g = [], h = null, i = -1, j = 0, k = 0;
-    for (k = 0; k < f.length; ++k) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
       h = f[k](a, b, c, []);
       if (h.length === 0) {
         return d;
       }
       j = h.reduce(_8, 1073741823)
       if (j > i) {
-        g = [h];
+        g = h;
         i = j;
       } else if (j === i) {
-        g.push(h);
+        g = null;
       }
     }
-    if (g.length === 1) {
-      g = g[0];
+    if (g !== null) {
       for (k = 0; k < g.length; ++k) {
         d.push(g[k]);
       }
-    } else if (g.length >= 2) {
+    } else {
       d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
     }
     return d;
@@ -767,7 +763,7 @@ exports["schemas.array(schemas.any(), { maxLength: 2 }) should have validation f
     } else {
       e = b.length;
       if (e > 2) {
-        d.push({ code: \"arrayMaxLength\", args: { name: a, maxLength: 2 }, depth: c });
+        d.push({ code: \"arrayMaxLength\", args: { name: a, maxLength: 2 }, depth: c + 1 });
       }
     }
     return d;
@@ -787,7 +783,7 @@ exports["schemas.array(schemas.any(), { minLength: 2 }) should have validation f
     } else {
       e = b.length;
       if (e < 2) {
-        d.push({ code: \"arrayMinLength\", args: { name: a, minLength: 2 }, depth: c });
+        d.push({ code: \"arrayMinLength\", args: { name: a, minLength: 2 }, depth: c + 1 });
       }
     }
     return d;
@@ -819,7 +815,7 @@ exports["schemas.array(schemas.any(), { unique: true }) should have validation f
     } else {
       e = b.length;
       if (!_0(b, e)) {
-        d.push({ code: \"arrayUnique\", args: { name: a }, depth: c });
+        d.push({ code: \"arrayUnique\", args: { name: a }, depth: c + 1 });
       }
     }
     return d;
@@ -883,13 +879,12 @@ exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: t
     } else {
       e = b.length;
       if (e > 2) {
-        d.push({ code: \"arrayMaxLength\", args: { name: a, maxLength: 2 }, depth: c });
-      }
-      if (e < 1) {
-        d.push({ code: \"arrayMinLength\", args: { name: a, minLength: 1 }, depth: c });
+        d.push({ code: \"arrayMaxLength\", args: { name: a, maxLength: 2 }, depth: c + 1 });
+      } else if (e < 1) {
+        d.push({ code: \"arrayMinLength\", args: { name: a, minLength: 1 }, depth: c + 1 });
       }
       if (!_0(b, e)) {
-        d.push({ code: \"arrayUnique\", args: { name: a }, depth: c });
+        d.push({ code: \"arrayUnique\", args: { name: a }, depth: c + 1 });
       }
       for (f = 0; f < e; ++f) {
         _1(a + \"[\" + f + \"]\", b[f], c + 1, d);
@@ -924,7 +919,7 @@ exports["schemas.bigInt({ maxValue: 1n }) should have validation for maxValue #[
       d.push({ code: \"bigint\", args: { name: a }, depth: c });
     } else {
       if (b > 1n) {
-        d.push({ code: \"bigintMaxValue\", args: { name: a, maxValue: 1n }, depth: c });
+        d.push({ code: \"bigintMaxValue\", args: { name: a, maxValue: 1n }, depth: c + 1 });
       }
     }
     return d;
@@ -942,10 +937,9 @@ exports["schemas.bigInt({ maxValue: 1n, minValue: 0n }) should have validation f
       d.push({ code: \"bigint\", args: { name: a }, depth: c });
     } else {
       if (b > 1n) {
-        d.push({ code: \"bigintMaxValue\", args: { name: a, maxValue: 1n }, depth: c });
-      }
-      if (b < 0n) {
-        d.push({ code: \"bigintMinValue\", args: { name: a, minValue: 0n }, depth: c });
+        d.push({ code: \"bigintMaxValue\", args: { name: a, maxValue: 1n }, depth: c + 1 });
+      } else if (b < 0n) {
+        d.push({ code: \"bigintMinValue\", args: { name: a, minValue: 0n }, depth: c + 1 });
       }
     }
     return d;
@@ -963,7 +957,7 @@ exports["schemas.bigInt({ minValue: 1n }) should have validation for minValue #[
       d.push({ code: \"bigint\", args: { name: a }, depth: c });
     } else {
       if (b < 1n) {
-        d.push({ code: \"bigintMinValue\", args: { name: a, minValue: 1n }, depth: c });
+        d.push({ code: \"bigintMinValue\", args: { name: a, minValue: 1n }, depth: c + 1 });
       }
     }
     return d;
@@ -1286,7 +1280,7 @@ exports["schemas.number({ maxValue: 1 }) should have validation for maxValue #[0
       }
     } else {
       if (b > 1) {
-        d.push({ code: \"numberMaxValue\", args: { name: a, maxValue: 1 }, depth: c });
+        d.push({ code: \"numberMaxValue\", args: { name: a, maxValue: 1 }, depth: c + 1 });
       }
     }
     return d;
@@ -1310,10 +1304,9 @@ exports["schemas.number({ maxValue: 1, minValue: 0 }) should have validation for
       }
     } else {
       if (b > 1) {
-        d.push({ code: \"numberMaxValue\", args: { name: a, maxValue: 1 }, depth: c });
-      }
-      if (b < 0) {
-        d.push({ code: \"numberMinValue\", args: { name: a, minValue: 0 }, depth: c });
+        d.push({ code: \"numberMaxValue\", args: { name: a, maxValue: 1 }, depth: c + 1 });
+      } else if (b < 0) {
+        d.push({ code: \"numberMinValue\", args: { name: a, minValue: 0 }, depth: c + 1 });
       }
     }
     return d;
@@ -1337,7 +1330,7 @@ exports["schemas.number({ minValue: 1 }) should have validation for minValue #[0
       }
     } else {
       if (b < 1) {
-        d.push({ code: \"numberMinValue\", args: { name: a, minValue: 1 }, depth: c });
+        d.push({ code: \"numberMinValue\", args: { name: a, minValue: 1 }, depth: c + 1 });
       }
     }
     return d;
@@ -1393,26 +1386,25 @@ exports["schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array
     return a <= b.depth ? a : b.depth;
   }
   function _6(a, b, c, d, e, f) {
-    var g = [], h = null, i = -1, j = 0, k = 0;
-    for (k = 0; k < f.length; ++k) {
+    var g = null, h = null, i = -1, j = 0, k = 0;
+    for (; k < f.length; ++k) {
       h = f[k](a, b, c, []);
       if (h.length === 0) {
         return d;
       }
       j = h.reduce(_5, 1073741823)
       if (j > i) {
-        g = [h];
+        g = h;
         i = j;
       } else if (j === i) {
-        g.push(h);
+        g = null;
       }
     }
-    if (g.length === 1) {
-      g = g[0];
+    if (g !== null) {
       for (k = 0; k < g.length; ++k) {
         d.push(g[k]);
       }
-    } else if (g.length >= 2) {
+    } else {
       d.push({ code: \"union\", args: { name: a, schemas: e }, depth: c });
     }
     return d;
@@ -1438,7 +1430,7 @@ exports["schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array
         _7(a + \".include\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _8(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _8(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1470,7 +1462,7 @@ exports["schemas.object({ one: schemas.any(), two: schemas.any() }) should have 
       e.delete(\"one\");
       e.delete(\"two\");
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1507,10 +1499,10 @@ exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: 
         f.push(\"two\");
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1583,7 +1575,7 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should
         _1(a + \".two\", f, c + 1, d);
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1623,7 +1615,7 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allo
         _1(a + \".two\", g, c + 1, d);
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
     }
     return d;
@@ -1665,7 +1657,7 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allo
         f.push(\"two\");
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
     }
     return d;
@@ -1710,10 +1702,10 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { requ
         _1(a + \".two\", g, c + 1, d);
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1760,10 +1752,10 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { requ
         f.push(\"two\");
       }
       if (f.length > 0) {
-        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c });
+        d.push({ code: \"objectRequiredKeys\", args: { name: a, keys: f }, depth: c + 1 });
       }
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _2(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1793,7 +1785,7 @@ exports["schemas.object({}) should have validation, only for unknown properties 
     } else {
       e = _0(b);
       if (e.size > 0) {
-        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c });
+        d.push({ code: \"objectUnknownKeys\", args: { name: a, keys: _1(e) }, depth: c + 1 });
       }
     }
     return d;
@@ -1832,7 +1824,7 @@ exports["schemas.record(schemas.string()) should have validation for elements #[
       d.push({ code: \"object\", args: { name: a }, depth: c });
     } else {
       e = Object.keys(b).sort(undefined);
-      for (g = 0; g < e.length; ++g) {
+      for (; g < e.length; ++g) {
         f = e[g]
         _0(a + \".\" + f, b[f], c + 1, d);
       }
@@ -1877,7 +1869,7 @@ exports["schemas.string({ maxLength: 2 }) should have validation #[0]"] = String
       d.push({ code: \"string\", args: { name: a }, depth: c });
     } else {
       if (_0(b, 3) > 2) {
-        d.push({ code: \"stringMaxLength\", args: { name: a, maxLength: 2 }, depth: c });
+        d.push({ code: \"stringMaxLength\", args: { name: a, maxLength: 2 }, depth: c + 1 });
       }
     }
     return d;
@@ -1908,10 +1900,9 @@ exports["schemas.string({ maxLength: 2, minLength: 1 }) should have validation #
     } else {
       e = _0(b, 3);
       if (e > 2) {
-        d.push({ code: \"stringMaxLength\", args: { name: a, maxLength: 2 }, depth: c });
-      }
-      if (e < 1) {
-        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 1 }, depth: c });
+        d.push({ code: \"stringMaxLength\", args: { name: a, maxLength: 2 }, depth: c + 1 });
+      } else if (e < 1) {
+        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 1 }, depth: c + 1 });
       }
     }
     return d;
@@ -1940,7 +1931,7 @@ exports["schemas.string({ minLength: 2 }) should have validation #[0]"] = String
       d.push({ code: \"string\", args: { name: a }, depth: c });
     } else {
       if (_0(b, 2) < 2) {
-        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 2 }, depth: c });
+        d.push({ code: \"stringMinLength\", args: { name: a, minLength: 2 }, depth: c + 1 });
       }
     }
     return d;
@@ -1958,7 +1949,7 @@ exports["schemas.string({ pattern: /^\\d+$/ }) should have validation #[0]"] = S
       d.push({ code: \"string\", args: { name: a }, depth: c });
     } else {
       if (!/^\\d+$/.test(b)) {
-        d.push({ code: \"stringPattern\", args: { name: a, pattern: /^\\d+$/ }, depth: c });
+        d.push({ code: \"stringPattern\", args: { name: a, pattern: /^\\d+$/ }, depth: c + 1 });
       }
     }
     return d;

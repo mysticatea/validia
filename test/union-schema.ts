@@ -121,10 +121,21 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
         )
     })
 
-    it('should fail on { value: "foo" }', () => {
+    it('should fail on { value: "foo" }, with the error message of the nearest choice', () => {
         assert.throws(
             () => validate(schema, "x", { value: "foo" }),
             new Error('"x.value" must be a number.'),
+        )
+    })
+
+    it('should fail on { valu: "foo" }, with the error message of the nearest choice', () => {
+        assert.throws(
+            () => validate(schema, "x", { vale: "foo" }),
+            new Error(
+                '"x" has multiple validation errors:\n' +
+                    '- "x" must have the required property: value.\n' +
+                    '- "x" must not have unknown property: vale.',
+            ),
         )
     })
 
@@ -183,7 +194,8 @@ describe("schemas.anyOf(/* all kinds of schema except any */)", () => {
         ),
         schemas.function(),
         schemas.number(),
-        schemas.object({ value: schemas.string() }, { required: true }),
+        schemas.object({ string: schemas.string() }, { required: true }),
+        schemas.object({ number: schemas.number() }, { required: true }),
         schemas.anyOf(schemas.string(), schemas.symbol(), schemas.tuple()),
     )
 

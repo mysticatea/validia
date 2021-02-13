@@ -37,21 +37,30 @@ export function addValidationOfNumberSchema(
             yield "} else {"
 
             if (maxValue !== undefined) {
-                if (minValue !== undefined && minValue > maxValue) {
-                    throw new Error(
-                        '"maxValue" must be "minValue" or greater than it.',
-                    )
-                }
-                yield `
-                    if (${value} > ${maxValue}) {
-                        ${errors}.push({ code: "numberMaxValue", args: { name: ${name}, maxValue: ${maxValue} }, depth: ${depth} });
+                if (minValue !== undefined) {
+                    if (minValue > maxValue) {
+                        throw new Error(
+                            '"maxValue" must be "minValue" or greater than it.',
+                        )
                     }
-                `
-            }
-            if (minValue !== undefined) {
+                    yield `
+                        if (${value} > ${maxValue}) {
+                            ${errors}.push({ code: "numberMaxValue", args: { name: ${name}, maxValue: ${maxValue} }, depth: ${depth} + 1 });
+                        } else if (${value} < ${minValue}) {
+                            ${errors}.push({ code: "numberMinValue", args: { name: ${name}, minValue: ${minValue} }, depth: ${depth} + 1 });
+                        }
+                    `
+                } else {
+                    yield `
+                        if (${value} > ${maxValue}) {
+                            ${errors}.push({ code: "numberMaxValue", args: { name: ${name}, maxValue: ${maxValue} }, depth: ${depth} + 1 });
+                        }
+                    `
+                }
+            } else if (minValue !== undefined) {
                 yield `
                     if (${value} < ${minValue}) {
-                        ${errors}.push({ code: "numberMinValue", args: { name: ${name}, minValue: ${minValue} }, depth: ${depth} });
+                        ${errors}.push({ code: "numberMinValue", args: { name: ${name}, minValue: ${minValue} }, depth: ${depth} + 1 });
                     }
                 `
             }

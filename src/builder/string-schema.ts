@@ -36,23 +36,22 @@ export function addValidationOfStringSchema(
                     yield `
                         ${count} = ${countChars}(${value}, ${end});
                         if (${count} > ${maxLength}) {
-                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} });
-                        }
-                        if (${count} < ${minLength}) {
-                            ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} });
+                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} + 1 });
+                        } else if (${count} < ${minLength}) {
+                            ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} + 1 });
                         }
                     `
                 } else {
                     yield `
                         if (${countChars}(${value}, ${end}) > ${maxLength}) {
-                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} });
+                            ${errors}.push({ code: "stringMaxLength", args: { name: ${name}, maxLength: ${maxLength} }, depth: ${depth} + 1 });
                         }
                     `
                 }
             } else if (minLength > 0) {
                 yield `
                     if (${countChars}(${value}, ${minLength}) < ${minLength}) {
-                        ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} });
+                        ${errors}.push({ code: "stringMinLength", args: { name: ${name}, minLength: ${minLength} }, depth: ${depth} + 1 });
                     }
                 `
             }
@@ -60,7 +59,7 @@ export function addValidationOfStringSchema(
             if (pattern !== undefined) {
                 yield `
                     if (!${pattern}.test(${value})) {
-                        ${errors}.push({ code: "stringPattern", args: { name: ${name}, pattern: ${pattern} }, depth: ${depth} });
+                        ${errors}.push({ code: "stringPattern", args: { name: ${name}, pattern: ${pattern} }, depth: ${depth} + 1 });
                     }
                 `
             }
