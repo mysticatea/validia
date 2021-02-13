@@ -17,13 +17,8 @@ export function addValidationOfStringSchema(
                 ${errors}.push({ code: "string", args: { name: ${name} }, depth: ${depth} });
         `
 
-        if (!shouldCheckContent) {
-            yield "}"
-        } else {
-            yield `
-                    return ${errors};
-                }
-            `
+        if (shouldCheckContent) {
+            yield "} else {"
 
             let countChars = ""
             if (maxLength < MaxStringLength || minLength > 0) {
@@ -71,7 +66,10 @@ export function addValidationOfStringSchema(
             }
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }
 

@@ -24,16 +24,12 @@ export function addValidationOfArraySchema(
             if (!Array.isArray(${value})) {
                 ${errors}.push({ code: "array", args: { name: ${name} }, depth: ${depth} });
         `
-        if (!shouldCheckElements) {
-            yield "}"
-        } else {
-            const length = locals.add("0")
-            yield `
-                    return ${errors};
-                }
-                ${length} = ${value}.length;
-            `
 
+        if (shouldCheckElements) {
+            yield "} else {"
+
+            const length = locals.add("0")
+            yield `${length} = ${value}.length;`
             if (maxLength < MaxArrayLength) {
                 yield `
                     if (${length} > ${maxLength}) {
@@ -71,7 +67,10 @@ export function addValidationOfArraySchema(
             }
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }
 

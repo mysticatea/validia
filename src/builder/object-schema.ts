@@ -20,13 +20,8 @@ export function addValidationOfObjectSchema(
                 ${errors}.push({ code: "object", args: { name: ${name} }, depth: ${depth} });
         `
 
-        if (allowUnknown && optionalKeys.length === 0) {
-            yield "}"
-        } else {
-            yield `
-                    return ${errors};
-                }
-            `
+        if (!allowUnknown || optionalKeys.length > 0) {
+            yield "} else {"
 
             const collectKeys = addCollectKeys(ctx)
             const remainKeys = locals.add("null")
@@ -117,7 +112,10 @@ export function addValidationOfObjectSchema(
             }
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }
 

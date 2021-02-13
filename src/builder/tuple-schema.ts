@@ -12,11 +12,10 @@ export function addValidationOfTupleSchema(
         yield `
             if (!Array.isArray(${value})) {
                 ${errors}.push({ code: "tuple", args: { name: ${name} }, depth: ${depth} });
-                return ${errors};
-            }
-            if (${value}.length !== ${length}) {
-                ${errors}.push({ code: "tupleLength", args: { name: ${name}, length: ${length} }, depth: ${depth} });
-            }
+            } else {
+                if (${value}.length !== ${length}) {
+                    ${errors}.push({ code: "tupleLength", args: { name: ${name}, length: ${length} }, depth: ${depth} });
+                }
         `
 
         for (let i = 0; i < length; ++i) {
@@ -35,6 +34,9 @@ export function addValidationOfTupleSchema(
             `
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }

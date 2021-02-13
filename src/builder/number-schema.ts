@@ -15,6 +15,7 @@ export function addValidationOfNumberSchema(
     return ctx.addValidation(function* (_locals, name, value, depth, errors) {
         const checker = intOnly ? "isInteger" : "isFinite"
         const code = intOnly ? "numberIntOnly" : "number"
+
         yield `
             if (!Number.${checker}(${value})) {
                 if (${value} === Number.POSITIVE_INFINITY || ${value} === Number.NEGATIVE_INFINITY) {
@@ -32,13 +33,8 @@ export function addValidationOfNumberSchema(
             }
         `
 
-        if (maxValue === undefined && minValue === undefined) {
-            yield "}"
-        } else {
-            yield `
-                    return ${errors};
-                }
-            `
+        if (maxValue !== undefined || minValue !== undefined) {
+            yield "} else {"
 
             if (maxValue !== undefined) {
                 if (minValue !== undefined && minValue > maxValue) {
@@ -61,6 +57,9 @@ export function addValidationOfNumberSchema(
             }
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }

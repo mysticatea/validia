@@ -12,13 +12,8 @@ export function addValidationOfBigIntSchema(
                 ${errors}.push({ code: "bigint", args: { name: ${name} }, depth: ${depth} });
         `
 
-        if (maxValue === undefined && minValue === undefined) {
-            yield "}"
-        } else {
-            yield `
-                    return ${errors};
-                }
-            `
+        if (maxValue !== undefined || minValue !== undefined) {
+            yield "} else {"
 
             if (maxValue !== undefined) {
                 if (minValue !== undefined && minValue > maxValue) {
@@ -41,6 +36,9 @@ export function addValidationOfBigIntSchema(
             }
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }

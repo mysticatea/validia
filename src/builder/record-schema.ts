@@ -13,9 +13,9 @@ export function addValidationOfRecordSchema(
                 ${errors}.push({ code: "object", args: { name: ${name} }, depth: ${depth} });
         `
 
-        if (properties.type === "any") {
-            yield "}"
-        } else {
+        if (properties.type !== "any") {
+            yield "} else {"
+
             const validate = addValidation(
                 ctx,
                 `${schemaKey}.properties`,
@@ -25,8 +25,6 @@ export function addValidationOfRecordSchema(
             const key = locals.add('""')
             const i = locals.add("0")
             yield `
-                    return ${errors};
-                }
                 ${keys} = Object.keys(${value}).sort(undefined);
                 for (${i} = 0; ${i} < ${keys}.length; ++${i}) {
                     ${key} = ${keys}[${i}]
@@ -35,6 +33,9 @@ export function addValidationOfRecordSchema(
             `
         }
 
-        yield `return ${errors};`
+        yield `
+            }
+            return ${errors};
+        `
     })
 }
