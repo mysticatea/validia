@@ -2,7 +2,7 @@ import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.object()", () => {
@@ -29,17 +29,11 @@ describe("schemas.object()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it("should have no validation for properties", () => {
@@ -65,24 +59,15 @@ describe("schemas.object({})", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "/foo/u"),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, "/foo/u"))
     })
 
     it("should fail on object that has properties", () => {
-        assert.throws(
-            () => validate(schema, { foo: 1, bar: 2 }),
-            new Error('"value" must not have unknown properties: bar,foo.'),
-        )
+        assertThrows(() => validate(schema, { foo: 1, bar: 2 }))
     })
 
     it("should have validation, only for unknown properties", () => {
@@ -123,23 +108,18 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() })", () => {
     })
 
     it("should fail on object that has extra properties", () => {
-        assert.throws(
-            () =>
-                validate(schema, {
-                    one: 1,
-                    two: 2,
-                    three: 3,
-                    four: 4,
-                }),
-            new Error('"value" must not have unknown properties: four,three.'),
+        assertThrows(() =>
+            validate(schema, {
+                one: 1,
+                two: 2,
+                three: 3,
+                four: 4,
+            }),
         )
     })
 
     it("should fail on object that has different properties", () => {
-        assert.throws(
-            () => validate(schema, { one: 1, three: 3 }),
-            new Error('"value" must not have unknown property: three.'),
-        )
+        assertThrows(() => validate(schema, { one: 1, three: 3 }))
     })
 
     it("should have validation, but not have validations for property values", () => {
@@ -180,36 +160,25 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() })", () 
     })
 
     it('should fail on { one: 1, two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { one: 1, two: "two" }),
-            new Error('"value.one" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { one: 1, two: "two" }))
     })
     it("should fail on { two: 2 }", () => {
-        assert.throws(
-            () => validate(schema, { two: 2 }),
-            new Error('"value.two" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { two: 2 }))
     })
 
     it("should fail on object that has extra properties", () => {
-        assert.throws(
-            () =>
-                validate(schema, {
-                    one: "one",
-                    two: "two",
-                    three: "three",
-                    four: "four",
-                }),
-            new Error('"value" must not have unknown properties: four,three.'),
+        assertThrows(() =>
+            validate(schema, {
+                one: "one",
+                two: "two",
+                three: "three",
+                four: "four",
+            }),
         )
     })
 
     it("should fail on object that has different properties", () => {
-        assert.throws(
-            () => validate(schema, { one: "one", three: "three" }),
-            new Error('"value" must not have unknown property: three.'),
-        )
+        assertThrows(() => validate(schema, { one: "one", three: "three" }))
     })
 
     it("should have validation for property values", () => {
@@ -264,10 +233,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.string() }, { allowU
     })
 
     it("should fail on { two: 2 }", () => {
-        assert.throws(
-            () => validate(schema, { two: 2 }),
-            new Error('"value.two" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { two: 2 }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {
@@ -312,52 +278,31 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on {}", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, {}))
     })
     it('should fail on { two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { two: "two" }),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, { two: "two" }))
     })
     it("should fail on { one: null, two: null }", () => {
-        assert.throws(
-            () => validate(schema, { one: null, two: null }),
-            new Error(
-                '"value" has 2 validation errors:\n' +
-                    '- "value.one" must be a string.\n' +
-                    '- "value.two" must be a string.',
-            ),
-        )
+        assertThrows(() => validate(schema, { one: null, two: null }))
     })
     it('should fail on { one: 1, two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { one: 1, two: "two" }),
-            new Error('"value.one" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { one: 1, two: "two" }))
     })
 
     it("should fail on object that has extra properties", () => {
-        assert.throws(
-            () =>
-                validate(schema, {
-                    one: "one",
-                    two: "two",
-                    three: "three",
-                    four: "four",
-                }),
-            new Error('"value" must not have unknown properties: four,three.'),
+        assertThrows(() =>
+            validate(schema, {
+                one: "one",
+                two: "two",
+                three: "three",
+                four: "four",
+            }),
         )
     })
 
     it("should fail on object that has different properties", () => {
-        assert.throws(
-            () => validate(schema, { one: "one", three: "three" }),
-            new Error('"value" must not have unknown property: three.'),
-        )
+        assertThrows(() => validate(schema, { one: "one", three: "three" }))
     })
 
     it("should have validation for property values", () => {
@@ -382,12 +327,7 @@ describe('schemas.object({ one: schemas.string() }, { required: ["two"] })', () 
     )
 
     it("should throw a fatal error on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error(
-                '"two" was in "$schema.required", so it must exist in "$schema.properties".',
-            ),
-        )
+        assertThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -408,34 +348,22 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() }, { required:
     })
 
     it("should fail on {}", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error('"value" must have the required properties: one,two.'),
-        )
+        assertThrows(() => validate(schema, {}))
     })
 
     it("should fail on object that has extra properties", () => {
-        assert.throws(
-            () =>
-                validate(schema, {
-                    one: 1,
-                    two: 2,
-                    three: 3,
-                    four: 4,
-                }),
-            new Error('"value" must not have unknown properties: four,three.'),
+        assertThrows(() =>
+            validate(schema, {
+                one: 1,
+                two: 2,
+                three: 3,
+                four: 4,
+            }),
         )
     })
 
     it("should fail on object that has different properties", () => {
-        assert.throws(
-            () => validate(schema, { one: 1, three: 3 }),
-            new Error(
-                '"value" has 2 validation errors:\n' +
-                    '- "value" must have the required property: two.\n' +
-                    '- "value" must not have unknown property: three.',
-            ),
-        )
+        assertThrows(() => validate(schema, { one: 1, three: 3 }))
     })
 
     it("should have validation, but not have validations for property values", () => {
@@ -464,55 +392,34 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on {}", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error('"value" must have the required properties: one,two.'),
-        )
+        assertThrows(() => validate(schema, {}))
     })
 
     it('should fail on { one: 1, two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { one: 1, two: "two" }),
-            new Error('"value.one" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { one: 1, two: "two" }))
     })
 
     it('should fail on { one: "one", two: null }', () => {
-        assert.throws(
-            () => validate(schema, { one: "one", two: null }),
-            new Error('"value.two" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { one: "one", two: null }))
     })
 
     it('should fail on { one: "one", two: undefined }', () => {
-        assert.throws(
-            () => validate(schema, { one: "one", two: undefined }),
-            new Error('"value.two" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { one: "one", two: undefined }))
     })
 
     it("should fail on object that has extra properties", () => {
-        assert.throws(
-            () =>
-                validate(schema, {
-                    one: "one",
-                    two: "two",
-                    three: "three",
-                    four: "four",
-                }),
-            new Error('"value" must not have unknown properties: four,three.'),
+        assertThrows(() =>
+            validate(schema, {
+                one: "one",
+                two: "two",
+                three: "three",
+                four: "four",
+            }),
         )
     })
 
     it("should fail on object that has different properties", () => {
-        assert.throws(
-            () => validate(schema, { one: "one", three: "three" }),
-            new Error(
-                '"value" has 2 validation errors:\n' +
-                    '- "value" must have the required property: two.\n' +
-                    '- "value" must not have unknown property: three.',
-            ),
-        )
+        assertThrows(() => validate(schema, { one: "one", three: "three" }))
     })
 
     it("should have validation for property values", () => {
@@ -547,17 +454,11 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { all
     })
 
     it('should fail on { two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { two: "two" }),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, { two: "two" }))
     })
 
     it('should fail on { two: "two", three: 3 }', () => {
-        assert.throws(
-            () => validate(schema, { two: "two" }),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, { two: "two" }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {
@@ -599,24 +500,15 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { all
     })
 
     it('should fail on { one: "one" }', () => {
-        assert.throws(
-            () => validate(schema, { one: "one" }),
-            new Error('"value" must have the required property: two.'),
-        )
+        assertThrows(() => validate(schema, { one: "one" }))
     })
 
     it('should fail on { two: "two" }', () => {
-        assert.throws(
-            () => validate(schema, { two: "two" }),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, { two: "two" }))
     })
 
     it('should fail on { two: "two", three: 3 }', () => {
-        assert.throws(
-            () => validate(schema, { two: "two" }),
-            new Error('"value" must have the required property: one.'),
-        )
+        assertThrows(() => validate(schema, { two: "two" }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {

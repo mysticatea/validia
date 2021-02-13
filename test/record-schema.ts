@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.record()", () => {
@@ -29,17 +28,11 @@ describe("schemas.record()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it("should have no validation for properties", () => {
@@ -76,24 +69,15 @@ describe("schemas.record(schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an object.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on object that has null property", () => {
-        assert.throws(
-            () => validate(schema, { foo: null }),
-            new Error('"value.foo" must be a string.'),
-        )
+        assertThrows(() => validate(schema, { foo: null }))
     })
 
     it("should fail on array that includes null", () => {
-        assert.throws(
-            () => validate(schema, ["foo", null]),
-            new Error('"value.1" must be a string.'),
-        )
+        assertThrows(() => validate(schema, ["foo", null]))
     })
 
     it("should have validation for elements", () => {

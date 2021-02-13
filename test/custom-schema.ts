@@ -1,9 +1,8 @@
-import assert from "assert"
 import path from "path"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)', () => {
@@ -18,17 +17,11 @@ describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)',
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an absolute path.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on ./foo.js", () => {
-        assert.throws(
-            () => validate(schema, "./foo.js"),
-            new Error('"value" must be an absolute path.'),
-        )
+        assertThrows(() => validate(schema, "./foo.js"))
     })
 
     it("should have validation", () => {

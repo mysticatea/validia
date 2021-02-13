@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.array()", () => {
@@ -17,17 +16,11 @@ describe("schemas.array()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on object", () => {
-        assert.throws(
-            () => validate(schema, { 0: 1, length: 1 }),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, { 0: 1, length: 1 }))
     })
 
     it("should have no validation for elements", () => {
@@ -57,17 +50,11 @@ describe("schemas.array(schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes null", () => {
-        assert.throws(
-            () => validate(schema, ["foo", null]),
-            new Error('"value[1]" must be a string.'),
-        )
+        assertThrows(() => validate(schema, ["foo", null]))
     })
 
     it("should have validation for elements", () => {
@@ -97,17 +84,11 @@ describe("schemas.array(schemas.any(), { maxLength: 2 })", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes three strings", () => {
-        assert.throws(
-            () => validate(schema, ["foo", "bar", "three"]),
-            new Error('"value" must contain less than or equal to 2 items.'),
-        )
+        assertThrows(() => validate(schema, ["foo", "bar", "three"]))
     })
 
     it("should have validation for maxLength", () => {
@@ -127,17 +108,11 @@ describe("schemas.array(schemas.any(), { minLength: 2 })", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on empty array", () => {
-        assert.throws(
-            () => validate(schema, []),
-            new Error('"value" must contain more than or equal to 2 items.'),
-        )
+        assertThrows(() => validate(schema, []))
     })
 
     it("should have validation for minLength", () => {
@@ -161,23 +136,16 @@ describe("schemas.array(schemas.any(), { unique: true })", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes two same strings", () => {
-        assert.throws(
-            () => validate(schema, ["foo", "foo"]),
-            new Error('"value" must not contain duplicate values.'),
-        )
+        assertThrows(() => validate(schema, ["foo", "foo"]))
     })
 
     it("should report once even if array included many same strings", () => {
-        assert.throws(
-            () => validate(schema, ["foo", "foo", "foo", "bar", "bar"]),
-            new Error('"value" must not contain duplicate values.'),
+        assertThrows(() =>
+            validate(schema, ["foo", "foo", "foo", "bar", "bar"]),
         )
     })
 
@@ -206,43 +174,23 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an array.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on empty array", () => {
-        assert.throws(
-            () => validate(schema, []),
-            new Error('"value" must not be empty.'),
-        )
+        assertThrows(() => validate(schema, []))
     })
 
     it("should fail on array that includes two numbers", () => {
-        assert.throws(
-            () => validate(schema, ["foo", 1]),
-            new Error('"value[1]" must be a string.'),
-        )
+        assertThrows(() => validate(schema, ["foo", 1]))
     })
 
     it("should fail on array that includes two same string", () => {
-        assert.throws(
-            () => validate(schema, ["foo", "foo"]),
-            new Error('"value" must not contain duplicate values.'),
-        )
+        assertThrows(() => validate(schema, ["foo", "foo"]))
     })
 
     it("should fail on array that has many errors", () => {
-        assert.throws(
-            () => validate(schema, [0, "foo", "foo"]),
-            new Error(
-                '"value" has 3 validation errors:\n' +
-                    '- "value" must contain less than or equal to 2 items.\n' +
-                    '- "value" must not contain duplicate values.\n' +
-                    '- "value[0]" must be a string.',
-            ),
-        )
+        assertThrows(() => validate(schema, [0, "foo", "foo"]))
     })
 
     it("should have validation for all options", () => {
@@ -256,15 +204,13 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
 
 describe("schemas.array(schemas.any(), { maxLength: 1, minLength: 2 })", () => {
     it("should throw a fatal error on compile", () => {
-        assert.throws(
-            () =>
-                createValidationOfSchema(
-                    schemas.array(schemas.any(), {
-                        maxLength: 1,
-                        minLength: 2,
-                    }),
-                ),
-            new Error('"maxLength" must be "minLength" or greater than it.'),
+        assertThrows(() =>
+            createValidationOfSchema(
+                schemas.array(schemas.any(), {
+                    maxLength: 1,
+                    minLength: 2,
+                }),
+            ),
         )
     })
 })

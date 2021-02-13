@@ -77,3 +77,29 @@ export function assertSnapshot(value: any): void {
         assert.strictEqual(actual, expected)
     }
 }
+
+export function assertThrows(f: () => void): void {
+    if (currentTest === "") {
+        throw new Error("The current test title is nothing.")
+    }
+
+    const key = `${currentTest} #[${currentIndex++}]`
+    const expected = snapshot[key]
+    try {
+        f()
+    } catch (error) {
+        const actual = format(error)
+
+        unusedKeys.delete(key)
+
+        if (IsUpdateMode || expected == null) {
+            snapshot[key] = actual
+            snapshotUpdated = true
+        } else {
+            assert.strictEqual(actual, expected)
+        }
+        return
+    }
+
+    assert.fail(`Expected to be thrown: ${expected ?? "(snapshot not found)"}`)
+}

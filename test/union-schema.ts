@@ -2,7 +2,7 @@ import assert from "assert"
 import { Schema, schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
@@ -17,24 +17,15 @@ describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a number or a string.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on object", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error('"value" must be a number or a string.'),
-        )
+        assertThrows(() => validate(schema, {}))
     })
 
     it("should fail on boolean", () => {
-        assert.throws(
-            () => validate(schema, true),
-            new Error('"value" must be a number or a string.'),
-        )
+        assertThrows(() => validate(schema, true))
     })
 
     it("should have validation", () => {
@@ -69,17 +60,11 @@ describe('schemas.anyOf(schemas.number(), schemas.enum("auto", "none"))', () => 
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be any of a number, "auto", and "none".'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it('should fail on "foo"', () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must be any of a number, "auto", and "none".'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it("should have validation", () => {
@@ -115,30 +100,15 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error(
-                '"value" must be any of a number, a string, and an object.',
-            ),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it('should fail on { value: "foo" }, with the error message of the nearest choice', () => {
-        assert.throws(
-            () => validate(schema, { value: "foo" }),
-            new Error('"value.value" must be a number.'),
-        )
+        assertThrows(() => validate(schema, { value: "foo" }))
     })
 
     it('should fail on { valu: "foo" }, with the error message of the nearest choice', () => {
-        assert.throws(
-            () => validate(schema, { vale: "foo" }),
-            new Error(
-                '"value" has 2 validation errors:\n' +
-                    '- "value" must have the required property: value.\n' +
-                    '- "value" must not have unknown property: vale.',
-            ),
-        )
+        assertThrows(() => validate(schema, { vale: "foo" }))
     })
 
     it("should have validation", () => {
@@ -171,10 +141,7 @@ describe('{ type: "union", schemas: [] }', () => {
     const schema: Schema.Union<never> = { type: "union", schemas: [] }
 
     it("should throw a fatail error on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error("UnionSchema must have 1 or more schemas."),
-        )
+        assertThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -202,12 +169,7 @@ describe("schemas.anyOf(/* all kinds of schema except any */)", () => {
     )
 
     it("should print the name of schemas if failed", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error(
-                '"value" must be any of an array, a bigint value, a boolean value, a RegExp instance, xxxx-check, 1n, [function myFunc], [function (anonymous)], 2, "foo", a function, a number, an object, a string, a symbol, and a tuple.',
-            ),
-        )
+        assertThrows(() => validate(schema, {}))
     })
 })
 

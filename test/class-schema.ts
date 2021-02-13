@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.instanceOf(RegExp)", () => {
@@ -13,24 +12,15 @@ describe("schemas.instanceOf(RegExp)", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be an instance of RegExp.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "/foo/u"),
-            new Error('"value" must be an instance of RegExp.'),
-        )
+        assertThrows(() => validate(schema, "/foo/u"))
     })
 
     it("should fail on other objects", () => {
-        assert.throws(
-            () => validate(schema, { pattern: "foo", flags: "u" }),
-            new Error('"value" must be an instance of RegExp.'),
-        )
+        assertThrows(() => validate(schema, { pattern: "foo", flags: "u" }))
     })
 
     it("should have validation", () => {

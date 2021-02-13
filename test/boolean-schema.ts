@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.boolean()", () => {
@@ -17,24 +16,15 @@ describe("schemas.boolean()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a boolean value.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on number", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be a boolean value.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "0"),
-            new Error('"value" must be a boolean value.'),
-        )
+        assertThrows(() => validate(schema, "0"))
     })
 
     it("should have validation", () => {

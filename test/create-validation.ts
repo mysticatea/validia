@@ -1,5 +1,5 @@
-import assert from "assert"
 import { createValidation, Schema, schemas, Validate } from "../src"
+import { assertThrows } from "./lib/snapshot"
 
 describe("createValidation(schema, options)", () => {
     describe("createValidation(schemas.string())", () => {
@@ -12,10 +12,7 @@ describe("createValidation(schema, options)", () => {
         })
 
         it("should fail 0xDEADBEAF", () => {
-            assert.throws(
-                () => validate(0xdeadbeaf),
-                new Error('"value" must be a string.'),
-            )
+            assertThrows(() => validate(0xdeadbeaf))
         })
     })
 })

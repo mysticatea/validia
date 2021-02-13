@@ -2,17 +2,14 @@ import assert from "assert"
 import { Schema, schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe('{ type: "enum", values: [] }', () => {
     const schema: Schema.Enum<never> = { type: "enum", values: [] }
 
     it("should fail on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error("EnumSchema must have 1 or more values."),
-        )
+        assertThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -24,16 +21,10 @@ describe("schemas.enum(null)", () => {
     })
 
     it("should fail on 0", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be null.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
     it("should fail on undefined", () => {
-        assert.throws(
-            () => validate(schema, undefined),
-            new Error('"value" must be null.'),
-        )
+        assertThrows(() => validate(schema, undefined))
     })
 
     it("should have validation", () => {
@@ -184,10 +175,7 @@ describe("schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INF
     })
 
     it("should fail on 0", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be any of NaN, Infinity, and -Infinity.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
 
     it("should have validation; it can handle NaN correctly", () => {
@@ -213,22 +201,13 @@ describe("schemas.enum(Symbol.iterator)", () => {
     })
 
     it("should fail on 0", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be Symbol(Symbol.iterator).'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
     it("should fail on undefined", () => {
-        assert.throws(
-            () => validate(schema, undefined),
-            new Error('"value" must be Symbol(Symbol.iterator).'),
-        )
+        assertThrows(() => validate(schema, undefined))
     })
     it("should fail on another symbol", () => {
-        assert.throws(
-            () => validate(schema, Symbol.toStringTag),
-            new Error('"value" must be Symbol(Symbol.iterator).'),
-        )
+        assertThrows(() => validate(schema, Symbol.toStringTag))
     })
 
     it("should have validation", () => {
@@ -263,20 +242,10 @@ describe("schemas.enum(myObj, mySymbol, myFunc)", () => {
     })
 
     it("should fail on {}", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error(
-                '"value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
-            ),
-        )
+        assertThrows(() => validate(schema, {}))
     })
     it("should fail on another symbol", () => {
-        assert.throws(
-            () => validate(schema, Symbol("mySymbol")),
-            new Error(
-                '"value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].',
-            ),
-        )
+        assertThrows(() => validate(schema, Symbol("mySymbol")))
     })
 
     it("should have validation; give 'values' as an argument because it contains references.", () => {
@@ -306,16 +275,10 @@ describe("schemas.enum(myObj, Number.NaN)", () => {
     })
 
     it("should fail on {}", () => {
-        assert.throws(
-            () => validate(schema, {}),
-            new Error('"value" must be [object Object] or NaN.'),
-        )
+        assertThrows(() => validate(schema, {}))
     })
     it("should fail on 0", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be [object Object] or NaN.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
 
     it("should have validation; it can handle NaN correctly, along with reference values.", () => {

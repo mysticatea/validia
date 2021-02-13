@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.tuple()", () => {
@@ -13,24 +12,15 @@ describe("schemas.tuple()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a tuple.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on { length: 0 }", () => {
-        assert.throws(
-            () => validate(schema, { length: 0 }),
-            new Error('"value" must be a tuple.'),
-        )
+        assertThrows(() => validate(schema, { length: 0 }))
     })
 
     it("should fail on [0]", () => {
-        assert.throws(
-            () => validate(schema, [0]),
-            new Error('"value" must contain exactly 0 items.'),
-        )
+        assertThrows(() => validate(schema, [0]))
     })
 
     it("should have no validation for elements", () => {
@@ -65,24 +55,15 @@ describe("schemas.tuple(schemas.any())", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a tuple.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on { length: 1 }", () => {
-        assert.throws(
-            () => validate(schema, { length: 1 }),
-            new Error('"value" must be a tuple.'),
-        )
+        assertThrows(() => validate(schema, { length: 1 }))
     })
 
     it("should fail on []", () => {
-        assert.throws(
-            () => validate(schema, []),
-            new Error('"value" must contain exactly 1 item.'),
-        )
+        assertThrows(() => validate(schema, []))
     })
 
     it("should have no validation for elements", () => {
@@ -108,33 +89,15 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
     })
 
     it("should fail on []", () => {
-        assert.throws(
-            () => validate(schema, []),
-            new Error(
-                '"value" has 3 validation errors:\n' +
-                    '- "value" must contain exactly 2 items.\n' +
-                    '- "value[0]" must be a string.\n' +
-                    '- "value[1]" must be a string.',
-            ),
-        )
+        assertThrows(() => validate(schema, []))
     })
 
     it("should fail on [1, 2]", () => {
-        assert.throws(
-            () => validate(schema, [1, 2]),
-            new Error(
-                '"value" has 2 validation errors:\n' +
-                    '- "value[0]" must be a string.\n' +
-                    '- "value[1]" must be a string.',
-            ),
-        )
+        assertThrows(() => validate(schema, [1, 2]))
     })
 
     it('should fail on ["a", null]', () => {
-        assert.throws(
-            () => validate(schema, ["a", null]),
-            new Error('"value[1]" must be a string.'),
-        )
+        assertThrows(() => validate(schema, ["a", null]))
     })
 
     it("should have validation", () => {

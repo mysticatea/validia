@@ -1,7 +1,6 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.bigInt()", () => {
@@ -16,24 +15,15 @@ describe("schemas.bigInt()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a bigint value.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on number", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be a bigint value.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
 
     it("should fail on string", () => {
-        assert.throws(
-            () => validate(schema, "0"),
-            new Error('"value" must be a bigint value.'),
-        )
+        assertThrows(() => validate(schema, "0"))
     })
 
     it("should have no validation for min/max", () => {
@@ -59,10 +49,7 @@ describe("schemas.bigInt({ maxValue: 1n })", () => {
     })
 
     it("should fail on 2n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("2")),
-            new Error('"value" must be less than or equal to 1n.'),
-        )
+        assertThrows(() => validate(schema, BigInt("2")))
     })
 
     it("should have validation for maxValue", () => {
@@ -88,10 +75,7 @@ describe("schemas.bigInt({ minValue: 1n })", () => {
     })
 
     it("should fail on 0n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("0")),
-            new Error('"value" must be greater than or equal to 1n.'),
-        )
+        assertThrows(() => validate(schema, BigInt("0")))
     })
 
     it("should have validation for minValue", () => {
@@ -120,17 +104,11 @@ describe("schemas.bigInt({ maxValue: 1n, minValue: 0n })", () => {
     })
 
     it("should fail on -1n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("-1")),
-            new Error('"value" must be greater than or equal to 0n.'),
-        )
+        assertThrows(() => validate(schema, BigInt("-1")))
     })
 
     it("should fail on 2n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("2")),
-            new Error('"value" must be less than or equal to 1n.'),
-        )
+        assertThrows(() => validate(schema, BigInt("2")))
     })
 
     it("should have validation for min/max", () => {
@@ -145,10 +123,7 @@ describe("schemas.bigInt({ maxValue: 0n, minValue: 1n })", () => {
     })
 
     it("should throw a fatal error on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error('"maxValue" must be "minValue" or greater than it.'),
-        )
+        assertThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -164,21 +139,11 @@ describe("schemas.bigInt64", () => {
     })
 
     it("should fail on -9223372036854775809n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("-9223372036854775809")),
-            new Error(
-                '"value" must be greater than or equal to -9223372036854775808n.',
-            ),
-        )
+        assertThrows(() => validate(schema, BigInt("-9223372036854775809")))
     })
 
     it("should fail on 9223372036854775808n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("9223372036854775808")),
-            new Error(
-                '"value" must be less than or equal to 9223372036854775807n.',
-            ),
-        )
+        assertThrows(() => validate(schema, BigInt("9223372036854775808")))
     })
 })
 
@@ -194,18 +159,10 @@ describe("schemas.bigUint64", () => {
     })
 
     it("should fail on -1n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("-1")),
-            new Error('"value" must be greater than or equal to 0n.'),
-        )
+        assertThrows(() => validate(schema, BigInt("-1")))
     })
 
     it("should fail on 18446744073709551616n", () => {
-        assert.throws(
-            () => validate(schema, BigInt("18446744073709551616")),
-            new Error(
-                '"value" must be less than or equal to 18446744073709551615n.',
-            ),
-        )
+        assertThrows(() => validate(schema, BigInt("18446744073709551616")))
     })
 })

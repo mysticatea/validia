@@ -522,6 +522,9 @@ exports["IsomochaCommonOptions should have good validation #[0]"] = String.raw`
   };
 })({});"
 `.slice(1, -1)
+exports["createValidation(schema, options) createValidation(schemas.string()) should fail 0xDEADBEAF #[0]"] = String.raw`
+[Error: "value" must be a string.]
+`.slice(1, -1)
 exports["schemas.any() should have no validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -532,6 +535,9 @@ exports["schemas.any() should have no validation #[0]"] = String.raw`
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.anyOf(/* all kinds of schema except any */) should print the name of schemas if failed #[0]"] = String.raw`
+[Error: "value" must be any of an array, a bigint value, a boolean value, a RegExp instance, xxxx-check, 1n, [function myFunc], [function (anonymous)], 2, "foo", a function, a number, an object, a string, a symbol, and a tuple.]
 `.slice(1, -1)
 exports["schemas.anyOf(/* includes the same schema */) should check once for the same schema #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -612,6 +618,12 @@ exports["schemas.anyOf(/* includes the same schema */) should check once for the
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) should fail on \"foo\" #[0]"] = String.raw`
+[Error: "value" must be any of a number, "auto", and "none".]
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) should fail on null #[0]"] = String.raw`
+[Error: "value" must be any of a number, "auto", and "none".]
+`.slice(1, -1)
 exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -670,6 +682,15 @@ exports["schemas.anyOf(schemas.number(), schemas.enum(\"auto\", \"none\")) shoul
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string()) should fail on boolean #[0]"] = String.raw`
+[Error: "value" must be a number or a string.]
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string()) should fail on null #[0]"] = String.raw`
+[Error: "value" must be a number or a string.]
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string()) should fail on object #[0]"] = String.raw`
+[Error: "value" must be a number or a string.]
+`.slice(1, -1)
 exports["schemas.anyOf(schemas.number(), schemas.string()) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -727,6 +748,17 @@ exports["schemas.anyOf(schemas.number(), schemas.string()) should have validatio
     return _6(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ value: schemas.number() })) should fail on null #[0]"] = String.raw`
+[Error: "value" must be any of a number, a string, and an object.]
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ value: schemas.number() })) should fail on { valu: \"foo\" }, with the error message of the nearest choice #[0]"] = String.raw`
+[Error: "value" has 2 validation errors:
+- "value" must have the required property: value.
+- "value" must not have unknown property: vale.]
+`.slice(1, -1)
+exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ value: schemas.number() })) should fail on { value: \"foo\" }, with the error message of the nearest choice #[0]"] = String.raw`
+[Error: "value.value" must be a number.]
 `.slice(1, -1)
 exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ value: schemas.number() })) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -818,6 +850,12 @@ exports["schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ valu
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.array() should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
+`.slice(1, -1)
+exports["schemas.array() should fail on object #[0]"] = String.raw`
+[Error: "value" must be an array.]
+`.slice(1, -1)
 exports["schemas.array() should have no validation for elements #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -831,6 +869,15 @@ exports["schemas.array() should have no validation for elements #[0]"] = String.
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { maxLength: 1, minLength: 2 }) should throw a fatal error on compile #[0]"] = String.raw`
+[Error: "maxLength" must be "minLength" or greater than it.]
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { maxLength: 2 }) should fail on array that includes three strings #[0]"] = String.raw`
+[Error: "value" must contain less than or equal to 2 items.]
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { maxLength: 2 }) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
 `.slice(1, -1)
 exports["schemas.array(schemas.any(), { maxLength: 2 }) should have validation for maxLength #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -852,6 +899,12 @@ exports["schemas.array(schemas.any(), { maxLength: 2 }) should have validation f
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.array(schemas.any(), { minLength: 2 }) should fail on empty array #[0]"] = String.raw`
+[Error: "value" must contain more than or equal to 2 items.]
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { minLength: 2 }) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
+`.slice(1, -1)
 exports["schemas.array(schemas.any(), { minLength: 2 }) should have validation for minLength #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -871,6 +924,12 @@ exports["schemas.array(schemas.any(), { minLength: 2 }) should have validation f
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { unique: true }) should fail on array that includes two same strings #[0]"] = String.raw`
+[Error: "value" must not contain duplicate values.]
+`.slice(1, -1)
+exports["schemas.array(schemas.any(), { unique: true }) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
 `.slice(1, -1)
 exports["schemas.array(schemas.any(), { unique: true }) should have validation for unique #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -904,6 +963,15 @@ exports["schemas.array(schemas.any(), { unique: true }) should have validation f
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.array(schemas.any(), { unique: true }) should report once even if array included many same strings #[0]"] = String.raw`
+[Error: "value" must not contain duplicate values.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string()) should fail on array that includes null #[0]"] = String.raw`
+[Error: "value[1]" must be a string.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string()) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
+`.slice(1, -1)
 exports["schemas.array(schemas.string()) should have validation for elements #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -929,6 +997,24 @@ exports["schemas.array(schemas.string()) should have validation for elements #[0
     return _1(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should fail on array that has many errors #[0]"] = String.raw`
+[Error: "value" has 3 validation errors:
+- "value" must contain less than or equal to 2 items.
+- "value" must not contain duplicate values.
+- "value[0]" must be a string.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should fail on array that includes two numbers #[0]"] = String.raw`
+[Error: "value[1]" must be a string.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should fail on array that includes two same string #[0]"] = String.raw`
+[Error: "value" must not contain duplicate values.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should fail on empty array #[0]"] = String.raw`
+[Error: "value" must not be empty.]
+`.slice(1, -1)
+exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an array.]
 `.slice(1, -1)
 exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: true }) should have validation for all options #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -976,6 +1062,15 @@ exports["schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: t
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.bigInt() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a bigint value.]
+`.slice(1, -1)
+exports["schemas.bigInt() should fail on number #[0]"] = String.raw`
+[Error: "value" must be a bigint value.]
+`.slice(1, -1)
+exports["schemas.bigInt() should fail on string #[0]"] = String.raw`
+[Error: "value" must be a bigint value.]
+`.slice(1, -1)
 exports["schemas.bigInt() should have no validation for min/max #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -989,6 +1084,12 @@ exports["schemas.bigInt() should have no validation for min/max #[0]"] = String.
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.bigInt({ maxValue: 0n, minValue: 1n }) should throw a fatal error on compile #[0]"] = String.raw`
+[Error: "maxValue" must be "minValue" or greater than it.]
+`.slice(1, -1)
+exports["schemas.bigInt({ maxValue: 1n }) should fail on 2n #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 1n.]
 `.slice(1, -1)
 exports["schemas.bigInt({ maxValue: 1n }) should have validation for maxValue #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1007,6 +1108,12 @@ exports["schemas.bigInt({ maxValue: 1n }) should have validation for maxValue #[
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.bigInt({ maxValue: 1n, minValue: 0n }) should fail on -1n #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0n.]
+`.slice(1, -1)
+exports["schemas.bigInt({ maxValue: 1n, minValue: 0n }) should fail on 2n #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 1n.]
 `.slice(1, -1)
 exports["schemas.bigInt({ maxValue: 1n, minValue: 0n }) should have validation for min/max #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1028,6 +1135,9 @@ exports["schemas.bigInt({ maxValue: 1n, minValue: 0n }) should have validation f
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.bigInt({ minValue: 1n }) should fail on 0n #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 1n.]
+`.slice(1, -1)
 exports["schemas.bigInt({ minValue: 1n }) should have validation for minValue #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1046,6 +1156,27 @@ exports["schemas.bigInt({ minValue: 1n }) should have validation for minValue #[
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.bigInt64 should fail on -9223372036854775809n #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to -9223372036854775808n.]
+`.slice(1, -1)
+exports["schemas.bigInt64 should fail on 9223372036854775808n #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 9223372036854775807n.]
+`.slice(1, -1)
+exports["schemas.bigUint64 should fail on -1n #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0n.]
+`.slice(1, -1)
+exports["schemas.bigUint64 should fail on 18446744073709551616n #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 18446744073709551615n.]
+`.slice(1, -1)
+exports["schemas.boolean() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a boolean value.]
+`.slice(1, -1)
+exports["schemas.boolean() should fail on number #[0]"] = String.raw`
+[Error: "value" must be a boolean value.]
+`.slice(1, -1)
+exports["schemas.boolean() should fail on string #[0]"] = String.raw`
+[Error: "value" must be a boolean value.]
+`.slice(1, -1)
 exports["schemas.boolean() should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1059,6 +1190,12 @@ exports["schemas.boolean() should have validation #[0]"] = String.raw`
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.custom(\"an absolute path\", (x: unknown): x is string => ...) should fail on ./foo.js #[0]"] = String.raw`
+[Error: "value" must be an absolute path.]
+`.slice(1, -1)
+exports["schemas.custom(\"an absolute path\", (x: unknown): x is string => ...) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an absolute path.]
 `.slice(1, -1)
 exports["schemas.custom(\"an absolute path\", (x: unknown): x is string => ...) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1089,6 +1226,9 @@ exports["schemas.enum(1n, true, 0, null, \"foo\", undefined) should have validat
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY) should fail on 0 #[0]"] = String.raw`
+[Error: "value" must be any of NaN, Infinity, and -Infinity.]
+`.slice(1, -1)
 exports["schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY) should have validation; it can handle NaN correctly #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1102,6 +1242,15 @@ exports["schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFI
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.enum(Symbol.iterator) should fail on 0 #[0]"] = String.raw`
+[Error: "value" must be Symbol(Symbol.iterator).]
+`.slice(1, -1)
+exports["schemas.enum(Symbol.iterator) should fail on another symbol #[0]"] = String.raw`
+[Error: "value" must be Symbol(Symbol.iterator).]
+`.slice(1, -1)
+exports["schemas.enum(Symbol.iterator) should fail on undefined #[0]"] = String.raw`
+[Error: "value" must be Symbol(Symbol.iterator).]
 `.slice(1, -1)
 exports["schemas.enum(Symbol.iterator) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1118,6 +1267,12 @@ exports["schemas.enum(Symbol.iterator) should have validation #[0]"] = String.ra
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.enum(myObj, Number.NaN) should fail on 0 #[0]"] = String.raw`
+[Error: "value" must be [object Object] or NaN.]
+`.slice(1, -1)
+exports["schemas.enum(myObj, Number.NaN) should fail on {} #[0]"] = String.raw`
+[Error: "value" must be [object Object] or NaN.]
+`.slice(1, -1)
 exports["schemas.enum(myObj, Number.NaN) should have validation; it can handle NaN correctly, along with reference values. #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1132,6 +1287,12 @@ exports["schemas.enum(myObj, Number.NaN) should have validation; it can handle N
     return _1(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.enum(myObj, mySymbol, myFunc) should fail on another symbol #[0]"] = String.raw`
+[Error: "value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].]
+`.slice(1, -1)
+exports["schemas.enum(myObj, mySymbol, myFunc) should fail on {} #[0]"] = String.raw`
+[Error: "value" must be any of [object Object], Symbol(mySymbol), and [function myFunc].]
 `.slice(1, -1)
 exports["schemas.enum(myObj, mySymbol, myFunc) should have validation; give 'values' as an argument because it contains references. #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1150,6 +1311,12 @@ exports["schemas.enum(myObj, mySymbol, myFunc) should have validation; give 'val
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.enum(null) should fail on 0 #[0]"] = String.raw`
+[Error: "value" must be null.]
+`.slice(1, -1)
+exports["schemas.enum(null) should fail on undefined #[0]"] = String.raw`
+[Error: "value" must be null.]
+`.slice(1, -1)
 exports["schemas.enum(null) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1163,6 +1330,15 @@ exports["schemas.enum(null) should have validation #[0]"] = String.raw`
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.function() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a function.]
+`.slice(1, -1)
+exports["schemas.function() should fail on number #[0]"] = String.raw`
+[Error: "value" must be a function.]
+`.slice(1, -1)
+exports["schemas.function() should fail on string #[0]"] = String.raw`
+[Error: "value" must be a function.]
 `.slice(1, -1)
 exports["schemas.function() should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1178,6 +1354,15 @@ exports["schemas.function() should have validation #[0]"] = String.raw`
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.instanceOf(RegExp) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an instance of RegExp.]
+`.slice(1, -1)
+exports["schemas.instanceOf(RegExp) should fail on other objects #[0]"] = String.raw`
+[Error: "value" must be an instance of RegExp.]
+`.slice(1, -1)
+exports["schemas.instanceOf(RegExp) should fail on string #[0]"] = String.raw`
+[Error: "value" must be an instance of RegExp.]
+`.slice(1, -1)
 exports["schemas.instanceOf(RegExp) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1192,6 +1377,51 @@ exports["schemas.instanceOf(RegExp) should have validation #[0]"] = String.raw`
     return _1(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.int16 should fail on -32769 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to -32768.]
+`.slice(1, -1)
+exports["schemas.int16 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.int16 should fail on 32768 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 32767.]
+`.slice(1, -1)
+exports["schemas.int32 should fail on -2147483649 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to -2147483648.]
+`.slice(1, -1)
+exports["schemas.int32 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.int32 should fail on 2147483648 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 2147483647.]
+`.slice(1, -1)
+exports["schemas.int8 should fail on -129 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to -128.]
+`.slice(1, -1)
+exports["schemas.int8 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.int8 should fail on 128 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 127.]
+`.slice(1, -1)
+exports["schemas.number() should fail on -Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number() should fail on Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number() should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
+`.slice(1, -1)
+exports["schemas.number() should fail on bigint #[0]"] = String.raw`
+[Error: "value" must be a number.]
+`.slice(1, -1)
+exports["schemas.number() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a number.]
+`.slice(1, -1)
+exports["schemas.number() should fail on string #[0]"] = String.raw`
+[Error: "value" must be a number.]
 `.slice(1, -1)
 exports["schemas.number() should have no validation for min/max #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1213,6 +1443,12 @@ exports["schemas.number() should have no validation for min/max #[0]"] = String.
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.number({ allowInfinity: true }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be a number.]
+`.slice(1, -1)
 exports["schemas.number({ allowInfinity: true }) should have validation allowing Infinity #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1231,6 +1467,9 @@ exports["schemas.number({ allowInfinity: true }) should have validation allowing
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, allowNaN: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be a number.]
+`.slice(1, -1)
 exports["schemas.number({ allowInfinity: true, allowNaN: true }) should have validation allowing Infinity and NaN #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1244,6 +1483,12 @@ exports["schemas.number({ allowInfinity: true, allowNaN: true }) should have val
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be an integer.]
 `.slice(1, -1)
 exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) should have validation allowing Infinity and NaN #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1260,6 +1505,15 @@ exports["schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true }) 
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, intOnly: true }) should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, intOnly: true }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
+`.slice(1, -1)
+exports["schemas.number({ allowInfinity: true, intOnly: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be an integer.]
 `.slice(1, -1)
 exports["schemas.number({ allowInfinity: true, intOnly: true }) should have validation allowing Infinity #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1279,6 +1533,15 @@ exports["schemas.number({ allowInfinity: true, intOnly: true }) should have vali
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.number({ allowNaN: true }) should fail on -Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true }) should fail on Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be a number.]
+`.slice(1, -1)
 exports["schemas.number({ allowNaN: true }) should have validation allowing NaN #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1297,6 +1560,18 @@ exports["schemas.number({ allowNaN: true }) should have validation allowing NaN 
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.number({ allowNaN: true, intOnly: true }) should fail on -Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true, intOnly: true }) should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true, intOnly: true }) should fail on Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ allowNaN: true, intOnly: true }) should fail on \"0\" #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
 exports["schemas.number({ allowNaN: true, intOnly: true }) should have validation allowing NaN #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1314,6 +1589,21 @@ exports["schemas.number({ allowNaN: true, intOnly: true }) should have validatio
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.number({ intOnly: true }) should fail on -Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ intOnly: true }) should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.number({ intOnly: true }) should fail on Infinity #[0]"] = String.raw`
+[Error: "value" must not be Infinity.]
+`.slice(1, -1)
+exports["schemas.number({ intOnly: true }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
+`.slice(1, -1)
+exports["schemas.number({ intOnly: true }) should fail on bigint #[0]"] = String.raw`
+[Error: "value" must be an integer.]
 `.slice(1, -1)
 exports["schemas.number({ intOnly: true }) should have validation, but not have for min/max #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1334,6 +1624,15 @@ exports["schemas.number({ intOnly: true }) should have validation, but not have 
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 0, minValue: 1 }) should throw a fatal error on compile #[0]"] = String.raw`
+[Error: "maxValue" must be "minValue" or greater than it.]
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 1 }) should fail on 2 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 1.]
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 1 }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
 `.slice(1, -1)
 exports["schemas.number({ maxValue: 1 }) should have validation for maxValue #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1358,6 +1657,15 @@ exports["schemas.number({ maxValue: 1 }) should have validation for maxValue #[0
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 1, minValue: 0 }) should fail on -1 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0.]
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 1, minValue: 0 }) should fail on 2 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 1.]
+`.slice(1, -1)
+exports["schemas.number({ maxValue: 1, minValue: 0 }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
 `.slice(1, -1)
 exports["schemas.number({ maxValue: 1, minValue: 0 }) should have validation for min/max #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1385,6 +1693,12 @@ exports["schemas.number({ maxValue: 1, minValue: 0 }) should have validation for
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.number({ minValue: 1 }) should fail on 0 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 1.]
+`.slice(1, -1)
+exports["schemas.number({ minValue: 1 }) should fail on NaN #[0]"] = String.raw`
+[Error: "value" must not be NaN.]
+`.slice(1, -1)
 exports["schemas.number({ minValue: 1 }) should have validation for minValue #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1409,6 +1723,12 @@ exports["schemas.number({ minValue: 1 }) should have validation for minValue #[0
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.object() should fail on null #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
+exports["schemas.object() should fail on string #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
 exports["schemas.object() should have no validation for properties #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1422,6 +1742,9 @@ exports["schemas.object() should have no validation for properties #[0]"] = Stri
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array(schemas.string())), exclude: schemas.anyOf(schemas.string(), schemas.array(schemas.string())) }) should fail on { include: 3 } #[0]"] = String.raw`
+[Error: "value.include" must be a string or an array.]
 `.slice(1, -1)
 exports["schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array(schemas.string())), exclude: schemas.anyOf(schemas.string(), schemas.array(schemas.string())) }) should have good validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1509,6 +1832,12 @@ exports["schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.any() }) should fail on object that has different properties #[0]"] = String.raw`
+[Error: "value" must not have unknown property: three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.any() }) should fail on object that has extra properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: four,three.]
+`.slice(1, -1)
 exports["schemas.object({ one: schemas.any(), two: schemas.any() }) should have validation, but not have validations for property values #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1540,6 +1869,17 @@ exports["schemas.object({ one: schemas.any(), two: schemas.any() }) should have 
     return _2(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: true }) should fail on object that has different properties #[0]"] = String.raw`
+[Error: "value" has 2 validation errors:
+- "value" must have the required property: two.
+- "value" must not have unknown property: three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: true }) should fail on object that has extra properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: four,three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: true }) should fail on {} #[0]"] = String.raw`
+[Error: "value" must have the required properties: one,two.]
 `.slice(1, -1)
 exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: true }) should have validation, but not have validations for property values #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1581,6 +1921,9 @@ exports["schemas.object({ one: schemas.any(), two: schemas.any() }, { required: 
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.object({ one: schemas.any(), two: schemas.string() }, { allowUnknown: true }) should fail on { two: 2 } #[0]"] = String.raw`
+[Error: "value.two" must be a string.]
+`.slice(1, -1)
 exports["schemas.object({ one: schemas.any(), two: schemas.string() }, { allowUnknown: true }) should have validation, but not have validations for extra properties #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1611,6 +1954,21 @@ exports["schemas.object({ one: schemas.any(), two: schemas.string() }, { allowUn
     return _2(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string() }, { required: [\"two\"] }) should throw a fatal error on compile #[0]"] = String.raw`
+[Error: "two" was in "$schema.required", so it must exist in "$schema.properties".]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should fail on object that has different properties #[0]"] = String.raw`
+[Error: "value" must not have unknown property: three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should fail on object that has extra properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: four,three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should fail on { one: 1, two: \"two\" } #[0]"] = String.raw`
+[Error: "value.one" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should fail on { two: 2 } #[0]"] = String.raw`
+[Error: "value.two" must be a string.]
 `.slice(1, -1)
 exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should have validation for property values #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1654,6 +2012,12 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }) should
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: [\"one\"] }) should fail on { two: \"two\" } #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: [\"one\"] }) should fail on { two: \"two\", three: 3 } #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
+`.slice(1, -1)
 exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: [\"one\"] }) should have validation, but not have validations for extra properties #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1693,6 +2057,15 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allo
     return _2(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: true }) should fail on { one: \"one\" } #[0]"] = String.raw`
+[Error: "value" must have the required property: two.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: true }) should fail on { two: \"two\" } #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: true }) should fail on { two: \"two\", three: 3 } #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
 `.slice(1, -1)
 exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allowUnknown: true, required: true }) should have validation, but not have validations for extra properties #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1735,6 +2108,26 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { allo
     return _2(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on object that has different properties #[0]"] = String.raw`
+[Error: "value" must not have unknown property: three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on object that has extra properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: four,three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on { one: 1, two: \"two\" } #[0]"] = String.raw`
+[Error: "value.one" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on { one: null, two: null } #[0]"] = String.raw`
+[Error: "value" has 2 validation errors:
+- "value.one" must be a string.
+- "value.two" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on { two: \"two\" } #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should fail on {} #[0]"] = String.raw`
+[Error: "value" must have the required property: one.]
 `.slice(1, -1)
 exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: [\"one\"] }) should have validation for property values #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1783,6 +2176,26 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { requ
     return _3(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on object that has different properties #[0]"] = String.raw`
+[Error: "value" has 2 validation errors:
+- "value" must have the required property: two.
+- "value" must not have unknown property: three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on object that has extra properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: four,three.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on { one: 1, two: \"two\" } #[0]"] = String.raw`
+[Error: "value.one" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on { one: \"one\", two: null } #[0]"] = String.raw`
+[Error: "value.two" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on { one: \"one\", two: undefined } #[0]"] = String.raw`
+[Error: "value.two" must be a string.]
+`.slice(1, -1)
+exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should fail on {} #[0]"] = String.raw`
+[Error: "value" must have the required properties: one,two.]
 `.slice(1, -1)
 exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { required: true }) should have validation for property values #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1834,6 +2247,15 @@ exports["schemas.object({ one: schemas.string(), two: schemas.string() }, { requ
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.object({}) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
+exports["schemas.object({}) should fail on object that has properties #[0]"] = String.raw`
+[Error: "value" must not have unknown properties: bar,foo.]
+`.slice(1, -1)
+exports["schemas.object({}) should fail on string #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
 exports["schemas.object({}) should have validation, only for unknown properties #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1864,6 +2286,12 @@ exports["schemas.object({}) should have validation, only for unknown properties 
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.record() should fail on null #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
+exports["schemas.record() should fail on string #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
 exports["schemas.record() should have no validation for properties #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1877,6 +2305,15 @@ exports["schemas.record() should have no validation for properties #[0]"] = Stri
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.record(schemas.string()) should fail on array that includes null #[0]"] = String.raw`
+[Error: "value.1" must be a string.]
+`.slice(1, -1)
+exports["schemas.record(schemas.string()) should fail on null #[0]"] = String.raw`
+[Error: "value" must be an object.]
+`.slice(1, -1)
+exports["schemas.record(schemas.string()) should fail on object that has null property #[0]"] = String.raw`
+[Error: "value.foo" must be a string.]
 `.slice(1, -1)
 exports["schemas.record(schemas.string()) should have validation for elements #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1905,6 +2342,12 @@ exports["schemas.record(schemas.string()) should have validation for elements #[
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.string() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a string.]
+`.slice(1, -1)
+exports["schemas.string() should fail on number #[0]"] = String.raw`
+[Error: "value" must be a string.]
+`.slice(1, -1)
 exports["schemas.string() should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -1918,6 +2361,15 @@ exports["schemas.string() should have validation #[0]"] = String.raw`
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 1, minLength: 2 }) should throw a fatal error on compile #[0]"] = String.raw`
+[Error: "maxLength" must be "minLength" or greater than it.]
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 2 }) should fail on \"foo\" #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 2 characters.]
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 2 }) should fail on \"👍👍1\" #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 2 characters.]
 `.slice(1, -1)
 exports["schemas.string({ maxLength: 2 }) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1947,6 +2399,15 @@ exports["schemas.string({ maxLength: 2 }) should have validation #[0]"] = String
     return _1(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 2, minLength: 1 }) should fail on \"\" #[0]"] = String.raw`
+[Error: "value" must not be empty.]
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 2, minLength: 1 }) should fail on \"foo\" #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 2 characters.]
+`.slice(1, -1)
+exports["schemas.string({ maxLength: 2, minLength: 1 }) should fail on \"👍👍👍\" #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 2 characters.]
 `.slice(1, -1)
 exports["schemas.string({ maxLength: 2, minLength: 1 }) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -1981,6 +2442,12 @@ exports["schemas.string({ maxLength: 2, minLength: 1 }) should have validation #
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.string({ minLength: 2 }) should fail on \"f\" #[0]"] = String.raw`
+[Error: "value" must be more than or equal to 2 characters.]
+`.slice(1, -1)
+exports["schemas.string({ minLength: 2 }) should fail on \"👍\" #[0]"] = String.raw`
+[Error: "value" must be more than or equal to 2 characters.]
+`.slice(1, -1)
 exports["schemas.string({ minLength: 2 }) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -2010,6 +2477,12 @@ exports["schemas.string({ minLength: 2 }) should have validation #[0]"] = String
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.string({ pattern: /^\\d+$/ }) should fail on \"\" #[0]"] = String.raw`
+[Error: "value" must match the pattern /^\d+$/.]
+`.slice(1, -1)
+exports["schemas.string({ pattern: /^\\d+$/ }) should fail on \"foo\" #[0]"] = String.raw`
+[Error: "value" must match the pattern /^\d+$/.]
+`.slice(1, -1)
 exports["schemas.string({ pattern: /^\\d+$/ }) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -2028,6 +2501,15 @@ exports["schemas.string({ pattern: /^\\d+$/ }) should have validation #[0]"] = S
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.symbol() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a symbol.]
+`.slice(1, -1)
+exports["schemas.symbol() should fail on number #[0]"] = String.raw`
+[Error: "value" must be a symbol.]
+`.slice(1, -1)
+exports["schemas.symbol() should fail on string #[0]"] = String.raw`
+[Error: "value" must be a symbol.]
+`.slice(1, -1)
 exports["schemas.symbol() should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -2041,6 +2523,15 @@ exports["schemas.symbol() should have validation #[0]"] = String.raw`
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.tuple() should fail on [0] #[0]"] = String.raw`
+[Error: "value" must contain exactly 0 items.]
+`.slice(1, -1)
+exports["schemas.tuple() should fail on null #[0]"] = String.raw`
+[Error: "value" must be a tuple.]
+`.slice(1, -1)
+exports["schemas.tuple() should fail on { length: 0 } #[0]"] = String.raw`
+[Error: "value" must be a tuple.]
 `.slice(1, -1)
 exports["schemas.tuple() should have no validation for elements #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -2060,6 +2551,15 @@ exports["schemas.tuple() should have no validation for elements #[0]"] = String.
   };
 })({});"
 `.slice(1, -1)
+exports["schemas.tuple(schemas.any()) should fail on [] #[0]"] = String.raw`
+[Error: "value" must contain exactly 1 item.]
+`.slice(1, -1)
+exports["schemas.tuple(schemas.any()) should fail on null #[0]"] = String.raw`
+[Error: "value" must be a tuple.]
+`.slice(1, -1)
+exports["schemas.tuple(schemas.any()) should fail on { length: 1 } #[0]"] = String.raw`
+[Error: "value" must be a tuple.]
+`.slice(1, -1)
 exports["schemas.tuple(schemas.any()) should have no validation for elements #[0]"] = String.raw`
 "var validate = (function($schema) {
   \"use strict\";
@@ -2077,6 +2577,20 @@ exports["schemas.tuple(schemas.any()) should have no validation for elements #[0
     return _0(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.tuple(schemas.string(), schemas.string()) should fail on [1, 2] #[0]"] = String.raw`
+[Error: "value" has 2 validation errors:
+- "value[0]" must be a string.
+- "value[1]" must be a string.]
+`.slice(1, -1)
+exports["schemas.tuple(schemas.string(), schemas.string()) should fail on [\"a\", null] #[0]"] = String.raw`
+[Error: "value[1]" must be a string.]
+`.slice(1, -1)
+exports["schemas.tuple(schemas.string(), schemas.string()) should fail on [] #[0]"] = String.raw`
+[Error: "value" has 3 validation errors:
+- "value" must contain exactly 2 items.
+- "value[0]" must be a string.
+- "value[1]" must be a string.]
 `.slice(1, -1)
 exports["schemas.tuple(schemas.string(), schemas.string()) should have validation #[0]"] = String.raw`
 "var validate = (function($schema) {
@@ -2103,4 +2617,40 @@ exports["schemas.tuple(schemas.string(), schemas.string()) should have validatio
     return _1(name, value, 0, []);
   };
 })({});"
+`.slice(1, -1)
+exports["schemas.uint16 should fail on -1 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0.]
+`.slice(1, -1)
+exports["schemas.uint16 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.uint16 should fail on 65536 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 65535.]
+`.slice(1, -1)
+exports["schemas.uint32 should fail on -1 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0.]
+`.slice(1, -1)
+exports["schemas.uint32 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.uint32 should fail on 4294967296 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 4294967295.]
+`.slice(1, -1)
+exports["schemas.uint8 should fail on -1 #[0]"] = String.raw`
+[Error: "value" must be greater than or equal to 0.]
+`.slice(1, -1)
+exports["schemas.uint8 should fail on 0.5 #[0]"] = String.raw`
+[Error: "value" must be an integer.]
+`.slice(1, -1)
+exports["schemas.uint8 should fail on 256 #[0]"] = String.raw`
+[Error: "value" must be less than or equal to 255.]
+`.slice(1, -1)
+exports["validate(schema, value, options) validate(schemas.string(), 0xDEADBEAF) should fail #[0]"] = String.raw`
+[Error: "value" must be a string.]
+`.slice(1, -1)
+exports["{ type: \"enum\", values: [] } should fail on compile #[0]"] = String.raw`
+[Error: EnumSchema must have 1 or more values.]
+`.slice(1, -1)
+exports["{ type: \"union\", schemas: [] } should throw a fatail error on compile #[0]"] = String.raw`
+[Error: UnionSchema must have 1 or more schemas.]
 `.slice(1, -1)

@@ -1,8 +1,7 @@
-import assert from "assert"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
+import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.string()", () => {
@@ -16,17 +15,11 @@ describe("schemas.string()", () => {
     })
 
     it("should fail on null", () => {
-        assert.throws(
-            () => validate(schema, null),
-            new Error('"value" must be a string.'),
-        )
+        assertThrows(() => validate(schema, null))
     })
 
     it("should fail on number", () => {
-        assert.throws(
-            () => validate(schema, 0),
-            new Error('"value" must be a string.'),
-        )
+        assertThrows(() => validate(schema, 0))
     })
 
     it("should have validation", () => {
@@ -57,20 +50,14 @@ describe("schemas.string({ maxLength: 2 })", () => {
         validate(schema, "fo")
     })
     it('should fail on "foo"', () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must be less than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it('should pass "👍👍"', () => {
         validate(schema, "👍👍")
     })
     it('should fail on "👍👍1"', () => {
-        assert.throws(
-            () => validate(schema, "👍👍1"),
-            new Error('"value" must be less than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "👍👍1"))
     })
 
     it("should have validation", () => {
@@ -98,20 +85,14 @@ describe("schemas.string({ minLength: 2 })", () => {
         validate(schema, "fo")
     })
     it('should fail on "f"', () => {
-        assert.throws(
-            () => validate(schema, "f"),
-            new Error('"value" must be more than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "f"))
     })
 
     it('should pass "👍👍"', () => {
         validate(schema, "👍👍")
     })
     it('should fail on "👍"', () => {
-        assert.throws(
-            () => validate(schema, "👍"),
-            new Error('"value" must be more than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "👍"))
     })
 
     it("should have validation", () => {
@@ -140,16 +121,10 @@ describe("schemas.string({ maxLength: 2, minLength: 1 })", () => {
     })
 
     it('should fail on ""', () => {
-        assert.throws(
-            () => validate(schema, ""),
-            new Error('"value" must not be empty.'),
-        )
+        assertThrows(() => validate(schema, ""))
     })
     it('should fail on "foo"', () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must be less than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it('should pass "👍"', () => {
@@ -159,10 +134,7 @@ describe("schemas.string({ maxLength: 2, minLength: 1 })", () => {
         validate(schema, "👍👍")
     })
     it('should fail on "👍👍👍"', () => {
-        assert.throws(
-            () => validate(schema, "👍👍👍"),
-            new Error('"value" must be less than or equal to 2 characters.'),
-        )
+        assertThrows(() => validate(schema, "👍👍👍"))
     })
 
     it("should have validation", () => {
@@ -184,10 +156,7 @@ describe("schemas.string({ maxLength: 1, minLength: 2 })", () => {
     const schema = schemas.string({ maxLength: 1, minLength: 2 })
 
     it("should throw a fatal error on compile", () => {
-        assert.throws(
-            () => createValidationOfSchema(schema),
-            new Error('"maxLength" must be "minLength" or greater than it.'),
-        )
+        assertThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -203,16 +172,10 @@ describe("schemas.string({ pattern: /^\\d+$/ })", () => {
     })
 
     it('should fail on ""', () => {
-        assert.throws(
-            () => validate(schema, ""),
-            new Error('"value" must match the pattern /^\\d+$/.'),
-        )
+        assertThrows(() => validate(schema, ""))
     })
     it('should fail on "foo"', () => {
-        assert.throws(
-            () => validate(schema, "foo"),
-            new Error('"value" must match the pattern /^\\d+$/.'),
-        )
+        assertThrows(() => validate(schema, "foo"))
     })
 
     it("should have validation", () => {
