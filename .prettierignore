@@ -2,4 +2,4 @@
 /coverage
 /dist
 /node_modules
-/test/__snapshot__.js
+/test/__snapshot__/

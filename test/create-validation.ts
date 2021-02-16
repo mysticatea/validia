@@ -1,5 +1,5 @@
+import { assertSnapshotThrows } from "mocha-assert-snapshot"
 import { createValidation, Schema, schemas, Validate } from "../src"
-import { assertThrows } from "./lib/snapshot"
 
 describe("createValidation(schema, options)", () => {
     describe("createValidation(schemas.string())", () => {
@@ -12,7 +12,7 @@ describe("createValidation(schema, options)", () => {
         })
 
         it("should fail 0xDEADBEAF", () => {
-            assertThrows(() => validate(0xdeadbeaf))
+            assertSnapshotThrows(() => validate(0xdeadbeaf))
         })
     })
 })

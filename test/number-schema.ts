@@ -1,7 +1,7 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.number()", () => {
@@ -20,27 +20,27 @@ describe("schemas.number()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on Infinity", () => {
-        assertThrows(() => validate(schema, Number.POSITIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.POSITIVE_INFINITY))
     })
 
     it("should fail on -Infinity", () => {
-        assertThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it("should fail on bigint", () => {
-        assertThrows(() => validate(schema, BigInt("0")))
+        assertSnapshotThrows(() => validate(schema, BigInt("0")))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have no validation for min/max", () => {
@@ -74,11 +74,11 @@ describe("schemas.number({ allowInfinity: true })", () => {
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing Infinity", () => {
@@ -104,15 +104,15 @@ describe("schemas.number({ allowNaN: true })", () => {
     })
 
     it("should fail on Infinity", () => {
-        assertThrows(() => validate(schema, Number.POSITIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.POSITIVE_INFINITY))
     })
 
     it("should fail on -Infinity", () => {
-        assertThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing NaN", () => {
@@ -146,7 +146,7 @@ describe("schemas.number({ allowInfinity: true, allowNaN: true })", () => {
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing Infinity and NaN", () => {
@@ -166,23 +166,23 @@ describe("schemas.number({ intOnly: true })", () => {
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 
     it("should fail on Infinity", () => {
-        assertThrows(() => validate(schema, Number.POSITIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.POSITIVE_INFINITY))
     })
 
     it("should fail on -Infinity", () => {
-        assertThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it("should fail on bigint", () => {
-        assertThrows(() => validate(schema, BigInt("0")))
+        assertSnapshotThrows(() => validate(schema, BigInt("0")))
     })
 
     it("should have validation, but not have for min/max", () => {
@@ -216,15 +216,15 @@ describe("schemas.number({ allowInfinity: true, intOnly: true })", () => {
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing Infinity", () => {
@@ -250,19 +250,19 @@ describe("schemas.number({ allowNaN: true, intOnly: true })", () => {
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 
     it("should fail on Infinity", () => {
-        assertThrows(() => validate(schema, Number.POSITIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.POSITIVE_INFINITY))
     })
 
     it("should fail on -Infinity", () => {
-        assertThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
+        assertSnapshotThrows(() => validate(schema, Number.NEGATIVE_INFINITY))
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing NaN", () => {
@@ -300,11 +300,11 @@ describe("schemas.number({ allowInfinity: true, allowNaN: true, intOnly: true })
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 
     it('should fail on "0"', () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have validation allowing Infinity and NaN", () => {
@@ -324,11 +324,11 @@ describe("schemas.number({ maxValue: 1 })", () => {
     })
 
     it("should fail on 2", () => {
-        assertThrows(() => validate(schema, 2))
+        assertSnapshotThrows(() => validate(schema, 2))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it("should have validation for maxValue", () => {
@@ -354,11 +354,11 @@ describe("schemas.number({ minValue: 1 })", () => {
     })
 
     it("should fail on 0", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it("should have validation for minValue", () => {
@@ -387,15 +387,15 @@ describe("schemas.number({ maxValue: 1, minValue: 0 })", () => {
     })
 
     it("should fail on -1", () => {
-        assertThrows(() => validate(schema, Number("-1")))
+        assertSnapshotThrows(() => validate(schema, Number("-1")))
     })
 
     it("should fail on 2", () => {
-        assertThrows(() => validate(schema, 2))
+        assertSnapshotThrows(() => validate(schema, 2))
     })
 
     it("should fail on NaN", () => {
-        assertThrows(() => validate(schema, Number.NaN))
+        assertSnapshotThrows(() => validate(schema, Number.NaN))
     })
 
     it("should have validation for min/max", () => {
@@ -407,7 +407,7 @@ describe("schemas.number({ maxValue: 0, minValue: 1 })", () => {
     const schema = schemas.number({ maxValue: 0, minValue: 1 })
 
     it("should throw a fatal error on compile", () => {
-        assertThrows(() => createValidationOfSchema(schema))
+        assertSnapshotThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -423,15 +423,15 @@ describe("schemas.int8", () => {
     })
 
     it("should fail on -129", () => {
-        assertThrows(() => validate(schema, -129))
+        assertSnapshotThrows(() => validate(schema, -129))
     })
 
     it("should fail on 128", () => {
-        assertThrows(() => validate(schema, 128))
+        assertSnapshotThrows(() => validate(schema, 128))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })
 
@@ -447,15 +447,15 @@ describe("schemas.int16", () => {
     })
 
     it("should fail on -32769", () => {
-        assertThrows(() => validate(schema, -32769))
+        assertSnapshotThrows(() => validate(schema, -32769))
     })
 
     it("should fail on 32768", () => {
-        assertThrows(() => validate(schema, 32768))
+        assertSnapshotThrows(() => validate(schema, 32768))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })
 
@@ -471,15 +471,15 @@ describe("schemas.int32", () => {
     })
 
     it("should fail on -2147483649", () => {
-        assertThrows(() => validate(schema, -2147483649))
+        assertSnapshotThrows(() => validate(schema, -2147483649))
     })
 
     it("should fail on 2147483648", () => {
-        assertThrows(() => validate(schema, 2147483648))
+        assertSnapshotThrows(() => validate(schema, 2147483648))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })
 
@@ -495,15 +495,15 @@ describe("schemas.uint8", () => {
     })
 
     it("should fail on -1", () => {
-        assertThrows(() => validate(schema, -1))
+        assertSnapshotThrows(() => validate(schema, -1))
     })
 
     it("should fail on 256", () => {
-        assertThrows(() => validate(schema, 256))
+        assertSnapshotThrows(() => validate(schema, 256))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })
 
@@ -519,15 +519,15 @@ describe("schemas.uint16", () => {
     })
 
     it("should fail on -1", () => {
-        assertThrows(() => validate(schema, -1))
+        assertSnapshotThrows(() => validate(schema, -1))
     })
 
     it("should fail on 65536", () => {
-        assertThrows(() => validate(schema, 65536))
+        assertSnapshotThrows(() => validate(schema, 65536))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })
 
@@ -543,14 +543,14 @@ describe("schemas.uint32", () => {
     })
 
     it("should fail on -1", () => {
-        assertThrows(() => validate(schema, -1))
+        assertSnapshotThrows(() => validate(schema, -1))
     })
 
     it("should fail on 4294967296", () => {
-        assertThrows(() => validate(schema, 4294967296))
+        assertSnapshotThrows(() => validate(schema, 4294967296))
     })
 
     it("should fail on 0.5", () => {
-        assertThrows(() => validate(schema, 0.5))
+        assertSnapshotThrows(() => validate(schema, 0.5))
     })
 })

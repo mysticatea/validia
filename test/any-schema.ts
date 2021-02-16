@@ -1,7 +1,7 @@
+import { assertSnapshot } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.any()", () => {

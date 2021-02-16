@@ -1,7 +1,7 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.record()", () => {
@@ -28,11 +28,11 @@ describe("schemas.record()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "foo"))
+        assertSnapshotThrows(() => validate(schema, "foo"))
     })
 
     it("should have no validation for properties", () => {
@@ -69,15 +69,15 @@ describe("schemas.record(schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on object that has null property", () => {
-        assertThrows(() => validate(schema, { foo: null }))
+        assertSnapshotThrows(() => validate(schema, { foo: null }))
     })
 
     it("should fail on array that includes null", () => {
-        assertThrows(() => validate(schema, ["foo", null]))
+        assertSnapshotThrows(() => validate(schema, ["foo", null]))
     })
 
     it("should have validation for elements", () => {

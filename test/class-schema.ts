@@ -1,7 +1,7 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.instanceOf(RegExp)", () => {
@@ -12,15 +12,17 @@ describe("schemas.instanceOf(RegExp)", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "/foo/u"))
+        assertSnapshotThrows(() => validate(schema, "/foo/u"))
     })
 
     it("should fail on other objects", () => {
-        assertThrows(() => validate(schema, { pattern: "foo", flags: "u" }))
+        assertSnapshotThrows(() =>
+            validate(schema, { pattern: "foo", flags: "u" }),
+        )
     })
 
     it("should have validation", () => {

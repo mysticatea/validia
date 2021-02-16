@@ -1,8 +1,8 @@
 import assert from "assert"
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.object()", () => {
@@ -29,11 +29,11 @@ describe("schemas.object()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "foo"))
+        assertSnapshotThrows(() => validate(schema, "foo"))
     })
 
     it("should have no validation for properties", () => {
@@ -59,15 +59,15 @@ describe("schemas.object({})", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "/foo/u"))
+        assertSnapshotThrows(() => validate(schema, "/foo/u"))
     })
 
     it("should fail on object that has properties", () => {
-        assertThrows(() => validate(schema, { foo: 1, bar: 2 }))
+        assertSnapshotThrows(() => validate(schema, { foo: 1, bar: 2 }))
     })
 
     it("should have validation, only for unknown properties", () => {
@@ -108,7 +108,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() })", () => {
     })
 
     it("should fail on object that has extra properties", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, {
                 one: 1,
                 two: 2,
@@ -119,7 +119,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() })", () => {
     })
 
     it("should fail on object that has different properties", () => {
-        assertThrows(() => validate(schema, { one: 1, three: 3 }))
+        assertSnapshotThrows(() => validate(schema, { one: 1, three: 3 }))
     })
 
     it("should have validation, but not have validations for property values", () => {
@@ -160,14 +160,14 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() })", () 
     })
 
     it('should fail on { one: 1, two: "two" }', () => {
-        assertThrows(() => validate(schema, { one: 1, two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { one: 1, two: "two" }))
     })
     it("should fail on { two: 2 }", () => {
-        assertThrows(() => validate(schema, { two: 2 }))
+        assertSnapshotThrows(() => validate(schema, { two: 2 }))
     })
 
     it("should fail on object that has extra properties", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, {
                 one: "one",
                 two: "two",
@@ -178,7 +178,9 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() })", () 
     })
 
     it("should fail on object that has different properties", () => {
-        assertThrows(() => validate(schema, { one: "one", three: "three" }))
+        assertSnapshotThrows(() =>
+            validate(schema, { one: "one", three: "three" }),
+        )
     })
 
     it("should have validation for property values", () => {
@@ -233,7 +235,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.string() }, { allowU
     })
 
     it("should fail on { two: 2 }", () => {
-        assertThrows(() => validate(schema, { two: 2 }))
+        assertSnapshotThrows(() => validate(schema, { two: 2 }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {
@@ -278,20 +280,20 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on {}", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
     it('should fail on { two: "two" }', () => {
-        assertThrows(() => validate(schema, { two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { two: "two" }))
     })
     it("should fail on { one: null, two: null }", () => {
-        assertThrows(() => validate(schema, { one: null, two: null }))
+        assertSnapshotThrows(() => validate(schema, { one: null, two: null }))
     })
     it('should fail on { one: 1, two: "two" }', () => {
-        assertThrows(() => validate(schema, { one: 1, two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { one: 1, two: "two" }))
     })
 
     it("should fail on object that has extra properties", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, {
                 one: "one",
                 two: "two",
@@ -302,7 +304,9 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on object that has different properties", () => {
-        assertThrows(() => validate(schema, { one: "one", three: "three" }))
+        assertSnapshotThrows(() =>
+            validate(schema, { one: "one", three: "three" }),
+        )
     })
 
     it("should have validation for property values", () => {
@@ -327,7 +331,7 @@ describe('schemas.object({ one: schemas.string() }, { required: ["two"] })', () 
     )
 
     it("should throw a fatal error on compile", () => {
-        assertThrows(() => createValidationOfSchema(schema))
+        assertSnapshotThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -348,11 +352,11 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() }, { required:
     })
 
     it("should fail on {}", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
 
     it("should fail on object that has extra properties", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, {
                 one: 1,
                 two: 2,
@@ -363,7 +367,7 @@ describe("schemas.object({ one: schemas.any(), two: schemas.any() }, { required:
     })
 
     it("should fail on object that has different properties", () => {
-        assertThrows(() => validate(schema, { one: 1, three: 3 }))
+        assertSnapshotThrows(() => validate(schema, { one: 1, three: 3 }))
     })
 
     it("should have validation, but not have validations for property values", () => {
@@ -392,23 +396,25 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on {}", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
 
     it('should fail on { one: 1, two: "two" }', () => {
-        assertThrows(() => validate(schema, { one: 1, two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { one: 1, two: "two" }))
     })
 
     it('should fail on { one: "one", two: null }', () => {
-        assertThrows(() => validate(schema, { one: "one", two: null }))
+        assertSnapshotThrows(() => validate(schema, { one: "one", two: null }))
     })
 
     it('should fail on { one: "one", two: undefined }', () => {
-        assertThrows(() => validate(schema, { one: "one", two: undefined }))
+        assertSnapshotThrows(() =>
+            validate(schema, { one: "one", two: undefined }),
+        )
     })
 
     it("should fail on object that has extra properties", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, {
                 one: "one",
                 two: "two",
@@ -419,7 +425,9 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { req
     })
 
     it("should fail on object that has different properties", () => {
-        assertThrows(() => validate(schema, { one: "one", three: "three" }))
+        assertSnapshotThrows(() =>
+            validate(schema, { one: "one", three: "three" }),
+        )
     })
 
     it("should have validation for property values", () => {
@@ -454,11 +462,11 @@ describe('schemas.object({ one: schemas.string(), two: schemas.string() }, { all
     })
 
     it('should fail on { two: "two" }', () => {
-        assertThrows(() => validate(schema, { two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { two: "two" }))
     })
 
     it('should fail on { two: "two", three: 3 }', () => {
-        assertThrows(() => validate(schema, { two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { two: "two" }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {
@@ -500,15 +508,15 @@ describe("schemas.object({ one: schemas.string(), two: schemas.string() }, { all
     })
 
     it('should fail on { one: "one" }', () => {
-        assertThrows(() => validate(schema, { one: "one" }))
+        assertSnapshotThrows(() => validate(schema, { one: "one" }))
     })
 
     it('should fail on { two: "two" }', () => {
-        assertThrows(() => validate(schema, { two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { two: "two" }))
     })
 
     it('should fail on { two: "two", three: 3 }', () => {
-        assertThrows(() => validate(schema, { two: "two" }))
+        assertSnapshotThrows(() => validate(schema, { two: "two" }))
     })
 
     it("should have validation, but not have validations for extra properties", () => {

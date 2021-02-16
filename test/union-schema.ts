@@ -1,8 +1,8 @@
 import assert from "assert"
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { Schema, schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
@@ -17,15 +17,15 @@ describe("schemas.anyOf(schemas.number(), schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on object", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
 
     it("should fail on boolean", () => {
-        assertThrows(() => validate(schema, true))
+        assertSnapshotThrows(() => validate(schema, true))
     })
 
     it("should have validation", () => {
@@ -60,11 +60,11 @@ describe('schemas.anyOf(schemas.number(), schemas.enum("auto", "none"))', () => 
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it('should fail on "foo"', () => {
-        assertThrows(() => validate(schema, "foo"))
+        assertSnapshotThrows(() => validate(schema, "foo"))
     })
 
     it("should have validation", () => {
@@ -100,15 +100,15 @@ describe("schemas.anyOf(schemas.number(), schemas.string(), schemas.object({ val
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it('should fail on { value: "foo" }, with the error message of the nearest choice', () => {
-        assertThrows(() => validate(schema, { value: "foo" }))
+        assertSnapshotThrows(() => validate(schema, { value: "foo" }))
     })
 
     it('should fail on { valu: "foo" }, with the error message of the nearest choice', () => {
-        assertThrows(() => validate(schema, { vale: "foo" }))
+        assertSnapshotThrows(() => validate(schema, { vale: "foo" }))
     })
 
     it("should have validation", () => {
@@ -141,7 +141,7 @@ describe('{ type: "union", schemas: [] }', () => {
     const schema: Schema.Union<never> = { type: "union", schemas: [] }
 
     it("should throw a fatail error on compile", () => {
-        assertThrows(() => createValidationOfSchema(schema))
+        assertSnapshotThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -169,7 +169,7 @@ describe("schemas.anyOf(/* all kinds of schema except any */)", () => {
     )
 
     it("should print the name of schemas if failed", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
 })
 

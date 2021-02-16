@@ -1,6 +1,6 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.bigInt()", () => {
@@ -15,15 +15,15 @@ describe("schemas.bigInt()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on number", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
 
     it("should fail on string", () => {
-        assertThrows(() => validate(schema, "0"))
+        assertSnapshotThrows(() => validate(schema, "0"))
     })
 
     it("should have no validation for min/max", () => {
@@ -49,7 +49,7 @@ describe("schemas.bigInt({ maxValue: 1n })", () => {
     })
 
     it("should fail on 2n", () => {
-        assertThrows(() => validate(schema, BigInt("2")))
+        assertSnapshotThrows(() => validate(schema, BigInt("2")))
     })
 
     it("should have validation for maxValue", () => {
@@ -75,7 +75,7 @@ describe("schemas.bigInt({ minValue: 1n })", () => {
     })
 
     it("should fail on 0n", () => {
-        assertThrows(() => validate(schema, BigInt("0")))
+        assertSnapshotThrows(() => validate(schema, BigInt("0")))
     })
 
     it("should have validation for minValue", () => {
@@ -104,11 +104,11 @@ describe("schemas.bigInt({ maxValue: 1n, minValue: 0n })", () => {
     })
 
     it("should fail on -1n", () => {
-        assertThrows(() => validate(schema, BigInt("-1")))
+        assertSnapshotThrows(() => validate(schema, BigInt("-1")))
     })
 
     it("should fail on 2n", () => {
-        assertThrows(() => validate(schema, BigInt("2")))
+        assertSnapshotThrows(() => validate(schema, BigInt("2")))
     })
 
     it("should have validation for min/max", () => {
@@ -123,7 +123,7 @@ describe("schemas.bigInt({ maxValue: 0n, minValue: 1n })", () => {
     })
 
     it("should throw a fatal error on compile", () => {
-        assertThrows(() => createValidationOfSchema(schema))
+        assertSnapshotThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -139,11 +139,15 @@ describe("schemas.bigInt64", () => {
     })
 
     it("should fail on -9223372036854775809n", () => {
-        assertThrows(() => validate(schema, BigInt("-9223372036854775809")))
+        assertSnapshotThrows(() =>
+            validate(schema, BigInt("-9223372036854775809")),
+        )
     })
 
     it("should fail on 9223372036854775808n", () => {
-        assertThrows(() => validate(schema, BigInt("9223372036854775808")))
+        assertSnapshotThrows(() =>
+            validate(schema, BigInt("9223372036854775808")),
+        )
     })
 })
 
@@ -159,10 +163,12 @@ describe("schemas.bigUint64", () => {
     })
 
     it("should fail on -1n", () => {
-        assertThrows(() => validate(schema, BigInt("-1")))
+        assertSnapshotThrows(() => validate(schema, BigInt("-1")))
     })
 
     it("should fail on 18446744073709551616n", () => {
-        assertThrows(() => validate(schema, BigInt("18446744073709551616")))
+        assertSnapshotThrows(() =>
+            validate(schema, BigInt("18446744073709551616")),
+        )
     })
 })

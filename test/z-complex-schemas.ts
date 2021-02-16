@@ -1,8 +1,8 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import path from "path"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.object({ include: schemas.anyOf(schemas.string(), schemas.array(schemas.string())), exclude: schemas.anyOf(schemas.string(), schemas.array(schemas.string())) })", () => {
@@ -31,7 +31,7 @@ describe("schemas.object({ include: schemas.anyOf(schemas.string(), schemas.arra
     })
 
     it("should fail on { include: 3 }", () => {
-        assertThrows(() => validate(schema, { include: 3 }))
+        assertSnapshotThrows(() => validate(schema, { include: 3 }))
     })
 
     it("should have good validation", () => {

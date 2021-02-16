@@ -5,8 +5,8 @@ ignorePatterns:
   - /coverage/
   - /dist/
   - /node_modules/
+  - /test/__snapshot__/
   - /test/lib/type-util.ts
-  - /test/__snapshot__.js
   - /test/tuple-schema.ts
   - /test.ts
 

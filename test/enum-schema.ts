@@ -1,15 +1,15 @@
 import assert from "assert"
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { Schema, schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe('{ type: "enum", values: [] }', () => {
     const schema: Schema.Enum<never> = { type: "enum", values: [] }
 
     it("should fail on compile", () => {
-        assertThrows(() => createValidationOfSchema(schema))
+        assertSnapshotThrows(() => createValidationOfSchema(schema))
     })
 })
 
@@ -21,10 +21,10 @@ describe("schemas.enum(null)", () => {
     })
 
     it("should fail on 0", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
     it("should fail on undefined", () => {
-        assertThrows(() => validate(schema, undefined))
+        assertSnapshotThrows(() => validate(schema, undefined))
     })
 
     it("should have validation", () => {
@@ -175,7 +175,7 @@ describe("schemas.enum(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INF
     })
 
     it("should fail on 0", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
 
     it("should have validation; it can handle NaN correctly", () => {
@@ -201,13 +201,13 @@ describe("schemas.enum(Symbol.iterator)", () => {
     })
 
     it("should fail on 0", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
     it("should fail on undefined", () => {
-        assertThrows(() => validate(schema, undefined))
+        assertSnapshotThrows(() => validate(schema, undefined))
     })
     it("should fail on another symbol", () => {
-        assertThrows(() => validate(schema, Symbol.toStringTag))
+        assertSnapshotThrows(() => validate(schema, Symbol.toStringTag))
     })
 
     it("should have validation", () => {
@@ -242,10 +242,10 @@ describe("schemas.enum(myObj, mySymbol, myFunc)", () => {
     })
 
     it("should fail on {}", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
     it("should fail on another symbol", () => {
-        assertThrows(() => validate(schema, Symbol("mySymbol")))
+        assertSnapshotThrows(() => validate(schema, Symbol("mySymbol")))
     })
 
     it("should have validation; give 'values' as an argument because it contains references.", () => {
@@ -275,10 +275,10 @@ describe("schemas.enum(myObj, Number.NaN)", () => {
     })
 
     it("should fail on {}", () => {
-        assertThrows(() => validate(schema, {}))
+        assertSnapshotThrows(() => validate(schema, {}))
     })
     it("should fail on 0", () => {
-        assertThrows(() => validate(schema, 0))
+        assertSnapshotThrows(() => validate(schema, 0))
     })
 
     it("should have validation; it can handle NaN correctly, along with reference values.", () => {

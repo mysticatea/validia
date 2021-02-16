@@ -1,7 +1,7 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.tuple()", () => {
@@ -12,15 +12,15 @@ describe("schemas.tuple()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on { length: 0 }", () => {
-        assertThrows(() => validate(schema, { length: 0 }))
+        assertSnapshotThrows(() => validate(schema, { length: 0 }))
     })
 
     it("should fail on [0]", () => {
-        assertThrows(() => validate(schema, [0]))
+        assertSnapshotThrows(() => validate(schema, [0]))
     })
 
     it("should have no validation for elements", () => {
@@ -55,15 +55,15 @@ describe("schemas.tuple(schemas.any())", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on { length: 1 }", () => {
-        assertThrows(() => validate(schema, { length: 1 }))
+        assertSnapshotThrows(() => validate(schema, { length: 1 }))
     })
 
     it("should fail on []", () => {
-        assertThrows(() => validate(schema, []))
+        assertSnapshotThrows(() => validate(schema, []))
     })
 
     it("should have no validation for elements", () => {
@@ -89,15 +89,15 @@ describe("schemas.tuple(schemas.string(), schemas.string())", () => {
     })
 
     it("should fail on []", () => {
-        assertThrows(() => validate(schema, []))
+        assertSnapshotThrows(() => validate(schema, []))
     })
 
     it("should fail on [1, 2]", () => {
-        assertThrows(() => validate(schema, [1, 2]))
+        assertSnapshotThrows(() => validate(schema, [1, 2]))
     })
 
     it('should fail on ["a", null]', () => {
-        assertThrows(() => validate(schema, ["a", null]))
+        assertSnapshotThrows(() => validate(schema, ["a", null]))
     })
 
     it("should have validation", () => {

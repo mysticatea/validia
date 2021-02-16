@@ -1,8 +1,8 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import path from "path"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)', () => {
@@ -17,11 +17,11 @@ describe('schemas.custom("an absolute path", (x: unknown): x is string => ...)',
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on ./foo.js", () => {
-        assertThrows(() => validate(schema, "./foo.js"))
+        assertSnapshotThrows(() => validate(schema, "./foo.js"))
     })
 
     it("should have validation", () => {

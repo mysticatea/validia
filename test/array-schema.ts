@@ -1,7 +1,7 @@
+import { assertSnapshot, assertSnapshotThrows } from "mocha-assert-snapshot"
 import { schemas, validate } from "../src"
 import { createValidationOfSchema } from "../src/builder"
 import { assertES5 } from "./lib/is-es5"
-import { assertSnapshot, assertThrows } from "./lib/snapshot"
 import { assertType, Equals } from "./lib/type-util"
 
 describe("schemas.array()", () => {
@@ -16,11 +16,11 @@ describe("schemas.array()", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on object", () => {
-        assertThrows(() => validate(schema, { 0: 1, length: 1 }))
+        assertSnapshotThrows(() => validate(schema, { 0: 1, length: 1 }))
     })
 
     it("should have no validation for elements", () => {
@@ -50,11 +50,11 @@ describe("schemas.array(schemas.string())", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes null", () => {
-        assertThrows(() => validate(schema, ["foo", null]))
+        assertSnapshotThrows(() => validate(schema, ["foo", null]))
     })
 
     it("should have validation for elements", () => {
@@ -84,11 +84,11 @@ describe("schemas.array(schemas.any(), { maxLength: 2 })", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes three strings", () => {
-        assertThrows(() => validate(schema, ["foo", "bar", "three"]))
+        assertSnapshotThrows(() => validate(schema, ["foo", "bar", "three"]))
     })
 
     it("should have validation for maxLength", () => {
@@ -108,11 +108,11 @@ describe("schemas.array(schemas.any(), { minLength: 2 })", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on empty array", () => {
-        assertThrows(() => validate(schema, []))
+        assertSnapshotThrows(() => validate(schema, []))
     })
 
     it("should have validation for minLength", () => {
@@ -136,15 +136,15 @@ describe("schemas.array(schemas.any(), { unique: true })", () => {
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on array that includes two same strings", () => {
-        assertThrows(() => validate(schema, ["foo", "foo"]))
+        assertSnapshotThrows(() => validate(schema, ["foo", "foo"]))
     })
 
     it("should report once even if array included many same strings", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             validate(schema, ["foo", "foo", "foo", "bar", "bar"]),
         )
     })
@@ -174,23 +174,23 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
     })
 
     it("should fail on null", () => {
-        assertThrows(() => validate(schema, null))
+        assertSnapshotThrows(() => validate(schema, null))
     })
 
     it("should fail on empty array", () => {
-        assertThrows(() => validate(schema, []))
+        assertSnapshotThrows(() => validate(schema, []))
     })
 
     it("should fail on array that includes two numbers", () => {
-        assertThrows(() => validate(schema, ["foo", 1]))
+        assertSnapshotThrows(() => validate(schema, ["foo", 1]))
     })
 
     it("should fail on array that includes two same string", () => {
-        assertThrows(() => validate(schema, ["foo", "foo"]))
+        assertSnapshotThrows(() => validate(schema, ["foo", "foo"]))
     })
 
     it("should fail on array that has many errors", () => {
-        assertThrows(() => validate(schema, [0, "foo", "foo"]))
+        assertSnapshotThrows(() => validate(schema, [0, "foo", "foo"]))
     })
 
     it("should have validation for all options", () => {
@@ -204,7 +204,7 @@ describe("schemas.array(schemas.string(), { maxLength: 2, minLength: 1, unique: 
 
 describe("schemas.array(schemas.any(), { maxLength: 1, minLength: 2 })", () => {
     it("should throw a fatal error on compile", () => {
-        assertThrows(() =>
+        assertSnapshotThrows(() =>
             createValidationOfSchema(
                 schemas.array(schemas.any(), {
                     maxLength: 1,
