@@ -29,7 +29,7 @@ npm install validia
 
 ## 📖 Usage
 
-### ➡️ One-shot Validation
+### ■ One-shot Validation
 
 ```ts
 import { validate } from "validia";
@@ -51,7 +51,7 @@ validate(myOptionSchema, value);
 
 Schema is simple objects. But I'd like to recommend using factory functions to utilize input completion and ensure good typings.
 
-### ➡️ Using Factory Functions
+### ■ Using Factory Functions
 
 ```ts
 import { schemas as s, validate } from "validia";
@@ -70,7 +70,7 @@ validate(myOptionSchema, value);
 
 The `schemas` is the namespace of factory functions.
 
-### ➡️ Compile Validation Functions
+### ■ Compile Validation Functions
 
 ```ts
 import { createValidation, schemas as s, Validate } from "validia";
@@ -94,7 +94,7 @@ validate(value);
 
 Unfortunately, you have to declare the type of the `validate` function explicitly because of [microsoft/TypeScript#33580](https://github.com/microsoft/TypeScript/issues/33580). In short, the type of [Assertion Functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions) must be decided before the type inference phase.
 
-### ➡️ For Legacy Platform
+### ■ For Legacy Platform
 
 This package requires ES2018 or later.
 
@@ -129,7 +129,7 @@ import {
 } from "validia";
 ```
 
-### ➡️ function `createValidation<T>(schema: T, options?: Options)`
+### ■ function `createValidation<T>(schema: T, options?: Options)`
 
 Compile the validation function of given schema object.
 
@@ -147,11 +147,11 @@ Compile the validation function of given schema object.
   - The `options.messages` argument is the error message generator. Optional. Default is `options.defaultMessages`.
   - The `options.name` argument will be used in error messages. Optional. Default is `"value"`.
 
-### ➡️ function `validate<T>(schema: T, value: any, options?: Options)`
+### ■ function `validate<T>(schema: T, value: any, options?: Options)`
 
 This is equivalent to `createValidation<T>(schema)(value, options)`.
 
-### ➡️ object `schemas`
+### ■ object `schemas`
 
 The schema factories.
 
@@ -204,33 +204,33 @@ The schema factories.
 - `schemas.uint16` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 65535, minValue: 0 })`.
 - `schemas.uint32` ... Equivalent to `schemas.number({ intOnly: true, maxValue: 4294967295, minValue: 0 })`.
 
-### ➡️ class `ValidationError`
+### ■ class `ValidationError`
 
 The `Error` class for validation errors.
 
-### ➡️ object `DefaultMessage`
+### ■ object `DefaultMessage`
 
 The default error messages.
 
-### ➡️ type `Message`
+### ■ type `Message`
 
 The interface to define your own error messages.
 
 See [src/message/default-message.ts](./src/message/default-message.ts) for example.
 
-### ➡️ type `Schema`
+### ■ type `Schema`
 
 The types of schemas.
 
 See [src/schema-types.ts](./src/schema-types.ts) for details.
 
-### ➡️ type `TypeOf<T>`
+### ■ type `TypeOf<T>`
 
 The types for calculating the value type of schemas.
 
 See [src/real-types.ts](./src/real-types.ts) for details.
 
-### ➡️ type `Validate<T>`
+### ■ type `Validate<T>`
 
 The type of validation functions.
 
